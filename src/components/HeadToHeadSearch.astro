@@ -1,0 +1,207 @@
+---
+import HeadToHeadTable from "./HeadToHeadTable.astro";
+import type { HeadToHeadData } from "@/lib/api/types";
+
+interface Props {
+  playerId: string;
+  playerName: string;
+}
+
+const { playerId, playerName } = Astro.props;
+
+// For now, we'll create a static version since this requires client-side interaction
+// In a production app, you'd want to implement a search interface
+---
+
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
+  <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Head-to-Head Records</h2>
+
+  <div class="mb-4">
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+      Compare {playerName} against another player by entering their competitor ID:
+    </p>
+
+    <!-- Search Form -->
+    <div class="flex gap-2 mb-4">
+      <input
+        type="text"
+        id="opponentId"
+        placeholder="Enter opponent ID (e.g., sr:competitor:138546)"
+        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+      />
+      <button
+        id="searchBtn"
+        class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium transition-colors"
+      >
+        Compare
+      </button>
+    </div>
+
+    <!-- Results Container -->
+    <div id="headToHeadResults" class="hidden">
+      <!-- Results will be loaded here via JavaScript -->
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="hidden text-center py-4">
+      <div class="inline-block h-6 w-6 animate-spin rounded-full border-4 border-yellow-400 border-r-transparent"></div>
+      <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Loading head-to-head data...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded p-3">
+      <p class="text-sm text-red-800 dark:text-red-200" id="errorMessage"></p>
+    </div>
+
+    <!-- Example IDs for testing -->
+    <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded border border-gray-200 dark:border-gray-700">
+      <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Example competitor IDs to try:</p>
+      <div class="flex flex-wrap gap-2">
+        <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:138546">
+          Novak Djokovic
+        </button>
+        <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:225050">
+          Carlos Alcaraz
+        </button>
+        <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:119248">
+          Rafael Nadal
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ playerId }}>
+  const searchBtn = document.getElementById('searchBtn');
+  const opponentInput = document.getElementById('opponentId');
+  const resultsContainer = document.getElementById('headToHeadResults');
+  const loadingState = document.getElementById('loadingState');
+  const errorState = document.getElementById('errorState');
+  const errorMessage = document.getElementById('errorMessage');
+  const exampleButtons = document.querySelectorAll('.example-id');
+
+  // Handle example ID clicks
+  exampleButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.getAttribute('data-id');
+      if (id && opponentInput) {
+        opponentInput.value = id;
+        searchHeadToHead(id);
+      }
+    });
+  });
+
+  // Handle search button click
+  if (searchBtn && opponentInput) {
+    searchBtn.addEventListener('click', () => {
+      const opponentId = opponentInput.value.trim();
+      if (opponentId) {
+        searchHeadToHead(opponentId);
+      }
+    });
+
+    // Handle Enter key in input
+    opponentInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const opponentId = opponentInput.value.trim();
+        if (opponentId) {
+          searchHeadToHead(opponentId);
+        }
+      }
+    });
+  }
+
+  async function searchHeadToHead(opponentId) {
+    // Hide previous results and errors
+    if (resultsContainer) resultsContainer.classList.add('hidden');
+    if (errorState) errorState.classList.add('hidden');
+
+    // Show loading state
+    if (loadingState) loadingState.classList.remove('hidden');
+
+    try {
+      const response = await fetch(`/api/head-to-head?player1=${playerId}&player2=${opponentId}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (loadingState) loadingState.classList.add('hidden');
+
+      // Display results
+      displayHeadToHeadData(data);
+
+    } catch (error) {
+      console.error('Error fetching head-to-head data:', error);
+
+      if (loadingState) loadingState.classList.add('hidden');
+
+      if (errorMessage) {
+        errorMessage.textContent = `Failed to load head-to-head data: ${error.message}`;
+      }
+      if (errorState) errorState.classList.remove('hidden');
+    }
+  }
+
+  function displayHeadToHeadData(data) {
+    if (!resultsContainer) return;
+
+    // For now, just show basic information
+    // In a full implementation, you'd render the HeadToHeadTable component here
+    const competitor1 = data.competitors.find(c => c.id === playerId);
+    const competitor2 = data.competitors.find(c => c.id !== playerId);
+
+    if (!competitor1 || !competitor2) {
+      if (errorMessage) {
+        errorMessage.textContent = 'Invalid competitor data received';
+      }
+      if (errorState) errorState.classList.remove('hidden');
+      return;
+    }
+
+    // Calculate record
+    let wins = 0;
+    let losses = 0;
+    data.last_meetings.forEach(match => {
+      if (match.sport_event_status.winner_id === playerId) wins++;
+      else if (match.sport_event_status.winner_id) losses++;
+    });
+
+    resultsContainer.innerHTML = `
+      <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 rounded p-4">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">${competitor1.name}</span>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-gray-900 dark:text-gray-100">${wins} - ${losses}</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400">${data.last_meetings.length} matches</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">${competitor2.name}</span>
+          </div>
+        </div>
+        ${data.last_meetings.length > 0 ? `
+          <div class="space-y-2">
+            <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">Recent Matches (${Math.min(5, data.last_meetings.length)})</h4>
+            ${data.last_meetings.slice(0, 5).map(match => {
+              const result = match.sport_event_status.winner_id === playerId ? 'W' : 'L';
+              const resultClass = result === 'W' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+              return `
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-600 dark:text-gray-400">${new Date(match.sport_event.start_time).toLocaleDateString()}</span>
+                  <span class="text-gray-900 dark:text-gray-100">${match.sport_event.sport_event_context.competition.name}</span>
+                  <span class="font-bold ${resultClass}">${result}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        ` : '<p class="text-sm text-gray-600 dark:text-gray-400">No previous matches found.</p>'}
+      </div>
+    `;
+
+    resultsContainer.classList.remove('hidden');
+  }
+</script>

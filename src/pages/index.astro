@@ -1,0 +1,137 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import { siteConfig } from "@/site.config";
+---
+
+<Layout title={siteConfig.title} description={siteConfig.description}>
+  <Header />
+
+  <div class="mx-auto max-w-4xl px-4">
+    <!-- Hero Section -->
+    <section class="mb-16 text-center">
+      <h1 class="mb-6 text-4xl font-bold text-yellow-700 dark:text-yellow-400 md:text-6xl">
+        Tennis Live
+      </h1>
+      <p class="mb-8 text-xl text-gray-600 dark:text-gray-300 md:text-2xl">
+        Your source for live ATP & WTA rankings and match results
+      </p>
+
+      <!-- Quick Navigation Cards -->
+      <div class="grid gap-6 md:grid-cols-3">
+        <a
+          href="/rankings"
+          class="group rounded-lg border-2 border-yellow-200 dark:border-yellow-700 bg-white dark:bg-gray-800 p-6 transition-all hover:border-yellow-400 dark:hover:border-yellow-500 hover:shadow-lg"
+        >
+          <div class="mb-4 text-4xl">🏆</div>
+          <h2 class="mb-2 text-xl font-semibold text-yellow-700 dark:text-yellow-400">Tennis Rankings</h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            View the latest ATP & WTA singles rankings with top 100 players, points, and position changes.
+          </p>
+          <div class="mt-4 inline-flex items-center text-yellow-700 dark:text-yellow-400 group-hover:translate-x-1 transition-transform">
+            View Rankings
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+
+        <a
+          href="/competitions"
+          class="group rounded-lg border-2 border-yellow-200 dark:border-yellow-700 bg-white dark:bg-gray-800 p-6 transition-all hover:border-yellow-400 dark:hover:border-yellow-500 hover:shadow-lg"
+        >
+          <div class="mb-4 text-4xl">🏅</div>
+          <h2 class="mb-2 text-xl font-semibold text-yellow-700 dark:text-yellow-400">Competitions</h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            Explore ATP and WTA tournaments including Grand Slams, Masters, and more competitions.
+          </p>
+          <div class="mt-4 inline-flex items-center text-yellow-700 dark:text-yellow-400 group-hover:translate-x-1 transition-transform">
+            View Competitions
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+
+        <a
+          href="/live"
+          class="group rounded-lg border-2 border-yellow-200 dark:border-yellow-700 bg-white dark:bg-gray-800 p-6 transition-all hover:border-yellow-400 dark:hover:border-yellow-500 hover:shadow-lg"
+        >
+          <div class="mb-4 text-4xl">🎾</div>
+          <h2 class="mb-2 text-xl font-semibold text-yellow-700 dark:text-yellow-400">Live Matches</h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            Follow live matches and today's schedule from ATP and WTA tournaments worldwide.
+          </p>
+          <div class="mt-4 inline-flex items-center text-yellow-700 dark:text-yellow-400 group-hover:translate-x-1 transition-transform">
+            View Live Matches
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="mb-16">
+      <h2 class="mb-8 text-center text-2xl font-semibold text-yellow-700 dark:text-yellow-400">Features</h2>
+      <div class="grid gap-8 md:grid-cols-3">
+        <div class="text-center">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500 dark:bg-yellow-600 text-white">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">Real-time Updates</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Get live scores and rankings updated in real-time during matches and tournaments.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500 dark:bg-yellow-600 text-white">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">Comprehensive Coverage</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Track both ATP and WTA tournaments with detailed match information and results.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500 dark:bg-yellow-600 text-white">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">Mobile Friendly</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Responsive design that works perfectly on desktop, tablet, and mobile devices.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Updates -->
+    <section class="mb-16 rounded-lg bg-white dark:bg-gray-800 border border-yellow-200 dark:border-yellow-700 p-6">
+      <h2 class="mb-4 text-xl font-semibold text-yellow-700 dark:text-yellow-400">About Tennis Live</h2>
+      <p class="mb-4 text-gray-600 dark:text-gray-300">
+        Tennis Live provides up-to-date information about professional tennis, including ATP & WTA rankings and live match results.
+        Our platform aggregates data from reliable sources to give tennis fans the most current information about their favorite players and tournaments.
+      </p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Data provided by SportRadar API. Rankings and match information are updated regularly to ensure accuracy.
+      </p>
+    </section>
+  </div>
+
+  <!-- Auto-redirect to live page -->
+  <script>
+    // Redirect to live page after 3 seconds to allow users to see the landing page
+    setTimeout(() => {
+      window.location.href = '/live';
+    }, 3000);
+  </script>
+</Layout>

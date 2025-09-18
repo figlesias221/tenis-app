@@ -1,0 +1,278 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import CountryFlag from "@/components/CountryFlag.astro";
+import HeadToHeadSearch from "@/components/HeadToHeadSearch.astro";
+import { tennisApi } from "@/lib/api/tennisApi";
+import type { CompetitorProfile } from "@/lib/api/types";
+
+// Enable SSR for this dynamic route
+export const prerender = false;
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/rankings");
+}
+
+let profile: CompetitorProfile | null = null;
+let error: string | null = null;
+
+try {
+  profile = await tennisApi.getCompetitorProfile(id);
+} catch (e) {
+  error = e instanceof Error ? e.message : "Failed to load player profile";
+  console.error("Player profile error:", e);
+}
+
+
+function formatDate(dateString?: string): string {
+  if (!dateString) return 'Unknown';
+  try {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch {
+    return dateString;
+  }
+}
+
+function calculateAge(birthDate?: string): string {
+  if (!birthDate) return 'Unknown';
+  try {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    const age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      return `${age - 1} years old`;
+    }
+    return `${age} years old`;
+  } catch {
+    return 'Unknown';
+  }
+}
+
+function getSurfaceName(surfaceType: string): string {
+  const surfaceNames: Record<string, string> = {
+    'hard_court': 'Hard Court',
+    'grass': 'Grass',
+    'red_clay': 'Clay',
+    'green_clay': 'Green Clay',
+    'hardcourt_outdoor': 'Hard Court (Outdoor)',
+    'carpet_indoor': 'Carpet (Indoor)',
+    'synthetic_indoor': 'Synthetic (Indoor)',
+    'synthetic_outdoor': 'Synthetic (Outdoor)',
+    'hardcourt_indoor': 'Hard Court (Indoor)',
+    'red_clay_indoor': 'Clay (Indoor)',
+    'unknown': 'Unknown',
+    'synthetic_grass': 'Synthetic Grass'
+  };
+  return surfaceNames[surfaceType] || surfaceType;
+}
+---
+
+<Layout title={profile ? `${profile.name} - Player Profile` : "Player Profile"} description={profile ? `Detailed profile for tennis player ${profile.name}` : "Player profile information"}>
+  <Header />
+
+  <div class="min-h-screen bg-yellow-50 dark:bg-yellow-900">
+    <div class="mx-auto max-w-6xl px-4 py-4">
+      {error ? (
+        <div class="max-w-md mx-auto">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-red-200 dark:border-red-700 p-6">
+            <h3 class="font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Profile</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+            <a
+              href="/rankings"
+              class="w-full inline-flex justify-center items-center bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 py-2 rounded font-medium"
+            >
+              ← Back to Rankings
+            </a>
+          </div>
+        </div>
+      ) : profile ? (
+        <div class="space-y-4">
+          <!-- Player Header -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+              <div class="flex items-center gap-3 mb-3 lg:mb-0">
+                <CountryFlag
+                  countryCode={profile.country_code}
+                  nationality={profile.country}
+                  size="large"
+                />
+                <div>
+                  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{profile.name}</h1>
+                  <p class="text-base text-gray-600 dark:text-gray-400">{profile.country}</p>
+                  {profile.abbreviation && (
+                    <span class="inline-block bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded text-sm font-medium mt-1">
+                      {profile.abbreviation}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <a
+                href="/rankings"
+                class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium"
+              >
+                ← Back to Rankings
+              </a>
+            </div>
+
+            <!-- Basic Info Grid -->
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Player Information</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {profile.info.date_of_birth && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Age</h3>
+                  <p class="text-base font-semibold text-gray-900 dark:text-gray-100">{calculateAge(profile.info.date_of_birth)}</p>
+                </div>
+              )}
+
+              {profile.info.height && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Height</h3>
+                  <p class="text-base font-semibold text-gray-900 dark:text-gray-100">{profile.info.height} cm</p>
+                </div>
+              )}
+
+              {profile.info.weight && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Weight</h3>
+                  <p class="text-base font-semibold text-gray-900 dark:text-gray-100">{profile.info.weight} kg</p>
+                </div>
+              )}
+
+              {profile.info.handedness && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Plays</h3>
+                  <p class="text-base font-semibold text-gray-900 dark:text-gray-100 capitalize">{profile.info.handedness}-handed</p>
+                </div>
+              )}
+
+              {profile.info.pro_year && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Turned Pro</h3>
+                  <p class="text-base font-semibold text-gray-900 dark:text-gray-100">{profile.info.pro_year}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+        <!-- Career Highs -->
+        {(profile.info.highest_singles_ranking || profile.info.highest_doubles_ranking) && (
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">Career Highs</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {profile.info.highest_singles_ranking && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Singles Ranking</h3>
+                  <p class="text-xl font-semibold text-gray-900 dark:text-gray-100">#{profile.info.highest_singles_ranking}</p>
+                </div>
+              )}
+
+              {profile.info.highest_doubles_ranking && (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded">
+                  <h3 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Doubles Ranking</h3>
+                  <p class="text-xl font-semibold text-gray-900 dark:text-gray-100">#{profile.info.highest_doubles_ranking}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <!-- Current Rankings -->
+        {profile.competitor_rankings.length > 0 && (
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">Current Rankings</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-yellow-50 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-700/50">
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-200">Type</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-200">Ranking</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 dark:text-gray-200">Points</th>
+                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 dark:text-gray-200">Movement</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                  {profile.competitor_rankings.map((ranking, index) => (
+                    <tr class={`${index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-900/50'} hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-150`}>
+                      <td class="px-3 py-2 font-medium text-gray-900 dark:text-gray-100 capitalize text-sm">{ranking.type}</td>
+                      <td class="px-3 py-2 text-lg font-semibold text-yellow-700 dark:text-yellow-300">#{ranking.rank}</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900 dark:text-gray-100 text-sm">{ranking.points.toLocaleString()}</td>
+                      <td class="px-3 py-2 text-center">
+                        <span class={`text-sm font-medium ${
+                          ranking.movement > 0
+                            ? 'text-green-600 dark:text-green-400'
+                            : ranking.movement < 0
+                              ? 'text-red-600 dark:text-red-400'
+                              : 'text-gray-500 dark:text-gray-400'
+                        }`}>
+                          {ranking.movement > 0 && "↑"}
+                          {ranking.movement < 0 && "↓"}
+                          {ranking.movement === 0 && "—"}
+                          {ranking.movement !== 0 && Math.abs(ranking.movement)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        <!-- Statistics by Surface -->
+        {profile.periods.length > 0 && (
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">Recent Statistics</h2>
+            <div class="space-y-3">
+              {profile.periods.slice(0, 2).map((period) => (
+                <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 rounded p-3">
+                  <h3 class="text-base font-medium text-gray-900 dark:text-gray-100 mb-2">{period.year}</h3>
+                  {period.surfaces.length > 0 ? (
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {period.surfaces.map((surface) => (
+                        <div class="flex justify-between items-center bg-white dark:bg-gray-700/50 p-2 rounded border border-yellow-100 dark:border-yellow-800">
+                          <div class="flex-1">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{getSurfaceName(surface.type)}</span>
+                          </div>
+                          <div class="flex gap-3 text-xs text-gray-600 dark:text-gray-400">
+                            <span>{surface.statistics.matches_won}-{surface.statistics.matches_played - surface.statistics.matches_won}</span>
+                            <span class="font-medium text-gray-900 dark:text-gray-100">
+                              {surface.statistics.matches_played > 0
+                                ? `${Math.round((surface.statistics.matches_won / surface.statistics.matches_played) * 100)}%`
+                                : '0%'
+                              }
+                            </span>
+                            <span>{surface.statistics.competitions_won} titles</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p class="text-gray-500 dark:text-gray-400">No surface statistics available for {period.year}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Head-to-Head Search -->
+        <HeadToHeadSearch playerId={profile.id} playerName={profile.name} />
+      </div>
+    ) : (
+      <div class="flex items-center justify-center py-12">
+        <div class="text-center bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-8">
+          <div class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-yellow-400 dark:border-yellow-500 border-r-transparent"></div>
+          <p class="text-gray-600 dark:text-gray-300">Loading player profile...</p>
+        </div>
+      </div>
+    )}
+  </div>
+</Layout>

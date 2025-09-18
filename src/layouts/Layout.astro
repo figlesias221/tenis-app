@@ -1,0 +1,74 @@
+---
+import { siteConfig } from "@/site.config";
+import "../styles/global.css";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string | undefined;
+  articleDate?: string | undefined;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  ogImage = "/og-image.png",
+  articleDate,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={siteConfig.lang} dir="ltr" class="transition-colors duration-300">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content={siteConfig.author} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={articleDate ? "article" : "website"} />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.url)} />
+    <meta property="og:locale" content={siteConfig.ogLocale} />
+    {articleDate && <meta property="article:published_time" content={articleDate} />}
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(ogImage, Astro.url)} />
+
+    <!-- Theme initialization script - prevents flash of wrong theme -->
+    <script is:inline>
+      // Initialize theme immediately to prevent flash
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-yellow-50 dark:bg-yellow-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
+    <main class="flex-1">
+      <slot />
+    </main>
+    <footer class="mt-auto py-6 text-center text-sm border-t border-yellow-200 dark:border-yellow-700 bg-white dark:bg-gray-800">
+      <p class="text-gray-600 dark:text-gray-400">&copy; {new Date().getFullYear()} Tennis Live - Your source for tennis rankings and live scores</p>
+    </footer>
+  </body>
+</html>

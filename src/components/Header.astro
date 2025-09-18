@@ -1,0 +1,50 @@
+---
+import { siteConfig } from "@/site.config";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const navLinks = [
+  { href: "/", text: "Home" },
+  { href: "/rankings", text: "Rankings" },
+  { href: "/competitions", text: "Competitions" },
+  { href: "/live", text: "Live Matches" },
+];
+---
+
+<header class="group relative mb-28 flex items-center justify-between sm:ps-[4.5rem]">
+  <div class="flex sm:flex-col">
+    <a
+      href="/"
+      class="inline-flex items-center hover:filter-none sm:relative sm:inline-block text-gray-900 dark:text-gray-100"
+      aria-current={Astro.url.pathname === "/" ? "page" : false}
+    >
+      <svg class="me-3 h-10 w-6 sm:absolute sm:start-[-4.5rem] sm:me-0 sm:h-6 sm:w-6 text-yellow-600 dark:text-yellow-400" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 272 480">
+        <title>Tennis Live Logo</title>
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M136 30c57.38 0 104 46.62 104 104s-46.62 104-104 104S32 191.38 32 134 78.62 30 136 30z"/>
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M136 238c57.38 0 104 46.62 104 104s-46.62 104-104 104S32 399.38 32 342s46.62-104 104-104z"/>
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M80 134h112m-112 208h112"/>
+      </svg>
+      <span class="text-xl font-bold sm:text-2xl">{siteConfig.title}</span>
+    </a>
+    <nav
+      class="hidden sm:mt-2 sm:flex sm:flex-row sm:gap-x-4 sm:ps-0"
+      aria-label="Main menu"
+    >
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="underline decoration-dashed underline-offset-4 hover:text-yellow-700 dark:hover:text-yellow-400 hover:decoration-yellow-600 dark:hover:decoration-yellow-500 text-gray-700 dark:text-gray-300 transition-colors"
+            aria-current={Astro.url.pathname === link.href ? "page" : false}
+          >
+            {link.text}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  <!-- Theme Toggle Button -->
+  <div class="flex items-center">
+    <ThemeToggle />
+  </div>
+</header>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 480">
+  <defs>
+    <style>
+      .tennis-ball { fill: #22c55e; }
+      .tennis-line { fill: none; stroke: #ffffff; stroke-width: 3; }
+    </style>
+  </defs>
+  <circle cx="136" cy="134" r="104" class="tennis-ball"/>
+  <circle cx="136" cy="342" r="104" class="tennis-ball"/>
+  <path d="M80 134h112" class="tennis-line"/>
+  <path d="M80 342h112" class="tennis-line"/>
+</svg>

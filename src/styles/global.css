@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --theme-bg: 246 246 246;
+    --theme-link: 0 0 238;
+    --theme-text: 32 33 36;
+    --theme-accent: 239 68 68;
+    --theme-accent-2: 251 146 60;
+  }
+  :root.dark {
+    color-scheme: dark;
+    --theme-bg: 33 39 55;
+    --theme-link: 238 238 0;
+    --theme-text: 247 248 248;
+    --theme-accent: 251 146 60;
+    --theme-accent-2: 239 68 68;
+  }
+
+  html {
+    @apply h-full scroll-smooth;
+  }
+
+  html body {
+    @apply mx-auto flex h-full max-w-3xl flex-col bg-bgColor px-4 pt-16 font-sans text-sm font-normal text-textColor antialiased;
+  }
+}
+
+@layer components {
+  .cactus-link {
+    @apply break-words hover:text-link;
+  }
+
+  .title {
+    @apply text-2xl font-semibold text-accent;
+  }
+}

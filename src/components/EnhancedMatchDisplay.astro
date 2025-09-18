@@ -1,0 +1,392 @@
+---
+import type { EnhancedMatch } from "@/lib/api/enhanced-types";
+
+export interface Props {
+  match: EnhancedMatch;
+  compact?: boolean;
+}
+
+const { match, compact = false } = Astro.props;
+
+// Enhanced data processing functions
+function formatMatchStatus(status: EnhancedMatch['status']): { text: string; color: string; icon: string } {
+  switch (status) {
+    case 'live':
+      return { text: 'LIVE', color: 'bg-red-500 text-white', icon: '🔴' };
+    case 'completed':
+      return { text: 'FINISHED', color: 'bg-green-500 text-white', icon: '✅' };
+    case 'scheduled':
+      return { text: 'UPCOMING', color: 'bg-blue-500 text-white', icon: '🕒' };
+    case 'cancelled':
+      return { text: 'CANCELLED', color: 'bg-gray-500 text-white', icon: '❌' };
+    case 'walkover':
+      return { text: 'WALKOVER', color: 'bg-yellow-500 text-white', icon: '⚠️' };
+    case 'retired':
+      return { text: 'RETIRED', color: 'bg-orange-500 text-white', icon: '🔄' };
+    default:
+      return { text: 'UNKNOWN', color: 'bg-gray-400 text-white', icon: '❓' };
+  }
+}
+
+function determineMatchWinner(): number | null {
+  if (match.status !== 'completed' || !match.score?.sets) return null;
+
+  const sets = match.score.sets;
+  let player1Sets = 0;
+  let player2Sets = 0;
+
+  sets.forEach(set => {
+    if (set.player1 > set.player2) player1Sets++;
+    else if (set.player2 > set.player1) player2Sets++;
+  });
+
+  if (player1Sets > player2Sets) return 0;
+  if (player2Sets > player1Sets) return 1;
+  return null;
+}
+
+function getScoreDisplay() {
+  if (!match.score) return null;
+
+  const winner = determineMatchWinner();
+
+  return {
+    sets: match.score.sets,
+    currentSet: match.score.currentSet,
+    games: match.score.games,
+    winner,
+    serving: match.liveIndicators?.serving
+  };
+}
+
+function formatTournamentInfo() {
+  const location = match.tournament.city && match.tournament.country
+    ? `${match.tournament.city}, ${match.tournament.country}`
+    : match.tournament.location;
+
+  return {
+    fullName: match.tournament.name,
+    category: match.tournament.category,
+    level: match.tournament.level,
+    surface: match.tournament.surface,
+    location,
+    round: match.round
+  };
+}
+
+function formatPlayerName(playerName: string): { firstName: string; lastName: string } {
+  const parts = playerName.split(', ');
+  if (parts.length === 2) {
+    return { firstName: parts[1], lastName: parts[0] };
+  }
+
+  const nameParts = playerName.split(' ');
+  if (nameParts.length >= 2) {
+    return {
+      firstName: nameParts.slice(0, -1).join(' '),
+      lastName: nameParts[nameParts.length - 1]
+    };
+  }
+
+  return { firstName: '', lastName: playerName };
+}
+
+const statusInfo = formatMatchStatus(match.status);
+const scoreDisplay = getScoreDisplay();
+const tournamentInfo = formatTournamentInfo();
+
+// Live indicators
+const isLive = match.status === 'live';
+const hasLiveIndicators = match.liveIndicators && (
+  match.liveIndicators.setPoint ||
+  match.liveIndicators.matchPoint ||
+  match.liveIndicators.breakPoint
+);
+---
+
+<div class={`
+  relative rounded-xl border-2 transition-all duration-300 hover:shadow-lg
+  ${isLive ? 'border-red-300 bg-red-50 dark:border-red-600 dark:bg-red-900/10' : 'border-gray-200 dark:border-gray-700'}
+  ${compact ? 'p-3' : 'p-4 sm:p-6'}
+  bg-white dark:bg-gray-800
+`}>
+
+  <!-- Live indicator pulse animation -->
+  {isLive && (
+    <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+  )}
+
+  <!-- Tournament Header -->
+  <div class="flex items-start justify-between mb-3">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 mb-1">
+        <span class={`inline-flex items-center px-2 py-1 rounded-md text-xs font-bold ${statusInfo.color}`}>
+          {statusInfo.icon} {statusInfo.text}
+        </span>
+
+        {hasLiveIndicators && (
+          <div class="flex gap-1">
+            {match.liveIndicators?.setPoint && (
+              <span class="bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded text-xs font-bold">SET POINT</span>
+            )}
+            {match.liveIndicators?.matchPoint && (
+              <span class="bg-red-400 text-red-900 px-2 py-0.5 rounded text-xs font-bold">MATCH POINT</span>
+            )}
+            {match.liveIndicators?.breakPoint && (
+              <span class="bg-orange-400 text-orange-900 px-2 py-0.5 rounded text-xs font-bold">BREAK POINT</span>
+            )}
+          </div>
+        )}
+      </div>
+
+      <h3 class={`font-bold text-gray-900 dark:text-gray-100 ${compact ? 'text-sm' : 'text-lg'} truncate`}>
+        {tournamentInfo.fullName}
+      </h3>
+
+      <div class="flex flex-wrap gap-2 mt-1">
+        <span class={`inline-flex items-center px-2 py-0.5 rounded-full ${compact ? 'text-xs' : 'text-sm'} font-medium
+          ${tournamentInfo.category === 'ATP' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+            tournamentInfo.category === 'WTA' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300' :
+            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'}`}>
+          {tournamentInfo.category}
+        </span>
+
+        <span class={`text-gray-600 dark:text-gray-400 ${compact ? 'text-xs' : 'text-sm'}`}>
+          🎾 {tournamentInfo.surface}
+        </span>
+
+        <span class={`text-gray-600 dark:text-gray-400 ${compact ? 'text-xs' : 'text-sm'}`}>
+          📍 {tournamentInfo.location}
+        </span>
+
+        {match.court && (
+          <span class={`text-gray-600 dark:text-gray-400 ${compact ? 'text-xs' : 'text-sm'}`}>
+            🏟️ {match.court}
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Display -->
+  <div class="space-y-3">
+    {scoreDisplay ? (
+      <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-yellow-100 dark:bg-yellow-900/30">
+              <th class={`text-left px-3 py-2 font-semibold text-gray-700 dark:text-gray-200 ${compact ? 'text-sm' : 'text-base'}`}>
+                Player
+              </th>
+
+              {/* Set columns */}
+              {scoreDisplay.sets.map((_, index) => (
+                <th class={`text-center px-2 py-2 font-semibold text-gray-700 dark:text-gray-200 ${compact ? 'text-xs' : 'text-sm'} w-12`}>
+                  {index + 1}
+                </th>
+              ))}
+
+              {/* Current games if live */}
+              {isLive && scoreDisplay.games && (
+                <th class={`text-center px-2 py-2 font-semibold text-red-700 dark:text-red-300 ${compact ? 'text-xs' : 'text-sm'} w-12`}>
+                  Games
+                </th>
+              )}
+            </tr>
+          </thead>
+
+          <tbody>
+            {/* Player 1 Row */}
+            <tr class={`
+              ${scoreDisplay.winner === 0 ? 'bg-green-50 dark:bg-green-900/20' : 'bg-white dark:bg-gray-800'}
+              ${scoreDisplay.serving === 1 && isLive ? 'border-l-4 border-blue-500' : ''}
+            `}>
+              <td class="px-3 py-3">
+                <div class="flex items-center gap-2">
+                  <img
+                    src={`https://flagcdn.com/24x18/${match.players[0].countryCode.toLowerCase()}.png`}
+                    alt={match.players[0].nationality}
+                    class={`${compact ? 'w-4 h-3' : 'w-6 h-4'} rounded-sm shadow-sm`}
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+
+                  <div class="min-w-0 flex-1">
+                    <p class={`
+                      font-bold break-words leading-tight
+                      ${compact ? 'text-sm' : 'text-base'}
+                      ${scoreDisplay.winner === 0 ? 'text-green-700 dark:text-green-400' : 'text-gray-900 dark:text-gray-100'}
+                    `}>
+                      {(() => {
+                        const { firstName, lastName } = formatPlayerName(match.players[0].name);
+                        return compact ? lastName : `${firstName} ${lastName}`;
+                      })()}
+                    </p>
+
+                    {match.players[0].ranking && (
+                      <p class={`text-gray-500 dark:text-gray-400 ${compact ? 'text-xs' : 'text-sm'}`}>
+                        #{match.players[0].ranking}
+                      </p>
+                    )}
+                  </div>
+
+                  {scoreDisplay.serving === 1 && isLive && (
+                    <div class="text-blue-500 font-bold">🎾</div>
+                  )}
+                </div>
+              </td>
+
+              {/* Set scores */}
+              {scoreDisplay.sets.map((set, index) => (
+                <td class="text-center px-2 py-3">
+                  <span class={`
+                    inline-flex items-center justify-center w-8 h-8 rounded-md font-bold border-2
+                    ${compact ? 'text-sm' : 'text-base'}
+                    ${set.player1 > set.player2
+                      ? 'bg-green-100 dark:bg-green-900/40 border-green-400 text-green-800 dark:text-green-200'
+                      : 'bg-gray-100 dark:bg-gray-700 border-gray-300 text-gray-700 dark:text-gray-200'
+                    }
+                  `}>
+                    {set.player1}
+                    {set.tiebreak && set.player1 > set.player2 && (
+                      <sup class="text-xs ml-0.5">{set.tiebreak.player1}</sup>
+                    )}
+                  </span>
+                </td>
+              ))}
+
+              {/* Current games */}
+              {isLive && scoreDisplay.games && (
+                <td class="text-center px-2 py-3">
+                  <span class={`
+                    inline-flex items-center justify-center w-8 h-8 rounded-md font-bold border-2
+                    bg-red-50 dark:bg-red-900/20 border-red-300 text-red-700 dark:text-red-300
+                    ${compact ? 'text-sm' : 'text-base'}
+                    ${isLive ? 'animate-pulse' : ''}
+                  `}>
+                    {scoreDisplay.games.player1}
+                  </span>
+                </td>
+              )}
+            </tr>
+
+            {/* Player 2 Row */}
+            <tr class={`
+              ${scoreDisplay.winner === 1 ? 'bg-green-50 dark:bg-green-900/20' : 'bg-white dark:bg-gray-800'}
+              ${scoreDisplay.serving === 2 && isLive ? 'border-l-4 border-blue-500' : ''}
+            `}>
+              <td class="px-3 py-3">
+                <div class="flex items-center gap-2">
+                  <img
+                    src={`https://flagcdn.com/24x18/${match.players[1].countryCode.toLowerCase()}.png`}
+                    alt={match.players[1].nationality}
+                    class={`${compact ? 'w-4 h-3' : 'w-6 h-4'} rounded-sm shadow-sm`}
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+
+                  <div class="min-w-0 flex-1">
+                    <p class={`
+                      font-bold break-words leading-tight
+                      ${compact ? 'text-sm' : 'text-base'}
+                      ${scoreDisplay.winner === 1 ? 'text-green-700 dark:text-green-400' : 'text-gray-900 dark:text-gray-100'}
+                    `}>
+                      {(() => {
+                        const { firstName, lastName } = formatPlayerName(match.players[1].name);
+                        return compact ? lastName : `${firstName} ${lastName}`;
+                      })()}
+                    </p>
+
+                    {match.players[1].ranking && (
+                      <p class={`text-gray-500 dark:text-gray-400 ${compact ? 'text-xs' : 'text-sm'}`}>
+                        #{match.players[1].ranking}
+                      </p>
+                    )}
+                  </div>
+
+                  {scoreDisplay.serving === 2 && isLive && (
+                    <div class="text-blue-500 font-bold">🎾</div>
+                  )}
+                </div>
+              </td>
+
+              {/* Set scores */}
+              {scoreDisplay.sets.map((set, index) => (
+                <td class="text-center px-2 py-3">
+                  <span class={`
+                    inline-flex items-center justify-center w-8 h-8 rounded-md font-bold border-2
+                    ${compact ? 'text-sm' : 'text-base'}
+                    ${set.player2 > set.player1
+                      ? 'bg-green-100 dark:bg-green-900/40 border-green-400 text-green-800 dark:text-green-200'
+                      : 'bg-gray-100 dark:bg-gray-700 border-gray-300 text-gray-700 dark:text-gray-200'
+                    }
+                  `}>
+                    {set.player2}
+                    {set.tiebreak && set.player2 > set.player1 && (
+                      <sup class="text-xs ml-0.5">{set.tiebreak.player2}</sup>
+                    )}
+                  </span>
+                </td>
+              ))}
+
+              {/* Current games */}
+              {isLive && scoreDisplay.games && (
+                <td class="text-center px-2 py-3">
+                  <span class={`
+                    inline-flex items-center justify-center w-8 h-8 rounded-md font-bold border-2
+                    bg-red-50 dark:bg-red-900/20 border-red-300 text-red-700 dark:text-red-300
+                    ${compact ? 'text-sm' : 'text-base'}
+                    ${isLive ? 'animate-pulse' : ''}
+                  `}>
+                    {scoreDisplay.games.player2}
+                  </span>
+                </td>
+              )}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <!-- No score available -->
+      <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+        <span class={compact ? 'text-sm' : 'text-base'}>
+          {match.status === 'scheduled' ? '⏰ Match not started' : '❓ Score not available'}
+        </span>
+      </div>
+    )}
+  </div>
+
+  <!-- Match metadata footer -->
+  {!compact && (
+    <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+      <span>{tournamentInfo.round}</span>
+
+      <div class="flex items-center gap-3">
+        {match.startTime && (
+          <span>
+            🕒 {new Date(match.startTime).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            })}
+          </span>
+        )}
+
+        {match.stats?.duration && (
+          <span>⏱️ {Math.floor(match.stats.duration / 60)}h {match.stats.duration % 60}m</span>
+        )}
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>

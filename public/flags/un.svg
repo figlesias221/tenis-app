@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <rect width="900" height="600" fill="#5B92E5"/>
+  <g transform="translate(450,300)" fill="white">
+    <circle r="120" fill="none" stroke="white" stroke-width="8"/>
+    <text text-anchor="middle" dy="10" font-family="Arial, sans-serif" font-size="60" font-weight="bold">UN</text>
+  </g>
+</svg>

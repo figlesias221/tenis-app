@@ -1,0 +1,179 @@
+---
+import type { Match } from "@/lib/api/types";
+import CountryFlag from "./CountryFlag.astro";
+
+export interface Props {
+  match: Match;
+}
+
+const { match } = Astro.props;
+
+
+function formatTime(timeString?: string): string {
+  if (!timeString) return '';
+  try {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  } catch {
+    return timeString;
+  }
+}
+
+
+function isWinner(playerIndex: number, sets: any[]): boolean {
+  if (!sets || sets.length === 0) return false;
+  let setsWon = 0;
+  sets.forEach(set => {
+    if (playerIndex === 0 && set.player1 > set.player2) setsWon++;
+    if (playerIndex === 1 && set.player2 > set.player1) setsWon++;
+  });
+  return setsWon > sets.length / 2;
+}
+
+function getScoreDisplay(match: Match): string {
+  if (!match.score?.sets || match.score.sets.length === 0) {
+    return match.status === 'scheduled' ? formatTime(match.startTime) : '-';
+  }
+
+  const sets = match.score.sets;
+  const player1Sets = sets.filter(set => set.player1 > set.player2).length;
+  const player2Sets = sets.filter(set => set.player2 > set.player1).length;
+
+  return `${player1Sets}-${player2Sets}`;
+}
+---
+
+<div class="group flex items-center py-3 px-3 sm:py-4 sm:px-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+  <!-- Status indicator -->
+  <div class="w-10 sm:w-12 flex-shrink-0 flex justify-center">
+    {match.status === 'live' ? (
+      <div class="flex flex-col items-center">
+        <div class="text-xs font-bold text-red-600 dark:text-red-400 mb-1">LIVE</div>
+        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+      </div>
+    ) : match.status === 'scheduled' ? (
+      <div class="text-xs font-medium text-gray-600 dark:text-gray-400 text-center">
+        {formatTime(match.startTime)}
+      </div>
+    ) : (
+      <div class="text-xs font-medium text-gray-500 dark:text-gray-400">FT</div>
+    )}
+  </div>
+
+  <!-- Players and scores -->
+  <div class="flex-1 min-w-0 px-2 sm:px-3">
+    <!-- Player 1 -->
+    <div class="flex items-center justify-between mb-1.5">
+      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+        <CountryFlag
+          countryCode={match.players[0].countryCode}
+          nationality={match.players[0].nationality}
+          size="small"
+          className="flex-shrink-0"
+        />
+        <a
+          href={`/player/${match.players[0].id}`}
+          class={`text-sm truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors ${
+            match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
+              ? 'font-bold text-gray-900 dark:text-gray-100'
+              : 'font-medium text-gray-700 dark:text-gray-300'
+          }`}
+        >
+          {match.players[0].name}
+        </a>
+      </div>
+
+      <!-- Player 1 set scores -->
+      <div class="flex items-center gap-1 sm:gap-1.5 ml-2">
+        {match.score?.sets && match.score.sets.length > 0 ? (
+          match.score.sets.map((set, index) => (
+            <span class={`text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded font-medium ${
+              set.player1 > set.player2
+                ? 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 font-bold'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+            }`}>
+              {set.player1}
+            </span>
+          ))
+        ) : (
+          <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 min-w-[16px] sm:min-w-[20px] text-center">-</span>
+        )}
+        {match.score?.games && match.status === 'live' && (
+          <span class="text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 font-bold animate-pulse border border-red-300 dark:border-red-700">
+            {match.score.games.player1}
+          </span>
+        )}
+      </div>
+    </div>
+
+    <!-- Player 2 -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+        <CountryFlag
+          countryCode={match.players[1].countryCode}
+          nationality={match.players[1].nationality}
+          size="small"
+          className="flex-shrink-0"
+        />
+        <a
+          href={`/player/${match.players[1].id}`}
+          class={`text-sm truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors ${
+            match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
+              ? 'font-bold text-gray-900 dark:text-gray-100'
+              : 'font-medium text-gray-700 dark:text-gray-300'
+          }`}
+        >
+          {match.players[1].name}
+        </a>
+      </div>
+
+      <!-- Player 2 set scores -->
+      <div class="flex items-center gap-1 sm:gap-1.5 ml-2">
+        {match.score?.sets && match.score.sets.length > 0 ? (
+          match.score.sets.map((set, index) => (
+            <span class={`text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded font-medium ${
+              set.player2 > set.player1
+                ? 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 font-bold'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+            }`}>
+              {set.player2}
+            </span>
+          ))
+        ) : (
+          <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 min-w-[16px] sm:min-w-[20px] text-center">-</span>
+        )}
+        {match.score?.games && match.status === 'live' && (
+          <span class="text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 font-bold animate-pulse border border-red-300 dark:border-red-700">
+            {match.score.games.player2}
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Overall score -->
+  <div class="w-10 sm:w-12 flex-shrink-0 text-center">
+    <div class="text-sm font-bold text-gray-900 dark:text-gray-100">
+      {getScoreDisplay(match)}
+    </div>
+  </div>
+</div>
+
+<style>
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .5;
+    }
+  }
+</style>

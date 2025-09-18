@@ -1,0 +1,33 @@
+---
+import { normalizeCountryCode, getFlagAlt } from "@/lib/utils/flags";
+
+export interface Props {
+  countryCode: string;
+  nationality?: string;
+  size?: 'small' | 'medium' | 'large';
+  className?: string;
+}
+
+const { countryCode, nationality, size = 'medium', className = '' } = Astro.props;
+
+// Size classes
+const sizeClasses = {
+  small: 'w-5 h-auto',   // ~20px for table rows
+  medium: 'w-6 h-auto',  // ~24px for cards
+  large: 'w-10 h-auto'   // ~40px for profiles
+};
+
+const normalizedCode = normalizeCountryCode(countryCode);
+const flagPath = `/flags/${normalizedCode.toLowerCase()}.svg`;
+const altText = getFlagAlt(countryCode, nationality);
+---
+
+<img
+  src={flagPath}
+  alt={altText}
+  title={altText}
+  class={`${sizeClasses[size]} ${className} rounded-sm shadow-sm`}
+  loading="lazy"
+  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'"
+/>
+<span class="text-sm hidden">🏳️</span>

@@ -1,0 +1,37 @@
+{
+  "name": "tennis-app",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "astro check && astro build",
+    "check": "astro check",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "sync": "astro sync",
+    "format": "prettier -w .",
+    "lint": "@biomejs/biome check .",
+    "extract-flags": "node scripts/extract-flags.js"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/cloudflare": "^12.6.8",
+    "@astrojs/mdx": "^4.1.0",
+    "@astrojs/rss": "^4.0.9",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.4",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^5.13.8",
+    "country-flag-icons": "^1.5.20",
+    "satori": "0.11.2",
+    "sharp": "0.33.5",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/node": "^22.10.2",
+    "prettier": "^3.3.3",
+    "prettier-plugin-astro": "^0.14.1"
+  }
+}

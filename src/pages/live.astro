@@ -1,0 +1,98 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import CompactMatchesList from "@/components/CompactMatchesList.astro";
+import { tennisApi } from "@/lib/api/tennisApi";
+
+let liveMatches;
+let todayMatches;
+let error;
+
+try {
+  // Fetch both live and today's matches
+  const [live, today] = await Promise.all([
+    tennisApi.getLiveMatches(),
+    tennisApi.getTodayMatches()
+  ]);
+
+  liveMatches = live;
+  todayMatches = today;
+} catch (e) {
+  error = e instanceof Error ? e.message : "Failed to load matches";
+  console.error("Live matches page error:", e);
+}
+
+// Combine and deduplicate matches
+let allMatches;
+if (liveMatches && todayMatches) {
+  const matchIds = new Set(liveMatches.matches.map(m => m.id));
+  const uniqueTodayMatches = todayMatches.matches.filter(m => !matchIds.has(m.id));
+
+  allMatches = {
+    matches: [...liveMatches.matches, ...uniqueTodayMatches],
+    lastUpdated: new Date().toISOString()
+  };
+}
+---
+
+<Layout
+  title="Live Tennis Scores - Compact View"
+  description="Live tennis scores in a compact, mobile-friendly format"
+>
+  <Header />
+
+  {error ? (
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 mb-8">
+      <div class="text-center">
+        <div class="text-4xl mb-4">⚠️</div>
+        <h1 class="text-xl font-bold mb-2 text-red-700 dark:text-red-400">Error Loading Matches</h1>
+        <p class="text-red-600 dark:text-red-300 mb-4">{error}</p>
+        <button
+          onclick="window.location.reload()"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded font-medium transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+  ) : allMatches ? (
+    <CompactMatchesList matches={allMatches} title="Live Tennis Scores" />
+  ) : (
+    <div class="flex items-center justify-center py-12">
+      <div class="text-center bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-8">
+        <div class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-yellow-400 dark:border-yellow-500 border-r-transparent"></div>
+        <p class="text-gray-600 dark:text-gray-300">Loading live matches...</p>
+      </div>
+    </div>
+  )}
+
+  <!-- Auto-refresh script -->
+  <script>
+    // Auto-refresh every 30 seconds for live matches
+    setInterval(() => {
+      window.location.reload();
+    }, 30000);
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'r' || e.key === 'R') {
+        window.location.reload();
+      }
+    });
+  </script>
+</Layout>
+
+<style>
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

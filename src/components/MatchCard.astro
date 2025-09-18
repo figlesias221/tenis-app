@@ -1,0 +1,318 @@
+---
+import type { Match } from "@/lib/api/types";
+import CountryFlag from "./CountryFlag.astro";
+
+export interface Props {
+  match: Match;
+}
+
+const { match } = Astro.props;
+
+function getStatusColor(status: Match['status']): string {
+  switch (status) {
+    case 'live':
+      return 'bg-red-500 text-white border-red-400';
+    case 'completed':
+      return 'bg-green-500 text-white border-green-400';
+    case 'scheduled':
+      return 'bg-blue-500 text-white border-blue-400';
+    case 'cancelled':
+      return 'bg-gray-500 text-white border-gray-400';
+    default:
+      return 'bg-gray-500 text-white border-gray-400';
+  }
+}
+
+function getCardBorderColor(status: Match['status']): string {
+  switch (status) {
+    case 'live':
+      return 'border-red-300 dark:border-red-600 shadow-red-100 dark:shadow-red-900/20';
+    case 'completed':
+      return 'border-green-300 dark:border-green-600 shadow-green-100 dark:shadow-green-900/20';
+    case 'scheduled':
+      return 'border-blue-300 dark:border-blue-600 shadow-blue-100 dark:shadow-blue-900/20';
+    case 'cancelled':
+      return 'border-gray-300 dark:border-gray-600 shadow-gray-100 dark:shadow-gray-900/20';
+    default:
+      return 'border-gray-300 dark:border-gray-600 shadow-gray-100 dark:shadow-gray-900/20';
+  }
+}
+
+function getStatusIcon(status: Match['status']): string {
+  switch (status) {
+    case 'live':
+      return '🔴';
+    case 'completed':
+      return '✅';
+    case 'scheduled':
+      return '🕒';
+    case 'cancelled':
+      return '❌';
+    default:
+      return '⏰';
+  }
+}
+
+function formatTime(timeString?: string): string {
+  if (!timeString) return '';
+
+  try {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  } catch {
+    return timeString;
+  }
+}
+
+
+function isWinner(playerIndex: number, sets: any[]): boolean {
+  if (!sets || sets.length === 0) return false;
+
+  let setsWon = 0;
+  sets.forEach(set => {
+    if (playerIndex === 0 && set.player1 > set.player2) setsWon++;
+    if (playerIndex === 1 && set.player2 > set.player1) setsWon++;
+  });
+
+  return setsWon > sets.length / 2;
+}
+---
+
+<!-- Improved match card with better information distribution -->
+<div class={`group relative rounded-2xl border-2 ${getCardBorderColor(match.status)} bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden`}>
+
+  <!-- Status indicator bar -->
+  {match.status === 'live' && (
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 to-red-600"></div>
+  )}
+
+  <!-- Tournament & Status Header -->
+  <div class="p-5 sm:p-6 border-b border-gray-100 dark:border-gray-700">
+    <!-- Status and Tournament Name -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <span class={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold ${getStatusColor(match.status)}`}>
+          {getStatusIcon(match.status)} {match.status.toUpperCase()}
+        </span>
+        {match.status === 'live' && (
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></div>
+            <span class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">LIVE</span>
+          </div>
+        )}
+      </div>
+
+      <!-- Time/Court info in top right -->
+      <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        {match.startTime && match.status === 'scheduled' && (
+          <span class="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded font-medium text-blue-700 dark:text-blue-300">
+            🕒 {formatTime(match.startTime)}
+          </span>
+        )}
+        {match.court && (
+          <span class="flex items-center gap-1 bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded">
+            📍 {match.court}
+          </span>
+        )}
+      </div>
+    </div>
+
+    <!-- Tournament Info -->
+    <div class="space-y-2">
+      <h3 class="font-bold text-yellow-700 dark:text-yellow-400 text-xl sm:text-2xl leading-tight group-hover:text-yellow-800 dark:group-hover:text-yellow-300 transition-colors">
+        {match.tournament.name}
+      </h3>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <span class={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${
+          match.tournament.category === 'ATP'
+            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+            : match.tournament.category === 'WTA'
+              ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300'
+              : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+        }`}>
+          {match.tournament.category}
+        </span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+          🎾 {match.tournament.surface}
+        </span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 bg-yellow-100 dark:bg-yellow-800/30 px-3 py-1 rounded-full">
+          {match.round}
+        </span>
+        <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+          🌍 {match.tournament.location}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Players & Score Table -->
+  <div class="p-5 sm:p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-yellow-50 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-700/50">
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Player</th>
+            {match.score?.sets && match.score.sets.length > 0 ? (
+              <>
+                {match.score.sets.map((_, index) => (
+                  <th key={index} class="px-2 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-200 w-12">
+                    Set {index + 1}
+                  </th>
+                ))}
+                {match.score.games && match.status === 'live' && (
+                  <th class="px-2 py-3 text-center text-sm font-semibold text-red-700 dark:text-red-300 w-12">
+                    Games
+                  </th>
+                )}
+              </>
+            ) : (
+              <th class="px-2 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-200 w-12">
+                Score
+              </th>
+            )}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+
+          <!-- Player 1 Row -->
+          <tr class={`${
+            match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
+              ? 'bg-green-50 dark:bg-green-900/20'
+              : 'bg-white dark:bg-gray-800'
+          } hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors`}>
+            <td class="px-4 py-4">
+              <div class="flex items-center gap-3">
+                <CountryFlag
+                  countryCode={match.players[0].countryCode}
+                  nationality={match.players[0].nationality}
+                  size="medium"
+                  className="flex-shrink-0"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class={`font-bold text-base leading-tight break-words ${
+                    match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
+                      ? 'text-green-700 dark:text-green-400'
+                      : 'text-gray-900 dark:text-gray-100'
+                  }`}>
+                    {match.players[0].name}
+                  </p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
+                    {match.players[0].nationality}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            {match.score?.sets && match.score.sets.length > 0 ? (
+              <>
+                {match.score.sets.map((set, index) => (
+                  <td key={index} class="px-2 py-4 text-center">
+                    <span class={`inline-flex items-center justify-center w-8 h-8 rounded-md text-sm font-bold border-2 ${
+                      set.player1 > set.player2
+                        ? 'bg-green-100 dark:bg-green-900/40 border-green-400 dark:border-green-600 text-green-800 dark:text-green-200'
+                        : 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-200'
+                    }`}>
+                      {set.player1}
+                    </span>
+                  </td>
+                ))}
+                {match.score.games && match.status === 'live' && (
+                  <td class="px-2 py-4 text-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-red-100 dark:bg-red-900/40 border-2 border-red-400 dark:border-red-600 text-red-800 dark:text-red-200 text-sm font-bold animate-pulse">
+                      {match.score.games.player1}
+                    </span>
+                  </td>
+                )}
+              </>
+            ) : (
+              <td class="px-2 py-4 text-center">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500 text-gray-500 dark:text-gray-400 text-sm">
+                  -
+                </span>
+              </td>
+            )}
+          </tr>
+
+          <!-- Player 2 Row -->
+          <tr class={`${
+            match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
+              ? 'bg-green-50 dark:bg-green-900/20'
+              : 'bg-white dark:bg-gray-800'
+          } hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors`}>
+            <td class="px-4 py-4">
+              <div class="flex items-center gap-3">
+                <CountryFlag
+                  countryCode={match.players[1].countryCode}
+                  nationality={match.players[1].nationality}
+                  size="medium"
+                  className="flex-shrink-0"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class={`font-bold text-base leading-tight break-words ${
+                    match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
+                      ? 'text-green-700 dark:text-green-400'
+                      : 'text-gray-900 dark:text-gray-100'
+                  }`}>
+                    {match.players[1].name}
+                  </p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
+                    {match.players[1].nationality}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            {match.score?.sets && match.score.sets.length > 0 ? (
+              <>
+                {match.score.sets.map((set, index) => (
+                  <td key={index} class="px-2 py-4 text-center">
+                    <span class={`inline-flex items-center justify-center w-8 h-8 rounded-md text-sm font-bold border-2 ${
+                      set.player2 > set.player1
+                        ? 'bg-green-100 dark:bg-green-900/40 border-green-400 dark:border-green-600 text-green-800 dark:text-green-200'
+                        : 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-200'
+                    }`}>
+                      {set.player2}
+                    </span>
+                  </td>
+                ))}
+                {match.score.games && match.status === 'live' && (
+                  <td class="px-2 py-4 text-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-red-100 dark:bg-red-900/40 border-2 border-red-400 dark:border-red-600 text-red-800 dark:text-red-200 text-sm font-bold animate-pulse">
+                      {match.score.games.player2}
+                    </span>
+                  </td>
+                )}
+              </>
+            ) : (
+              <td class="px-2 py-4 text-center">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500 text-gray-500 dark:text-gray-400 text-sm">
+                  -
+                </span>
+              </td>
+            )}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .5;
+    }
+  }
+</style>

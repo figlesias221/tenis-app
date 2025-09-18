@@ -1,0 +1,6062 @@
+openapi: 3.0.0
+info:
+  title: Tennis v3
+  contact:
+    name: Sportradar
+    url: ""
+    email: support@sportradar.com
+  version: 3.0.0
+  x-sr-package: tennis
+  x-sr-version: v3
+servers:
+- url: https://api.sportradar.com/tennis/trial/v3
+  description: Trial Environment
+- url: https://api.sportradar.com/tennis/production/v3
+  description: Production Environment
+paths:
+  /{locale}/categories/{urn_category}/competitions:
+    get:
+      description: |
+        Get a list of all competitions within a category.
+      operationId: getCategoryCompetitions
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitions'
+      security:
+      - ApiKeyAuth: []
+      summary: lists all competitions within a category
+      tags:
+      - categories
+      - competitions
+      x-sr-name: category_competitions
+  /{locale}/competitions:
+    get:
+      description: |
+        Get a list of all competitions.
+      operationId: getCompetitions
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitions'
+      security:
+      - ApiKeyAuth: []
+      summary: lists all competitions
+      tags:
+      - competitions
+      x-sr-name: competitions
+  /{locale}/competitions/{urn_competition}/info:
+    get:
+      description: |
+        info for a competition
+      operationId: getCompetitionInfo
+      parameters:
+      - $ref: '#/components/parameters/urn_competition'
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competition_info'
+      security:
+      - ApiKeyAuth: []
+      summary: info for a competition
+      tags:
+      - competitions
+      x-sr-name: competition_info
+  /{locale}/competitions/{urn_competition}/seasons:
+    get:
+      description: |
+        Get a list of all seasons for a competition.
+      operationId: getCompetitionSeasons
+      parameters:
+      - $ref: '#/components/parameters/urn_competition'
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competition_seasons'
+      security:
+      - ApiKeyAuth: []
+      summary: lists all seasons for a competition
+      tags:
+      - competitions
+      - seasons
+      x-sr-name: competition_seasons
+  /{locale}/competitors/{urn_competitor}/doubles_competitions_played:
+    get:
+      operationId: getCompetitorDoublesCompetitionsPlayed
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitor_doubles_competitions_played'
+      security:
+      - ApiKeyAuth: []
+      summary: For a given competitor ID, list all double competitions played including
+        also the doubles partners
+      tags:
+      - competitors
+      x-sr-name: competitor_doubles_competitions_played
+  /{locale}/competitors/{urn_competitor}/profile:
+    get:
+      description: |
+        Get information and players for the given urn.
+      operationId: getCompetitorProfile
+      parameters:
+      - $ref: '#/components/parameters/urn_competitor'
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitor_profile'
+      security:
+      - ApiKeyAuth: []
+      summary: get information and players for a competitor
+      tags:
+      - competitors
+      x-sr-name: competitor_profile
+  /{locale}/competitors/{urn_competitor}/summaries:
+    get:
+      description: |
+        List last 30 summaries for a competitor, and all upcoming scheduled sport events.
+      operationId: getCompetitorSummaries
+      parameters:
+      - $ref: '#/components/parameters/urn_competitor'
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitor_summaries'
+      security:
+      - ApiKeyAuth: []
+      summary: list previous and upcoming summaries for a competitor
+      tags:
+      - competitors
+      - summaries
+      x-sr-name: competitor_summaries
+  /{locale}/competitors/{urn_competitor}/versus/{urn_competitor2}/summaries:
+    get:
+      description: |
+        List last 10 results and the next 10 schedules for a competitor against another competitor.
+      operationId: getCompetitorVersusSummaries
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_competitor'
+      - $ref: '#/components/parameters/urn_competitor2'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitor_versus_summaries'
+      security:
+      - ApiKeyAuth: []
+      summary: list last 10 results and the next 10 schedules for a competitor against
+        another competitor
+      tags:
+      - competitors
+      - summaries
+      x-sr-name: competitor_versus_summaries
+  /{locale}/competitors/itf_mappings:
+    get:
+      operationId: getCompetitorItfMappings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitor_itf_mappings'
+      security:
+      - ApiKeyAuth: []
+      summary: ITF mappings for competitors
+      tags:
+      - competitors
+      - mappings
+      x-sr-name: competitor_itf_mappings
+  /{locale}/competitors/merge_mappings:
+    get:
+      description: |
+        Get old and new IDs of players that have been merged
+      operationId: getCompetitorMergeMappings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/competitor_merge_mappings'
+      security:
+      - ApiKeyAuth: []
+      summary: Get old and new IDs of players that have been merged
+      tags:
+      - competitors
+      - mappings
+      - merge
+      x-sr-name: competitor_merge_mappings
+  /{locale}/complexes:
+    get:
+      operationId: getComplexes
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/complexes'
+      security:
+      - ApiKeyAuth: []
+      summary: List all Complexes with venues
+      tags:
+      - complexes
+      - venues
+      x-sr-name: complexes
+  /{locale}/double_competitors_race_rankings:
+    get:
+      operationId: getDoubleRaceRankings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/double_competitors_race_rankings'
+      security:
+      - ApiKeyAuth: []
+      summary: Top 500 doubles race rankings
+      tags:
+      - ranking
+      - doubles
+      - race
+      x-sr-name: double_competitors_race_rankings
+  /{locale}/double_competitors_rankings:
+    get:
+      operationId: getDoubleRankings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/double_competitors_rankings'
+      security:
+      - ApiKeyAuth: []
+      summary: Top 500 doubles rankings
+      tags:
+      - ranking
+      - doubles
+      x-sr-name: double_competitors_rankings
+  /{locale}/race_rankings:
+    get:
+      operationId: getRaceRankings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/race_rankings'
+      security:
+      - ApiKeyAuth: []
+      summary: Top 500 race rankings
+      tags:
+      - ranking
+      - race
+      - singles
+      x-sr-name: race_rankings
+  /{locale}/rankings:
+    get:
+      operationId: getRankings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/rankings'
+      security:
+      - ApiKeyAuth: []
+      summary: Top 500 rankings
+      tags:
+      - ranking
+      - singles
+      x-sr-name: rankings
+  /{locale}/schedules/{urn_date}/summaries:
+    get:
+      description: |
+        Get a list of summaries for all sport events in a day (any status).
+      operationId: getScheduleSummaries
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_date'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/limit'
+      responses:
+        "200":
+          $ref: '#/components/responses/schedule_summaries'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of summaries for all sport events in a day (any status)
+      tags:
+      - schedules
+      - summaries
+      x-sr-name: schedule_summaries
+  /{locale}/schedules/live/summaries:
+    get:
+      description: |
+        Get a list of summaries for sport events which are live right now. Sport events appear in the feed 10 minutes before the scheduled start time and are removed 10 minutes after the sport event is ended.
+      operationId: getScheduleLiveSummaries
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/schedule_live_summaries'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of summaries for live sport events
+      tags:
+      - schedules
+      - summaries
+      x-sr-name: schedule_live_summaries
+  /{locale}/schedules/live/timelines:
+    get:
+      description: |
+        Get a list of timelines for sport events which are live right now. Sport events appear in the feed 10 minutes before the scheduled start time and are removed 10 minutes after the sport event is ended.
+      operationId: getLiveTimelines
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/schedule_live_timelines'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of timelines for live sport events
+      tags:
+      - schedules
+      - timelines
+      x-sr-name: schedule_live_timelines
+  /{locale}/schedules/live/timelines_delta:
+    get:
+      description: |
+        Get the summary and timelines for all sport events where something happened the last 10 seconds, with only the events of the last 10 seconds
+      operationId: getLiveTimelinesDelta
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/schedule_live_timelines_delta'
+      security:
+      - ApiKeyAuth: []
+      summary: get the summary and timelines for all sport events where something
+        happened the last 10 seconds, with only the events of the last 10 seconds
+      tags:
+      - schedules
+      - timelines
+      x-sr-name: schedule_live_timelines_delta
+  /{locale}/seasons:
+    get:
+      description: |
+        Get a list of all seasons.
+      operationId: getSeasons
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      responses:
+        "200":
+          $ref: '#/components/responses/seasons'
+      security:
+      - ApiKeyAuth: []
+      summary: lists all seasons
+      tags:
+      - seasons
+      x-sr-name: seasons
+  /{locale}/seasons/{urn_season}/competitors:
+    get:
+      description: |
+        Get a list of competitors in a season
+      operationId: getSeasonCompetitors
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/season_competitor_limit'
+      - $ref: '#/components/parameters/start'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_competitors'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of competitors in a season
+      tags:
+      - seasons
+      - competitors
+      x-sr-name: season_competitors
+  /{locale}/seasons/{urn_season}/info:
+    get:
+      description: |
+        Get information about season and competitors.
+      operationId: getSeasonInfo
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_info'
+      security:
+      - ApiKeyAuth: []
+      summary: get information about season and competitors
+      tags:
+      - seasons
+      x-sr-name: season_info
+  /{locale}/seasons/{urn_season}/probabilities:
+    get:
+      description: |
+        Show a probabilities for all sport events in a season.
+      operationId: getSeasonProbabilities
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_probabilities'
+      security:
+      - ApiKeyAuth: []
+      summary: show probabilities for all sport events in a season
+      tags:
+      - seasons
+      x-sr-name: season_probabilities
+  /{locale}/seasons/{urn_season}/simple_team_mappings:
+    get:
+      description: |
+        Get a list of simple team mappings in a season
+      operationId: getSeasonSimpleTeamMappings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_simple_team_mappings'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of simple team mappings in a season
+      tags:
+      - seasons
+      - mappings
+      x-sr-name: season_simple_team_mappings
+  /{locale}/seasons/{urn_season}/simple_tournament_mappings:
+    get:
+      description: |
+        Get a list of simple tournament mappings in a season
+      operationId: getSeasonSimpleTournamentMappings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_simple_tournament_mappings'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of simple tournaments mappings in a season
+      tags:
+      - seasons
+      - mappings
+      x-sr-name: season_simple_tournament_mappings
+  /{locale}/seasons/{urn_season}/stages_groups_cup_rounds:
+    get:
+      description: |
+        Get information about season stages, groups and cup rounds (brackets).
+      operationId: getSeasonStagesGroupsCupRounds
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_brackets'
+      security:
+      - ApiKeyAuth: []
+      summary: get information about season stages, groups and cup_rounds (brackets)
+      tags:
+      - seasons
+      x-sr-name: season_stages_groups_cup_rounds
+  /{locale}/seasons/{urn_season}/standings:
+    get:
+      description: |
+        Get the standings for a season.
+      operationId: getSeasonStandings
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/round'
+      - $ref: '#/components/parameters/urn_season'
+      - $ref: '#/components/parameters/live'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_standings'
+      security:
+      - ApiKeyAuth: []
+      summary: get the standings for a season
+      tags:
+      - seasons
+      x-sr-name: season_standings
+  /{locale}/seasons/{urn_season}/summaries:
+    get:
+      description: |
+        Get a list of summaries for all sport events in a season (any status).
+      operationId: getSeasonSummaries
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_season'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/start'
+      responses:
+        "200":
+          $ref: '#/components/responses/season_summaries'
+      security:
+      - ApiKeyAuth: []
+      summary: get a list of summaries for all sport events in a season (any status)
+      tags:
+      - seasons
+      - summaries
+      x-sr-name: season_summaries
+  /{locale}/sport_events/{urn_sport_event}/summary:
+    get:
+      description: |
+        Show a summary for one sport event, including results.
+      operationId: getSportEventSummary
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_sport_event'
+      responses:
+        "200":
+          $ref: '#/components/responses/sport_event_summary'
+      security:
+      - ApiKeyAuth: []
+      summary: show summary for one sport event
+      tags:
+      - sport_events
+      - summaries
+      x-sr-name: sport_event_summary
+  /{locale}/sport_events/{urn_sport_event}/timeline:
+    get:
+      description: |
+        Show a summary and timeline for one sport event, including results.
+      operationId: getSportEventTimeline
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/urn_sport_event'
+      responses:
+        "200":
+          $ref: '#/components/responses/sport_event_timeline'
+      security:
+      - ApiKeyAuth: []
+      summary: show summary and timeline for one sport event
+      tags:
+      - sport_events
+      - timelines
+      x-sr-name: sport_event_timeline
+  /{locale}/sport_events/created:
+    get:
+      description: |
+        Lists sport events which has been created the last 24 hours
+      operationId: getSportEventsCreated
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/created_endpoints_limit'
+      responses:
+        "200":
+          $ref: '#/components/responses/sport_events_created'
+      security:
+      - ApiKeyAuth: []
+      summary: sport events which has been created the last 24 hours
+      tags:
+      - sport_events
+      x-sr-name: sport_events_created
+  /{locale}/sport_events/removed:
+    get:
+      description: |
+        Lists sport events which has been removed or disabled.
+      operationId: getSportEventsRemoved
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/updated_removed_endpoints_limit'
+      responses:
+        "200":
+          $ref: '#/components/responses/sport_events_removed'
+      security:
+      - ApiKeyAuth: []
+      summary: sport events which has been removed
+      tags:
+      - sport_events
+      x-sr-name: sport_events_removed
+  /{locale}/sport_events/updated:
+    get:
+      description: |
+        Lists sport events which has been updated the last 24 hours
+      operationId: getSportEventsUpdated
+      parameters:
+      - $ref: '#/components/parameters/locale'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/updated_removed_endpoints_limit'
+      responses:
+        "200":
+          $ref: '#/components/responses/sport_events_updated'
+      security:
+      - ApiKeyAuth: []
+      summary: sport events which has been updated the last 24 hours
+      tags:
+      - sport_events
+      x-sr-name: sport_events_updated
+  /stream/events/subscribe:
+    get:
+      operationId: getStreamEvents
+      parameters:
+      - $ref: '#/components/parameters/stream_format'
+      - $ref: '#/components/parameters/stream_event_id'
+      - $ref: '#/components/parameters/stream_competition_id'
+      - $ref: '#/components/parameters/stream_season_id'
+      - $ref: '#/components/parameters/stream_sport_id'
+      - $ref: '#/components/parameters/stream_sport_event_id'
+      responses:
+        "200":
+          $ref: '#/components/responses/stream_events'
+      security:
+      - ApiKeyAuth: []
+      summary: Returns detailed, real-time information on every game event
+      tags:
+      - push
+      x-sr-name: stream_events
+  /stream/statistics/subscribe:
+    get:
+      operationId: getStreamStatistics
+      parameters:
+      - $ref: '#/components/parameters/stream_format'
+      - $ref: '#/components/parameters/stream_event_id'
+      - $ref: '#/components/parameters/stream_competition_id'
+      - $ref: '#/components/parameters/stream_season_id'
+      - $ref: '#/components/parameters/stream_sport_id'
+      - $ref: '#/components/parameters/stream_sport_event_id'
+      responses:
+        "200":
+          $ref: '#/components/responses/stream_statistics'
+      security:
+      - ApiKeyAuth: []
+      summary: Returns detailed, real-time information on every game statistics
+      tags:
+      - push
+      x-sr-name: stream_statistics
+components:
+  schemas:
+    base_competition:
+      additionalProperties: false
+      properties:
+        gender:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+    base_competition_with_category:
+      additionalProperties: false
+      properties:
+        category:
+          $ref: '#/components/schemas/category'
+        gender:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+        x-sr-object-name: CompetitionWithCategory
+    base_info:
+      additionalProperties: false
+      properties:
+        competition_status:
+          $ref: '#/components/schemas/enum_competition_status'
+        venue_reduced_capacity:
+          type: boolean
+          xml:
+            attribute: true
+        venue_reduced_capacity_max:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: info
+    base_sport_event_context:
+      additionalProperties: false
+      properties:
+        category:
+          $ref: '#/components/schemas/category'
+        competition:
+          $ref: '#/components/schemas/competition'
+        groups:
+          items:
+            $ref: '#/components/schemas/sport_event_context_group'
+          type: array
+          xml:
+            name: groups
+            wrapped: true
+        round:
+          $ref: '#/components/schemas/sport_event_context_round'
+        season:
+          $ref: '#/components/schemas/season'
+        sport:
+          $ref: '#/components/schemas/sport'
+        stage:
+          $ref: '#/components/schemas/sport_event_context_stage'
+      required:
+      - sport
+      - category
+      - competition
+      - season
+      type: object
+      xml:
+        name: sport_event_context
+    base_summary:
+      additionalProperties: false
+      properties:
+        sport_event:
+          $ref: '#/components/schemas/sport_event'
+        sport_event_status:
+          $ref: '#/components/schemas/sport_event_status'
+      required:
+      - sport_event
+      - sport_event_status
+      type: object
+      xml:
+        name: summary
+    basic_competitor:
+      properties:
+        abbreviation:
+          type: string
+          xml:
+            attribute: true
+        country:
+          type: string
+          xml:
+            attribute: true
+        country_code:
+          type: string
+          xml:
+            attribute: true
+        date_of_birth:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competitor URN (sr:competitor:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        qualifier:
+          type: string
+          xml:
+            attribute: true
+        virtual:
+          type: boolean
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competitor
+        x-sr-object-name: BasicCompetitor
+    category:
+      additionalProperties: false
+      properties:
+        country_code:
+          description: ISO 3361-1 A3 Country Code
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Category URN (sr:category:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: category
+    child_sport_event:
+      additionalProperties: false
+      properties:
+        competitors:
+          items:
+            $ref: '#/components/schemas/competitor'
+          type: array
+          xml:
+            name: competitors
+            wrapped: true
+        id:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        replaced_by:
+          description: Match has been replaced with another match.
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        resume_time:
+          description: Resume time if sport event has been suspended
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        start_time:
+          description: Scheduled event start
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        start_time_confirmed:
+          type: boolean
+          xml:
+            attribute: true
+        type:
+          enum:
+          - parent
+          - child
+          type: string
+          xml:
+            attribute: true
+            name: SportEventTypeEnum
+        venue:
+          $ref: '#/components/schemas/venue'
+      required:
+      - id
+      - start_time
+      - start_time_confirmed
+      type: object
+      xml:
+        name: sport_event
+        x-sr-object-name: SportEventChild
+    competition:
+      additionalProperties: false
+      properties:
+        alternative_name:
+          type: string
+          xml:
+            attribute: true
+        gender:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        level:
+          $ref: '#/components/schemas/enum_competition_level'
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+    competition_extended:
+      additionalProperties: false
+      properties:
+        alternative_name:
+          type: string
+          xml:
+            attribute: true
+        category:
+          $ref: '#/components/schemas/category'
+        children:
+          items:
+            properties:
+              competition:
+                additionalProperties: false
+                properties:
+                  alternative_name:
+                    type: string
+                    xml:
+                      attribute: true
+                  gender:
+                    type: string
+                    xml:
+                      attribute: true
+                  id:
+                    description: Competition URN (sr:competition:x)
+                    type: string
+                    xml:
+                      attribute: true
+                  level:
+                    $ref: '#/components/schemas/enum_competition_level'
+                  name:
+                    type: string
+                    xml:
+                      attribute: true
+                  parent_id:
+                    type: string
+                    xml:
+                      attribute: true
+                  type:
+                    type: string
+                    xml:
+                      attribute: true
+                required:
+                - id
+                - name
+                type: object
+                xml:
+                  name: competition
+            type: object
+            xml:
+              name: competition
+              x-sr-object-name: competitionWrapper
+              x-sr-replace-with-child: competition
+          type: array
+          xml:
+            name: children
+            wrapped: true
+        gender:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        level:
+          $ref: '#/components/schemas/enum_competition_level'
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+        x-sr-object-name: CompetitionExtended
+    competition_with_category:
+      additionalProperties: false
+      properties:
+        category:
+          $ref: '#/components/schemas/category'
+        gender:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        level:
+          $ref: '#/components/schemas/enum_competition_level'
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+        x-sr-object-name: CompetitionWithCategory
+    competition_with_competitors:
+      additionalProperties: false
+      properties:
+        competitors:
+          items:
+            $ref: '#/components/schemas/competitor'
+          type: array
+          xml:
+            name: competitors
+            wrapped: true
+            x-sr-object-name: CompetitionCompetitors
+        gender:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        level:
+          $ref: '#/components/schemas/enum_competition_level'
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+        x-sr-object-name: CompetitionWithCompetitors
+    competitor:
+      properties:
+        abbreviation:
+          type: string
+          xml:
+            attribute: true
+        bracket_number:
+          type: integer
+          xml:
+            attribute: true
+        country:
+          type: string
+          xml:
+            attribute: true
+        country_code:
+          type: string
+          xml:
+            attribute: true
+        gender:
+          $ref: '#/components/schemas/enum_gender'
+        id:
+          description: Competitor URN (sr:competitor:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        players:
+          items:
+            $ref: '#/components/schemas/double_competitor_player'
+          type: array
+          xml:
+            name: players
+            wrapped: true
+            x-sr-object-name: DoubleCompetitorPlayers
+        qualifier:
+          type: string
+          xml:
+            attribute: true
+        seed:
+          type: integer
+          xml:
+            attribute: true
+        virtual:
+          type: boolean
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competitor
+        x-sr-object-name: Competitor
+    competitor_info:
+      additionalProperties: false
+      properties:
+        date_of_birth:
+          type: string
+          xml:
+            attribute: true
+        handedness:
+          type: string
+          xml:
+            attribute: true
+        height:
+          type: integer
+          xml:
+            attribute: true
+        highest_doubles_ranking:
+          type: integer
+          xml:
+            attribute: true
+        highest_doubles_ranking_date:
+          type: string
+          xml:
+            attribute: true
+        highest_singles_ranking:
+          type: integer
+          xml:
+            attribute: true
+        highest_singles_ranking_date:
+          type: string
+          xml:
+            attribute: true
+        pro_year:
+          type: integer
+          xml:
+            attribute: true
+        weight:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: info
+        x-sr-object-name: TennisCompetitorInfo
+    complex:
+      additionalProperties: false
+      properties:
+        id:
+          description: Complex URN (sr:complex:xx)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        venues:
+          items:
+            $ref: '#/components/schemas/venue'
+          type: array
+          xml:
+            name: venues
+            wrapped: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: complex
+    coverage:
+      additionalProperties: false
+      description: Describes the expected coverage for different entities within this
+        type. When type="sport_event" you will only get sport_event_properties. When
+        type="competition" you will get sport_event_properties and competition_properties.
+      properties:
+        sport_event_properties:
+          $ref: '#/components/schemas/coverage_sport_event_properties'
+        type:
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: coverage
+        x-sr-object-name: Coverage
+    coverage_sport_event_properties:
+      properties:
+        detailed_serve_outcomes:
+          type: boolean
+          xml:
+            attribute: true
+        enhanced_stats:
+          description: 'If true, the following statistics are available: ''backhand_errors'',
+            ''backhand_unforced_errors'', ''backhand_winners'', ''forehand_errors'',
+            ''forehand_unforced_errors'', ''forehand_winners'', ''groundstroke_errors'',
+            ''groundstroke_unforced_errors'', ''overhead_stroke_errors'', ''overhead_stroke_winners'',
+            ''overhead_stroke_unforced_errors'', ''return_errors'', ''return_winners'',
+            ''service_points_won'', ''volley_winners'' ''lob_winners'', ''lob_unforced_errors'',
+            ''aces'', ''double_faults'', ''max_points_in_a_row'', ''breakpoints_won'',
+            ''total_breakpoints'', ''first_serve_points_won'', ''second_serve_points_won'',
+            ''points_won'', ''max_games_in_a_row'', ''games_won'', ''tiebreaks_won'',
+            ''first_serve_successful'', ''second_serve_successful'', ''service_points_won'',
+            ''service_points_lost'', ''service_games_won'', ''groundstroke_winners'',
+            ''volley_unforced_errors'' If false: ''aces'', ''double_faults'', ''max_points_in_a_row'',
+            ''breakpoints_won'', ''total_breakpoints'', ''first_serve_points_won'',
+            ''second_serve_points_won'', ''points_won'', ''max_games_in_a_row'', ''games_won'',
+            ''tiebreaks_won'', ''first_serve_successful'', ''second_serve_successful'',
+            ''service_points_won'', ''service_points_lost'', ''service_games_won'','
+          type: boolean
+          xml:
+            attribute: true
+        play_by_play:
+          type: boolean
+          xml:
+            attribute: true
+        scores:
+          enum:
+          - live
+          - post
+          type: string
+          xml:
+            attribute: true
+            name: CoverageSportEventPropertiesScoresEnum
+      type: object
+      xml:
+        name: sport_event_properties
+    double_competitor_player:
+      additionalProperties: false
+      properties:
+        abbreviation:
+          type: string
+          xml:
+            attribute: true
+        country:
+          type: string
+          xml:
+            attribute: true
+        country_code:
+          type: string
+          xml:
+            attribute: true
+        date_of_birth:
+          description: YYYY-MM-DD
+          format: date
+          type: string
+          xml:
+            attribute: true
+        gender:
+          $ref: '#/components/schemas/enum_gender'
+        height:
+          description: Height in cm
+          type: integer
+          xml:
+            attribute: true
+        id:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        nationality:
+          type: string
+          xml:
+            attribute: true
+        weight:
+          description: Weight in kg
+          type: integer
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: player
+        x-sr-object-name: DoubleCompetitorPlayer
+    enum_competition_level:
+      enum:
+      - grand_slam
+      - atp_1000
+      - atp_500
+      - atp_250
+      - wta_premier
+      - wta_international
+      - atp_world_tour_finals
+      - wta_championships
+      - atp_next_generation
+      - wta_elite_trophy
+      - wta_master
+      - wta_500
+      - wta_250
+      - wta_1000
+      - wta_125
+      type: string
+      xml:
+        attribute: true
+        name: CompetitionLevelEnum
+    enum_competition_status:
+      enum:
+      - delayed
+      - closed
+      - completed
+      - in_progress
+      - scheduled
+      - suspended
+      - cancelled
+      - rescheduled
+      - postponed
+      type: string
+      xml:
+        attribute: true
+        name: CompetitionStatusEnum
+    enum_competitor_qualifier:
+      enum:
+      - home
+      - away
+      type: string
+      xml:
+        attribute: true
+        name: CompetitorQualifierEnum
+    enum_competitor_server_qualifier:
+      enum:
+      - home
+      - away
+      - unknown
+      type: string
+      xml:
+        attribute: true
+        name: CompetitorServerQualifierEnum
+    enum_event_result:
+      enum:
+      - ace
+      - double_fault
+      - server_won
+      - receiver_won
+      - unknown
+      type: string
+      xml:
+        attribute: true
+        name: EventResultEnum
+    enum_event_type:
+      enum:
+      - match_started
+      - match_called
+      - deciding_team
+      - first_serve
+      - period_start
+      - point
+      - period_score
+      - match_ended
+      - match_suspended
+      - match_resumed
+      - tie_break_points
+      - service_fault
+      - ball_position
+      type: string
+      xml:
+        attribute: true
+        name: EventTypeEnum
+    enum_gender:
+      enum:
+      - women
+      - men
+      - mixed
+      type: string
+      xml:
+        attribute: true
+        name: GenderEnum
+    enum_last_point_result:
+      enum:
+      - server_winner
+      - receiver_winner
+      - ace
+      - double_fault
+      type: string
+      xml:
+        attribute: true
+        name: LastPointResultEnum
+    enum_period_type:
+      enum:
+      - set
+      - 1st_set
+      - 2nd_set
+      - 3rd_set
+      - 4th_set
+      - 5th_set
+      - interrupted
+      - suspended
+      type: string
+      xml:
+        attribute: true
+        name: PeriodTypeEnum
+    enum_phase:
+      enum:
+      - 1st_part_of_season_1st_leg
+      - conference
+      - division
+      - final_phase
+      - grand_finals
+      - group_phase_1
+      - knockout_stage
+      - main_round_1
+      - main_round_2
+      - none
+      - placement_matches
+      - playoffs
+      - promotion_playoffs
+      - qualification
+      - qualification_playoffs
+      - regular season
+      - relegation_playoffs
+      - stage_1
+      - stage_1_playoff
+      - stage_2
+      - stage_2_placement_matches
+      type: string
+      xml:
+        attribute: true
+        name: PhaseEnum
+    enum_point_type:
+      enum:
+      - game
+      - break
+      - set
+      - match
+      type: string
+      xml:
+        attribute: true
+        name: PointTypeEnum
+    enum_push_event_type:
+      enum:
+      - match_started
+      - match_called
+      - deciding_team
+      - first_serve
+      - period_start
+      - point
+      - period_score
+      - match_ended
+      - match_suspended
+      - match_resumed
+      - tie_break_points
+      - service_fault
+      - ball_position
+      - stats_update
+      type: string
+      xml:
+        attribute: true
+        name: EventTypeEnum
+    enum_sport_event_context_mode_best_of:
+      enum:
+      - "3"
+      - "5"
+      type: integer
+      xml:
+        attribute: true
+        name: SportEventContextModeBestOfEnum
+    enum_sport_event_context_round_name:
+      enum:
+      - qualification
+      - qualification_final
+      - quarterfinal
+      - semifinal
+      - final
+      - round_1
+      - round_2
+      - round_3
+      - qualification_round_1
+      - qualification_round_2
+      - round_of_16
+      - round_of_32
+      - round_of_64
+      - round_of_128
+      - round_of_256
+      - 3rd_place_playoff
+      - 3rd_place_final
+      - 5th_place_final
+      - 7th_place_final
+      type: string
+      xml:
+        attribute: true
+        name: SportEventContextRoundNameEnum
+    enum_sport_event_match_status:
+      enum:
+      - not_started
+      - match_about_to_start
+      - ended
+      - interrupted
+      - defaulted
+      - postponed
+      - cancelled
+      - walkover
+      - 1st_set
+      - 2nd_set
+      - 3rd_set
+      - 4th_set
+      - 5th_set
+      - retired
+      - start_delayed
+      - suspended
+      - started
+      - abandoned
+      type: string
+      xml:
+        attribute: true
+        name: SportEventMatchStatusEnum
+    enum_sport_event_status:
+      enum:
+      - not_started
+      - started
+      - postponed
+      - suspended
+      - cancelled
+      - delayed
+      - live
+      - interrupted
+      - ended
+      - closed
+      - abandoned
+      type: string
+      xml:
+        attribute: true
+        name: SportEventStatusEnum
+    enum_stage_type:
+      enum:
+      - cup
+      - league
+      type: string
+      xml:
+        attribute: true
+        name: StageTypeEnum
+    enum_surface_type:
+      enum:
+      - hard_court
+      - grass
+      - red_clay
+      - green_clay
+      - hardcourt_outdoor
+      - carpet_indoor
+      - synthetic_indoor
+      - synthetic_outdoor
+      - hardcourt_indoor
+      - red_clay_indoor
+      - unknown
+      - synthetic_grass
+      type: string
+      xml:
+        attribute: true
+        name: SurfaceTypeEnum
+    enum_suspended_reason:
+      enum:
+      - toilet_break
+      - bad_weather
+      - trainer_called
+      type: string
+      xml:
+        attribute: true
+        name: SuspendedReasonEnum
+    game_state:
+      additionalProperties: false
+      properties:
+        advantage:
+          $ref: '#/components/schemas/enum_competitor_qualifier'
+        away_score:
+          type: integer
+          xml:
+            attribute: true
+        home_score:
+          type: integer
+          xml:
+            attribute: true
+        last_point_result:
+          $ref: '#/components/schemas/enum_last_point_result'
+        point_type:
+          $ref: '#/components/schemas/enum_point_type'
+        serving:
+          $ref: '#/components/schemas/enum_competitor_qualifier'
+        tie_break:
+          type: boolean
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: game_state
+        x-sr-object-name: TennisGameState
+    generic_event:
+      additionalProperties: false
+      properties:
+        away_score:
+          type: integer
+          xml:
+            attribute: true
+        competitor:
+          $ref: '#/components/schemas/enum_competitor_qualifier'
+        first_serve_fault:
+          type: boolean
+          xml:
+            attribute: true
+        home_score:
+          type: integer
+          xml:
+            attribute: true
+        id:
+          type: integer
+          xml:
+            attribute: true
+        period:
+          description: Period number.
+          type: string
+          xml:
+            attribute: true
+        period_name:
+          type: string
+          xml:
+            attribute: true
+        reason:
+          $ref: '#/components/schemas/enum_suspended_reason'
+        result:
+          $ref: '#/components/schemas/enum_event_result'
+        server:
+          $ref: '#/components/schemas/enum_competitor_server_qualifier'
+        time:
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        type:
+          $ref: '#/components/schemas/enum_event_type'
+        updated:
+          type: boolean
+          xml:
+            attribute: true
+        updated_time:
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - type
+      - time
+      type: object
+      xml:
+        name: event
+    info:
+      additionalProperties: false
+      properties:
+        competition_status:
+          $ref: '#/components/schemas/enum_competition_status'
+        complex:
+          type: string
+          xml:
+            attribute: true
+        complex_id:
+          type: string
+          xml:
+            attribute: true
+        number_of_competitors:
+          type: integer
+          xml:
+            attribute: true
+        number_of_qualified_competitors:
+          type: integer
+          xml:
+            attribute: true
+        number_of_scheduled_matches:
+          type: integer
+          xml:
+            attribute: true
+        prize_currency:
+          type: string
+          xml:
+            attribute: true
+        prize_money:
+          type: integer
+          xml:
+            attribute: true
+        surface:
+          type: string
+          xml:
+            attribute: true
+        venue_reduced_capacity:
+          type: boolean
+          xml:
+            attribute: true
+        venue_reduced_capacity_max:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: info
+    internal_mapping:
+      properties:
+        id:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      type: object
+      xml:
+        name: mapping
+        x-sr-object-name: InternalMapping
+    mapping:
+      properties:
+        external_id:
+          type: string
+          xml:
+            attribute: true
+        id:
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: mapping
+    merge_mapping:
+      additionalProperties: false
+      properties:
+        merged_id:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        retained_id:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - merged_id
+      - retained_id
+      type: object
+      xml:
+        name: mapping
+        x-sr-object-name: MergeMapping
+    period:
+      additionalProperties: false
+      properties:
+        statistics:
+          $ref: '#/components/schemas/statistics_surface'
+        surfaces:
+          items:
+            $ref: '#/components/schemas/surface'
+          type: array
+          xml:
+            name: surfaces
+            wrapped: true
+        year:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: period
+        x-sr-object-name: SeasonCompetitorPeriod
+    period_score:
+      additionalProperties: false
+      properties:
+        away_score:
+          type: integer
+          xml:
+            attribute: true
+        away_tiebreak_score:
+          type: integer
+          xml:
+            attribute: true
+        home_score:
+          type: integer
+          xml:
+            attribute: true
+        home_tiebreak_score:
+          type: integer
+          xml:
+            attribute: true
+        number:
+          type: integer
+          xml:
+            attribute: true
+        type:
+          $ref: '#/components/schemas/enum_period_type'
+      required:
+      - home_score
+      - away_score
+      type: object
+      xml:
+        name: period_score
+    player:
+      additionalProperties: false
+      properties:
+        country_code:
+          type: string
+          xml:
+            attribute: true
+        date_of_birth:
+          description: YYYY-MM-DD
+          format: date
+          type: string
+          xml:
+            attribute: true
+        gender:
+          $ref: '#/components/schemas/enum_gender'
+        height:
+          description: Height in cm
+          type: integer
+          xml:
+            attribute: true
+        id:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        nationality:
+          type: string
+          xml:
+            attribute: true
+        weight:
+          description: Weight in kg
+          type: integer
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: player
+    probability_market_two_three_way:
+      additionalProperties: false
+      properties:
+        away_score:
+          type: integer
+          xml:
+            attribute: true
+        home_score:
+          type: integer
+          xml:
+            attribute: true
+        last_updated:
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        live:
+          type: boolean
+          xml:
+            attribute: true
+        match_time:
+          description: '[0-9]+:[0-9]+|[0-9]+'
+          type: string
+          xml:
+            attribute: true
+        name:
+          enum:
+          - 2way
+          - 3way
+          type: string
+          xml:
+            attribute: true
+            name: ProbabilityMarketTwoThreeWayEnum
+        outcomes:
+          items:
+            $ref: '#/components/schemas/probability_outcome_two_three_way'
+          type: array
+          xml:
+            name: outcomes
+            wrapped: true
+        remaining_time:
+          description: '[0-9]+:[0-9]+|[0-9]+'
+          type: string
+          xml:
+            attribute: true
+        remaining_time_in_period:
+          description: '[0-9]+:[0-9]+|[0-9]+'
+          type: string
+          xml:
+            attribute: true
+      required:
+      - name
+      - outcomes
+      type: object
+      xml:
+        name: market
+        x-sr-object-name: ProbabilityMarketTwoThreeWay
+    probability_outcome_two_three_way:
+      additionalProperties: false
+      properties:
+        name:
+          enum:
+          - home_team_winner
+          - away_team_winner
+          - draw
+          - home_team_next_goal
+          - away_team_next_goal
+          - none
+          type: string
+          xml:
+            attribute: true
+            name: ProbabilityOutcomeTwoThreeWayEnum
+        probability:
+          format: float
+          type: number
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: outcome
+        x-sr-object-name: ProbabilityOutcomeTwoThreeWay
+    ranking:
+      additionalProperties: false
+      properties:
+        competitor_rankings:
+          items:
+            $ref: '#/components/schemas/ranking_competitor'
+          type: array
+          xml:
+            name: competitor_rankings
+            wrapped: true
+        gender:
+          enum:
+          - men
+          - mixed
+          - women
+          type: string
+          xml:
+            attribute: true
+            name: RankingGenderEnum
+        name:
+          type: string
+          xml:
+            attribute: true
+        type_id:
+          type: integer
+          xml:
+            attribute: true
+        week:
+          type: integer
+          xml:
+            attribute: true
+        year:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: ranking
+        x-sr-object-name: Rankings
+    ranking_competitor:
+      additionalProperties: false
+      properties:
+        competitions_played:
+          type: integer
+          xml:
+            attribute: true
+        competitor:
+          $ref: '#/components/schemas/competitor'
+        competitor_id:
+          type: string
+          xml:
+            attribute: true
+        movement:
+          type: integer
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        points:
+          type: integer
+          xml:
+            attribute: true
+        race_ranking:
+          type: boolean
+          xml:
+            attribute: true
+        rank:
+          type: integer
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: competitor_ranking
+        x-sr-object-name: CompetitorRankingTennis
+    season:
+      additionalProperties: false
+      properties:
+        competition_id:
+          type: string
+          xml:
+            attribute: true
+        disabled:
+          type: boolean
+          xml:
+            attribute: true
+        end_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: URN
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        start_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        year:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      - start_date
+      - end_date
+      - year
+      - competition_id
+      type: object
+      xml:
+        name: season
+    season_brackets_cup_round:
+      properties:
+        id:
+          description: Cup round id URN (sr:cup_round:x)
+          type: string
+          xml:
+            attribute: true
+        linked_cup_rounds:
+          items:
+            $ref: '#/components/schemas/season_brackets_cup_round_linked'
+          type: array
+          xml:
+            name: linked_cup_rounds
+            wrapped: true
+            x-sr-object-name: SeasonBracketsCupRoundLinkedCupRounds
+        name:
+          description: Name of round. Ex. quarterfinal
+          type: string
+          xml:
+            attribute: true
+        order:
+          type: integer
+          xml:
+            attribute: true
+        sport_events:
+          items:
+            $ref: '#/components/schemas/season_brackets_cup_round_sport_event'
+          type: array
+          xml:
+            name: sport_events
+            wrapped: true
+            x-sr-object-name: SeasonBracketsCupRoundSportEvents
+        state:
+          description: Ex. ended, decided, unstarted, cancelled, winner
+          type: string
+          xml:
+            attribute: true
+        winner_id:
+          description: Competitor URN. Ex. sr:competitor:23432
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      type: object
+      xml:
+        name: cup_round
+        x-sr-object-name: SeasonBracketsCupRound
+    season_brackets_cup_round_linked:
+      properties:
+        id:
+          description: Cup round id URN (sr:cup_round:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          description: Name of round. Ex. quarterfinal
+          type: string
+          xml:
+            attribute: true
+        order:
+          type: integer
+          xml:
+            attribute: true
+        state:
+          description: Ex. winner, decided, unstarted, cancelled
+          type: string
+          xml:
+            attribute: true
+        type:
+          enum:
+          - parent
+          - child
+          type: string
+          xml:
+            attribute: true
+            name: type
+            x-sr-object-name: SeasonBracketsCupRoundLinkedType
+        winner_id:
+          description: Competitor URN. Ex. sr:competitor:23432
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - type
+      type: object
+      xml:
+        name: cup_round
+        x-sr-object-name: SeasonBracketsCupRoundLinked
+    season_brackets_cup_round_sport_event:
+      additionalProperties: false
+      properties:
+        id:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        order:
+          type: integer
+          xml:
+            attribute: true
+        replaced_by:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        resume_time:
+          description: Resume time if sport event has been suspended
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        start_time:
+          description: Scheduled event start
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        start_time_confirmed:
+          type: boolean
+          xml:
+            attribute: true
+      required:
+      - id
+      - start_time
+      - start_time_confirmed
+      type: object
+      xml:
+        name: sport_event
+        x-sr-object-name: SeasonBracketsCupRoundSportEventsSportEvent
+    season_brackets_group:
+      additionalProperties: false
+      properties:
+        cup_rounds:
+          items:
+            $ref: '#/components/schemas/season_brackets_cup_round'
+          type: array
+          xml:
+            name: cup_rounds
+            wrapped: true
+            x-sr-object-name: SeasonBracketsCupRounds
+        group_name:
+          type: string
+          xml:
+            attribute: true
+        id:
+          type: string
+          xml:
+            attribute: true
+        order:
+          type: integer
+          xml:
+            attribute: true
+      required:
+      - id
+      - group_name
+      type: object
+      xml:
+        name: group
+        x-sr-object-name: SeasonBracketsGroup
+    season_brackets_stage:
+      additionalProperties: false
+      properties:
+        end_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        groups:
+          items:
+            $ref: '#/components/schemas/season_brackets_group'
+          type: array
+          xml:
+            name: groups
+            wrapped: true
+            x-sr-object-name: SeasonBracketsGroups
+        order:
+          type: integer
+          xml:
+            attribute: true
+        phase:
+          $ref: '#/components/schemas/enum_phase'
+        start_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        type:
+          $ref: '#/components/schemas/enum_stage_type'
+        year:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - type
+      - phase
+      type: object
+      xml:
+        name: stage
+        x-sr-object-name: SeasonBracketsStage
+    season_competitor:
+      additionalProperties: false
+      properties:
+        abbreviation:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Competitor URN (sr:competitor:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        players:
+          items:
+            $ref: '#/components/schemas/double_competitor_player'
+          type: array
+          xml:
+            name: players
+            wrapped: true
+            x-sr-object-name: DoubleCompetitorPlayers
+        short_name:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competitor
+        x-sr-object-name: SeasonCompetitorWithPlayers
+    season_extended:
+      additionalProperties: false
+      properties:
+        category:
+          $ref: '#/components/schemas/category'
+        competition:
+          $ref: '#/components/schemas/competition'
+        competition_id:
+          type: string
+          xml:
+            attribute: true
+        disabled:
+          type: boolean
+          xml:
+            attribute: true
+        end_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: URN
+          type: string
+          xml:
+            attribute: true
+        info:
+          $ref: '#/components/schemas/info'
+        name:
+          type: string
+          xml:
+            attribute: true
+        sport:
+          $ref: '#/components/schemas/sport'
+        start_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        year:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      - start_date
+      - end_date
+      - year
+      - competition_id
+      type: object
+      xml:
+        name: season
+        x-sr-object-name: SeasonExtended
+    season_stage:
+      additionalProperties: false
+      properties:
+        end_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        groups:
+          items:
+            $ref: '#/components/schemas/season_stage_group'
+          type: array
+          xml:
+            name: groups
+            wrapped: true
+            x-sr-object-name: SeasonStageGroups
+        order:
+          type: integer
+          xml:
+            attribute: true
+        phase:
+          $ref: '#/components/schemas/enum_phase'
+        start_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        type:
+          $ref: '#/components/schemas/enum_stage_type'
+        year:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - order
+      - type
+      - phase
+      type: object
+      xml:
+        name: stage
+        x-sr-object-name: SeasonStage
+    season_stage_competitor:
+      properties:
+        abbreviation:
+          type: string
+          xml:
+            attribute: true
+        bracket_number:
+          type: integer
+          xml:
+            attribute: true
+        country:
+          type: string
+          xml:
+            attribute: true
+        country_code:
+          type: string
+          xml:
+            attribute: true
+        gender:
+          $ref: '#/components/schemas/enum_gender'
+        id:
+          description: Competitor URN (sr:competitor:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        players:
+          items:
+            $ref: '#/components/schemas/double_competitor_player'
+          type: array
+          xml:
+            name: players
+            wrapped: true
+            x-sr-object-name: DoubleCompetitorPlayers
+        qualification_path:
+          type: string
+          xml:
+            attribute: true
+        qualifier:
+          type: string
+          xml:
+            attribute: true
+        seed:
+          type: integer
+          xml:
+            attribute: true
+        virtual:
+          type: boolean
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competitor
+        x-sr-object-name: SeasonStageCompetitor
+    season_stage_group:
+      additionalProperties: false
+      properties:
+        competitors:
+          items:
+            $ref: '#/components/schemas/season_stage_competitor'
+          type: array
+          xml:
+            name: competitors
+            wrapped: true
+            x-sr-object-name: SeasonStageGroupCompetitors
+        group_name:
+          type: string
+          xml:
+            attribute: true
+        id:
+          type: string
+          xml:
+            attribute: true
+        max_rounds:
+          type: integer
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: group
+        x-sr-object-name: SeasonStageGroup
+    simple_season_stage_group:
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          xml:
+            attribute: true
+        mappings:
+          items:
+            $ref: '#/components/schemas/internal_mapping'
+          type: array
+          xml:
+            name: mappings
+            wrapped: true
+            x-sr-object-name: SeasonStageGroupMappings
+        name:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: group
+        x-sr-object-name: SeasonStageGroupSimple
+    simple_team_mapping:
+      additionalProperties: false
+      properties:
+        division:
+          type: integer
+          xml:
+            attribute: true
+        id:
+          description: Competitor URN (sr:competitor:x)
+          type: string
+          xml:
+            attribute: true
+        mappings:
+          items:
+            $ref: '#/components/schemas/internal_mapping'
+          type: array
+          xml:
+            name: mappings
+            wrapped: true
+            x-sr-object-name: SimpleTeamMappingsList
+        name:
+          type: string
+          xml:
+            attribute: true
+        state:
+          type: string
+          xml:
+            attribute: true
+        virtual:
+          type: boolean
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competitor
+        x-sr-object-name: SimpleTeamMapping
+    simple_tournament_mapping:
+      additionalProperties: false
+      properties:
+        alternative_name:
+          type: string
+          xml:
+            attribute: true
+        gender:
+          type: string
+          xml:
+            attribute: true
+        groups:
+          items:
+            $ref: '#/components/schemas/simple_season_stage_group'
+          type: array
+          xml:
+            name: groups
+            wrapped: true
+            x-sr-object-name: SimpleTournamentGroupMappingsList
+        id:
+          description: Competition URN (sr:competition:x)
+          type: string
+          xml:
+            attribute: true
+        level:
+          $ref: '#/components/schemas/enum_competition_level'
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          type: string
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: competition
+        x-sr-object-name: SimpleTournamentMapping
+    single_ranking:
+      additionalProperties: false
+      properties:
+        competitor_rankings:
+          items:
+            $ref: '#/components/schemas/single_ranking_competitor'
+          type: array
+          xml:
+            name: competitor_rankings
+            wrapped: true
+        gender:
+          enum:
+          - men
+          - mixed
+          - women
+          type: string
+          xml:
+            attribute: true
+            name: RankingGenderEnum
+        name:
+          type: string
+          xml:
+            attribute: true
+        type_id:
+          type: integer
+          xml:
+            attribute: true
+        week:
+          type: integer
+          xml:
+            attribute: true
+        year:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: ranking
+        x-sr-object-name: SingleRankings
+    single_ranking_competitor:
+      additionalProperties: false
+      properties:
+        competitions_played:
+          type: integer
+          xml:
+            attribute: true
+        competitor:
+          $ref: '#/components/schemas/basic_competitor'
+        movement:
+          type: integer
+          xml:
+            attribute: true
+        points:
+          type: integer
+          xml:
+            attribute: true
+        rank:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: competitor_ranking
+        x-sr-object-name: SingleCompetitorRanking
+    sport:
+      additionalProperties: false
+      properties:
+        id:
+          description: Sport URN (sr:sport:x)
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: sport
+    sport_event:
+      additionalProperties: false
+      properties:
+        channels:
+          items:
+            $ref: '#/components/schemas/sport_event_channels'
+          type: array
+          xml:
+            name: channels
+            wrapped: true
+        children:
+          items:
+            $ref: '#/components/schemas/child_sport_event'
+          type: array
+          xml:
+            name: children
+            wrapped: true
+            x-sr-object-name: SportEventChildren
+        competitors:
+          items:
+            $ref: '#/components/schemas/competitor'
+          type: array
+          xml:
+            name: competitors
+            wrapped: true
+        coverage:
+          $ref: '#/components/schemas/coverage'
+        estimated:
+          type: boolean
+          xml:
+            attribute: true
+        id:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        parent_id:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        replaced_by:
+          description: Match has been replaced with another match.
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+        resume_time:
+          description: Resume time if sport event has been suspended
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        sport_event_context:
+          $ref: '#/components/schemas/sport_event_context'
+        start_time:
+          description: Scheduled event start
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        start_time_confirmed:
+          type: boolean
+          xml:
+            attribute: true
+        type:
+          enum:
+          - parent
+          - child
+          type: string
+          xml:
+            attribute: true
+            name: SportEventTypeEnum
+        venue:
+          $ref: '#/components/schemas/venue'
+      required:
+      - id
+      - start_time
+      - start_time_confirmed
+      type: object
+      xml:
+        name: sport_event
+    sport_event_channels:
+      additionalProperties: false
+      properties:
+        country:
+          type: string
+          xml:
+            attribute: true
+        country_code:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        url:
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: channel
+    sport_event_competitor_statistics:
+      properties:
+        statistics:
+          properties:
+            aces:
+              type: integer
+              xml:
+                attribute: true
+            backhand_errors:
+              type: integer
+              xml:
+                attribute: true
+            backhand_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            backhand_winners:
+              type: integer
+              xml:
+                attribute: true
+            breakpoints_won:
+              type: integer
+              xml:
+                attribute: true
+            double_faults:
+              type: integer
+              xml:
+                attribute: true
+            drop_shot_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            drop_shot_winners:
+              type: integer
+              xml:
+                attribute: true
+            first_serve_points_won:
+              type: integer
+              xml:
+                attribute: true
+            first_serve_successful:
+              type: integer
+              xml:
+                attribute: true
+            forehand_errors:
+              type: integer
+              xml:
+                attribute: true
+            forehand_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            forehand_winners:
+              type: integer
+              xml:
+                attribute: true
+            games_won:
+              type: integer
+              xml:
+                attribute: true
+            groundstroke_errors:
+              type: integer
+              xml:
+                attribute: true
+            groundstroke_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            groundstroke_winners:
+              type: integer
+              xml:
+                attribute: true
+            lob_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            lob_winners:
+              type: integer
+              xml:
+                attribute: true
+            max_games_in_a_row:
+              type: integer
+              xml:
+                attribute: true
+            max_points_in_a_row:
+              type: integer
+              xml:
+                attribute: true
+            overhead_stroke_errors:
+              type: integer
+              xml:
+                attribute: true
+            overhead_stroke_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            overhead_stroke_winners:
+              type: integer
+              xml:
+                attribute: true
+            points_won:
+              type: integer
+              xml:
+                attribute: true
+            points_won_from_last_10:
+              type: integer
+              xml:
+                attribute: true
+            return_errors:
+              type: integer
+              xml:
+                attribute: true
+            return_errors_unforced:
+              type: integer
+              xml:
+                attribute: true
+            return_winners:
+              type: integer
+              xml:
+                attribute: true
+            returns_played:
+              type: integer
+              xml:
+                attribute: true
+            second_serve_points_won:
+              type: integer
+              xml:
+                attribute: true
+            second_serve_successful:
+              type: integer
+              xml:
+                attribute: true
+            service_games_won:
+              type: integer
+              xml:
+                attribute: true
+            service_points_lost:
+              type: integer
+              xml:
+                attribute: true
+            service_points_won:
+              type: integer
+              xml:
+                attribute: true
+            tiebreaks_won:
+              type: integer
+              xml:
+                attribute: true
+            total_breakpoints:
+              type: integer
+              xml:
+                attribute: true
+            volley_unforced_errors:
+              type: integer
+              xml:
+                attribute: true
+            volley_winners:
+              type: integer
+              xml:
+                attribute: true
+          type: object
+          xml:
+            name: statistics
+            x-sr-object-name: CompetitorStatisticsStatistics
+      type: object
+      xml:
+        name: competitor
+        x-sr-object-name: CompetitorStatistics
+    sport_event_context:
+      additionalProperties: false
+      properties:
+        category:
+          $ref: '#/components/schemas/category'
+        competition:
+          $ref: '#/components/schemas/competition'
+        groups:
+          items:
+            $ref: '#/components/schemas/sport_event_context_group'
+          type: array
+          xml:
+            name: groups
+            wrapped: true
+        mode:
+          $ref: '#/components/schemas/sport_event_mode'
+        round:
+          $ref: '#/components/schemas/sport_event_context_round'
+        season:
+          $ref: '#/components/schemas/season'
+        sport:
+          $ref: '#/components/schemas/sport'
+        stage:
+          $ref: '#/components/schemas/sport_event_context_stage'
+      required:
+      - sport
+      - category
+      - competition
+      - season
+      type: object
+      xml:
+        name: sport_event_context
+    sport_event_context_group:
+      additionalProperties: false
+      properties:
+        group_name:
+          type: string
+          xml:
+            attribute: true
+        id:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: group
+        x-sr-object-name: SportEventContextGroup
+    sport_event_context_round:
+      additionalProperties: false
+      properties:
+        competition_sport_event_number:
+          type: integer
+          xml:
+            attribute: true
+        cup_round_id:
+          description: Cup round URN (sr:cup_round:x)
+          type: string
+          xml:
+            attribute: true
+        cup_round_number_of_sport_events:
+          type: integer
+          xml:
+            attribute: true
+        cup_round_sport_event_number:
+          type: integer
+          xml:
+            attribute: true
+        name:
+          $ref: '#/components/schemas/enum_sport_event_context_round_name'
+        number:
+          type: integer
+          xml:
+            attribute: true
+        other_sport_event_id:
+          pattern: ^sr:sport_event:\d+$
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: round
+        x-sr-object-name: SportEventContextRound
+    sport_event_context_stage:
+      additionalProperties: false
+      properties:
+        end_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        order:
+          type: integer
+          xml:
+            attribute: true
+        phase:
+          $ref: '#/components/schemas/enum_phase'
+        start_date:
+          format: date
+          type: string
+          xml:
+            attribute: true
+        type:
+          $ref: '#/components/schemas/enum_stage_type'
+        year:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - order
+      - type
+      - phase
+      type: object
+      xml:
+        name: stage
+        x-sr-object-name: SportEventContextStage
+    sport_event_mode:
+      additionalProperties: false
+      properties:
+        best_of:
+          $ref: '#/components/schemas/enum_sport_event_context_mode_best_of'
+      type: object
+      xml:
+        name: mode
+    sport_event_probability:
+      additionalProperties: false
+      properties:
+        markets:
+          items:
+            $ref: '#/components/schemas/probability_market_two_three_way'
+          type: array
+          xml:
+            name: markets
+            wrapped: true
+        sport_event:
+          $ref: '#/components/schemas/sport_event'
+        sport_event_status:
+          $ref: '#/components/schemas/sport_event_status'
+      type: object
+      xml:
+        name: sport_event_probability
+    sport_event_statistics:
+      properties:
+        periods:
+          items:
+            $ref: '#/components/schemas/sport_event_statistics_period'
+          type: array
+          xml:
+            name: periods
+            wrapped: true
+            x-sr-object-name: SportEventStatisticsPeriods
+        totals:
+          $ref: '#/components/schemas/sport_event_statistics_totals'
+      type: object
+      xml:
+        name: statistics
+        x-sr-object-name: SportEventStatistics
+    sport_event_statistics_period:
+      additionalProperties: false
+      properties:
+        competitors:
+          items:
+            properties:
+              abbreviation:
+                type: string
+                xml:
+                  attribute: true
+              bracket_number:
+                type: integer
+                xml:
+                  attribute: true
+              country:
+                type: string
+                xml:
+                  attribute: true
+              country_code:
+                type: string
+                xml:
+                  attribute: true
+              gender:
+                $ref: '#/components/schemas/enum_gender'
+              id:
+                description: Competitor URN (sr:competitor:x)
+                type: string
+                xml:
+                  attribute: true
+              name:
+                type: string
+                xml:
+                  attribute: true
+              players:
+                items:
+                  $ref: '#/components/schemas/double_competitor_player'
+                type: array
+                xml:
+                  name: players
+                  wrapped: true
+                  x-sr-object-name: DoubleCompetitorPlayers
+              qualifier:
+                type: string
+                xml:
+                  attribute: true
+              seed:
+                type: integer
+                xml:
+                  attribute: true
+              statistics:
+                properties:
+                  aces:
+                    type: integer
+                    xml:
+                      attribute: true
+                  backhand_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  backhand_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  backhand_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  breakpoints_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  double_faults:
+                    type: integer
+                    xml:
+                      attribute: true
+                  drop_shot_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  drop_shot_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  first_serve_points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  first_serve_successful:
+                    type: integer
+                    xml:
+                      attribute: true
+                  forehand_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  forehand_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  forehand_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  games_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  groundstroke_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  groundstroke_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  groundstroke_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  lob_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  lob_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  max_games_in_a_row:
+                    type: integer
+                    xml:
+                      attribute: true
+                  max_points_in_a_row:
+                    type: integer
+                    xml:
+                      attribute: true
+                  overhead_stroke_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  overhead_stroke_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  overhead_stroke_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  points_won_from_last_10:
+                    type: integer
+                    xml:
+                      attribute: true
+                  return_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  return_errors_unforced:
+                    type: integer
+                    xml:
+                      attribute: true
+                  return_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  returns_played:
+                    type: integer
+                    xml:
+                      attribute: true
+                  second_serve_points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  second_serve_successful:
+                    type: integer
+                    xml:
+                      attribute: true
+                  service_games_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  service_points_lost:
+                    type: integer
+                    xml:
+                      attribute: true
+                  service_points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  tiebreaks_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  total_breakpoints:
+                    type: integer
+                    xml:
+                      attribute: true
+                  volley_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  volley_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                type: object
+                xml:
+                  name: statistics
+                  x-sr-object-name: CompetitorStatisticsStatistics
+              virtual:
+                type: boolean
+                xml:
+                  attribute: true
+            required:
+            - id
+            - name
+            type: object
+            xml:
+              name: competitor
+              x-sr-object-name: CompetitorStatistics
+          type: array
+          xml:
+            name: competitors
+            wrapped: true
+            x-sr-object-name: CompetitorStatisticsCompetitors
+        number:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: period
+        x-sr-object-name: SportEventStatisticsPeriod
+    sport_event_statistics_totals:
+      additionalProperties: false
+      properties:
+        competitors:
+          items:
+            properties:
+              abbreviation:
+                type: string
+                xml:
+                  attribute: true
+              bracket_number:
+                type: integer
+                xml:
+                  attribute: true
+              country:
+                type: string
+                xml:
+                  attribute: true
+              country_code:
+                type: string
+                xml:
+                  attribute: true
+              gender:
+                $ref: '#/components/schemas/enum_gender'
+              id:
+                description: Competitor URN (sr:competitor:x)
+                type: string
+                xml:
+                  attribute: true
+              name:
+                type: string
+                xml:
+                  attribute: true
+              players:
+                items:
+                  $ref: '#/components/schemas/double_competitor_player'
+                type: array
+                xml:
+                  name: players
+                  wrapped: true
+                  x-sr-object-name: DoubleCompetitorPlayers
+              qualifier:
+                type: string
+                xml:
+                  attribute: true
+              seed:
+                type: integer
+                xml:
+                  attribute: true
+              statistics:
+                properties:
+                  aces:
+                    type: integer
+                    xml:
+                      attribute: true
+                  backhand_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  backhand_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  backhand_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  breakpoints_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  double_faults:
+                    type: integer
+                    xml:
+                      attribute: true
+                  drop_shot_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  drop_shot_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  first_serve_points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  first_serve_successful:
+                    type: integer
+                    xml:
+                      attribute: true
+                  forehand_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  forehand_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  forehand_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  games_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  groundstroke_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  groundstroke_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  groundstroke_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  lob_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  lob_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  max_games_in_a_row:
+                    type: integer
+                    xml:
+                      attribute: true
+                  max_points_in_a_row:
+                    type: integer
+                    xml:
+                      attribute: true
+                  overhead_stroke_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  overhead_stroke_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  overhead_stroke_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  points_won_from_last_10:
+                    type: integer
+                    xml:
+                      attribute: true
+                  return_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  return_errors_unforced:
+                    type: integer
+                    xml:
+                      attribute: true
+                  return_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                  returns_played:
+                    type: integer
+                    xml:
+                      attribute: true
+                  second_serve_points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  second_serve_successful:
+                    type: integer
+                    xml:
+                      attribute: true
+                  service_games_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  service_points_lost:
+                    type: integer
+                    xml:
+                      attribute: true
+                  service_points_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  tiebreaks_won:
+                    type: integer
+                    xml:
+                      attribute: true
+                  total_breakpoints:
+                    type: integer
+                    xml:
+                      attribute: true
+                  volley_unforced_errors:
+                    type: integer
+                    xml:
+                      attribute: true
+                  volley_winners:
+                    type: integer
+                    xml:
+                      attribute: true
+                type: object
+                xml:
+                  name: statistics
+                  x-sr-object-name: CompetitorStatisticsStatistics
+              virtual:
+                type: boolean
+                xml:
+                  attribute: true
+            required:
+            - id
+            - name
+            type: object
+            xml:
+              name: competitor
+              x-sr-object-name: CompetitorStatistics
+          type: array
+          xml:
+            name: competitors
+            wrapped: true
+            x-sr-object-name: CompetitorStatisticsCompetitors
+      type: object
+      xml:
+        name: totals
+        x-sr-object-name: SportEventStatisticsTotals
+    sport_event_status:
+      additionalProperties: false
+      properties:
+        away_normaltime_score:
+          type: integer
+          xml:
+            attribute: true
+        away_overtime_score:
+          type: integer
+          xml:
+            attribute: true
+        away_score:
+          type: integer
+          xml:
+            attribute: true
+        decided_by_fed:
+          type: boolean
+          xml:
+            attribute: true
+        game_state:
+          $ref: '#/components/schemas/game_state'
+        home_normaltime_score:
+          type: integer
+          xml:
+            attribute: true
+        home_overtime_score:
+          type: integer
+          xml:
+            attribute: true
+        home_score:
+          type: integer
+          xml:
+            attribute: true
+        match_status:
+          $ref: '#/components/schemas/enum_sport_event_match_status'
+        period_scores:
+          items:
+            $ref: '#/components/schemas/period_score'
+          type: array
+          xml:
+            name: period_scores
+            wrapped: true
+        scout_abandoned:
+          description: Scout has abandoned the match, no further updates.
+          type: boolean
+          xml:
+            attribute: true
+        status:
+          $ref: '#/components/schemas/enum_sport_event_status'
+        winner_id:
+          description: Competitor URN (sr:competitor:x)
+          type: string
+          xml:
+            attribute: true
+        winning_reason:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - status
+      type: object
+      xml:
+        name: sport_event_status
+    sport_event_timeline:
+      additionalProperties: false
+      properties:
+        id:
+          description: Sport Event URN (sr:sport_event:x)
+          type: string
+          xml:
+            attribute: true
+        sport_event_status:
+          $ref: '#/components/schemas/sport_event_status'
+        start_time:
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        timeline:
+          items:
+            $ref: '#/components/schemas/generic_event'
+          type: array
+          xml:
+            name: timeline
+            wrapped: true
+      type: object
+      xml:
+        name: sport_event_timeline
+        x-sr-object-name: SportEventWithTimeline
+    sport_event_timeline_delta:
+      additionalProperties: false
+      properties:
+        id:
+          description: Sport Event URN (sr:sport_event:x)
+          type: string
+          xml:
+            attribute: true
+        sport_event_status:
+          $ref: '#/components/schemas/sport_event_status'
+        start_time:
+          format: date-time
+          type: string
+          xml:
+            attribute: true
+        timeline:
+          items:
+            $ref: '#/components/schemas/generic_event'
+          type: array
+          xml:
+            name: timeline
+            wrapped: true
+      type: object
+      xml:
+        name: sport_event_timeline
+        x-sr-object-name: SportEventWithTimelineDelta
+    standing:
+      additionalProperties: false
+      properties:
+        groups:
+          items:
+            $ref: '#/components/schemas/standing_group'
+          type: array
+          xml:
+            name: groups
+            wrapped: true
+            x-sr-object-name: StandingGroups
+        round:
+          type: integer
+          xml:
+            attribute: true
+        tie_break_rule:
+          type: string
+          xml:
+            attribute: true
+        type:
+          enum:
+          - total
+          - home
+          - away
+          - first_half_total
+          - first_half_home
+          - first_half_away
+          - second_half_total
+          - second_half_home
+          - second_half_away
+          type: string
+          xml:
+            attribute: true
+            name: StandingTypeEnum
+      required:
+      - type
+      type: object
+      xml:
+        name: season_standing
+        x-sr-object-name: SeasonStanding
+    standing_competitor:
+      properties:
+        comments:
+          items:
+            $ref: '#/components/schemas/standing_competitor_comment'
+          type: array
+          xml:
+            name: comments
+            wrapped: true
+            x-sr-object-name: StandingGroupComments
+        competitor:
+          $ref: '#/components/schemas/competitor'
+        current_outcome:
+          type: string
+          xml:
+            attribute: true
+        loss:
+          type: integer
+          xml:
+            attribute: true
+        played:
+          type: integer
+          xml:
+            attribute: true
+        points:
+          type: integer
+          xml:
+            attribute: true
+        rank:
+          type: integer
+          xml:
+            attribute: true
+        sets_lost:
+          type: integer
+          xml:
+            attribute: true
+        sets_won:
+          type: integer
+          xml:
+            attribute: true
+        win:
+          type: integer
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: standing
+        x-sr-object-name: CompetitorStanding
+    standing_competitor_comment:
+      additionalProperties: false
+      properties:
+        text:
+          example: 1 point deducted due to decision by FA
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: comment
+    standing_group:
+      additionalProperties: false
+      properties:
+        comments:
+          items:
+            $ref: '#/components/schemas/standing_group_comment'
+          type: array
+          xml:
+            name: comments
+            wrapped: true
+            x-sr-object-name: StandingGroupComments
+        group_name:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Group URN (sr:group:x)
+          type: string
+          xml:
+            attribute: true
+        live:
+          type: boolean
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        parent_group_id:
+          type: string
+          xml:
+            attribute: true
+        stage:
+          $ref: '#/components/schemas/sport_event_context_stage'
+        standings:
+          items:
+            $ref: '#/components/schemas/standing_competitor'
+          type: array
+          xml:
+            name: standings
+            wrapped: true
+            x-sr-object-name: StandingGroupStandings
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: group
+        x-sr-object-name: StandingGroup
+    standing_group_comment:
+      additionalProperties: false
+      properties:
+        text:
+          example: The group winner, runner-up and the two best 3rd ranked teams are
+            qualified for the playoffs
+          type: string
+          xml:
+            attribute: true
+      type: object
+      xml:
+        name: comment
+    statistics_surface:
+      additionalProperties: false
+      properties:
+        competitions_played:
+          type: integer
+          xml:
+            attribute: true
+            name: competitions_played
+        competitions_won:
+          type: integer
+          xml:
+            attribute: true
+            name: competitions_won
+        matches_played:
+          type: integer
+          xml:
+            attribute: true
+            name: matches_played
+        matches_won:
+          type: integer
+          xml:
+            attribute: true
+            name: matches_won
+      type: object
+      xml:
+        name: statistics
+        x-sr-object-name: SurfaceStatistics
+    stream_events:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/stream_metadata'
+        payload:
+          properties:
+            event:
+              $ref: '#/components/schemas/generic_event'
+            sport_event_status:
+              $ref: '#/components/schemas/sport_event_status'
+          type: object
+          xml:
+            name: payload
+            x-sr-object-name: PayloadStreamEvents
+      type: object
+      xml:
+        name: root
+        x-sr-object-name: RootStreamEvents
+    stream_heartbeat:
+      properties:
+        from:
+          type: integer
+          xml:
+            attribute: true
+        package:
+          type: string
+          xml:
+            attribute: true
+        to:
+          type: integer
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - from
+      - to
+      - type
+      - package
+      type: object
+      xml:
+        name: heartbeat
+    stream_metadata:
+      properties:
+        channel:
+          type: string
+          xml:
+            attribute: true
+        competition_id:
+          type: string
+          xml:
+            attribute: true
+        event_id:
+          type: string
+          xml:
+            attribute: true
+        format:
+          type: string
+          xml:
+            attribute: true
+        season_id:
+          type: string
+          xml:
+            attribute: true
+        sport_event_id:
+          type: string
+          xml:
+            attribute: true
+        sport_id:
+          type: string
+          xml:
+            attribute: true
+      required:
+      - format
+      - sport_event_id
+      - event_id
+      - competition_id
+      - sport_id
+      - season_id
+      type: object
+      xml:
+        name: metadata
+    stream_statistics_json:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/stream_metadata'
+        payload:
+          properties:
+            sport_event_status:
+              $ref: '#/components/schemas/sport_event_status'
+            statistics:
+              items:
+                properties:
+                  competitors:
+                    items:
+                      properties:
+                        abbreviation:
+                          type: string
+                          xml:
+                            attribute: true
+                        bracket_number:
+                          type: integer
+                          xml:
+                            attribute: true
+                        country:
+                          type: string
+                          xml:
+                            attribute: true
+                        country_code:
+                          type: string
+                          xml:
+                            attribute: true
+                        gender:
+                          $ref: '#/components/schemas/enum_gender'
+                        id:
+                          description: Competitor URN (sr:competitor:x)
+                          type: string
+                          xml:
+                            attribute: true
+                        name:
+                          type: string
+                          xml:
+                            attribute: true
+                        players:
+                          items:
+                            $ref: '#/components/schemas/double_competitor_player'
+                          type: array
+                          xml:
+                            name: players
+                            wrapped: true
+                            x-sr-object-name: DoubleCompetitorPlayers
+                        qualifier:
+                          type: string
+                          xml:
+                            attribute: true
+                        seed:
+                          type: integer
+                          xml:
+                            attribute: true
+                        statistics:
+                          properties:
+                            aces:
+                              type: integer
+                              xml:
+                                attribute: true
+                            backhand_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            backhand_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            backhand_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            breakpoints_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            double_faults:
+                              type: integer
+                              xml:
+                                attribute: true
+                            drop_shot_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            drop_shot_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            first_serve_points_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            first_serve_successful:
+                              type: integer
+                              xml:
+                                attribute: true
+                            forehand_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            forehand_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            forehand_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            games_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            groundstroke_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            groundstroke_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            groundstroke_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            lob_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            lob_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            max_games_in_a_row:
+                              type: integer
+                              xml:
+                                attribute: true
+                            max_points_in_a_row:
+                              type: integer
+                              xml:
+                                attribute: true
+                            overhead_stroke_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            overhead_stroke_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            overhead_stroke_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            points_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            points_won_from_last_10:
+                              type: integer
+                              xml:
+                                attribute: true
+                            return_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            return_errors_unforced:
+                              type: integer
+                              xml:
+                                attribute: true
+                            return_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                            returns_played:
+                              type: integer
+                              xml:
+                                attribute: true
+                            second_serve_points_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            second_serve_successful:
+                              type: integer
+                              xml:
+                                attribute: true
+                            service_games_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            service_points_lost:
+                              type: integer
+                              xml:
+                                attribute: true
+                            service_points_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            tiebreaks_won:
+                              type: integer
+                              xml:
+                                attribute: true
+                            total_breakpoints:
+                              type: integer
+                              xml:
+                                attribute: true
+                            volley_unforced_errors:
+                              type: integer
+                              xml:
+                                attribute: true
+                            volley_winners:
+                              type: integer
+                              xml:
+                                attribute: true
+                          type: object
+                          xml:
+                            name: statistics
+                            x-sr-object-name: CompetitorStatisticsStatistics
+                        virtual:
+                          type: boolean
+                          xml:
+                            attribute: true
+                      required:
+                      - id
+                      - name
+                      type: object
+                      xml:
+                        name: competitor
+                        x-sr-object-name: CompetitorStatistics
+                    type: array
+                type: object
+              type: array
+          type: object
+          xml:
+            name: payload
+            x-sr-object-name: PayloadStreamStatistics
+      type: object
+      xml:
+        name: root
+        x-sr-object-name: RootStreamStatistics
+    stream_statistics_xml:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/stream_metadata'
+        payload:
+          properties:
+            sport_event_status:
+              $ref: '#/components/schemas/sport_event_status'
+            statistics:
+              properties:
+                competitors:
+                  items:
+                    properties:
+                      abbreviation:
+                        type: string
+                        xml:
+                          attribute: true
+                      bracket_number:
+                        type: integer
+                        xml:
+                          attribute: true
+                      country:
+                        type: string
+                        xml:
+                          attribute: true
+                      country_code:
+                        type: string
+                        xml:
+                          attribute: true
+                      gender:
+                        $ref: '#/components/schemas/enum_gender'
+                      id:
+                        description: Competitor URN (sr:competitor:x)
+                        type: string
+                        xml:
+                          attribute: true
+                      name:
+                        type: string
+                        xml:
+                          attribute: true
+                      players:
+                        items:
+                          $ref: '#/components/schemas/double_competitor_player'
+                        type: array
+                        xml:
+                          name: players
+                          wrapped: true
+                          x-sr-object-name: DoubleCompetitorPlayers
+                      qualifier:
+                        type: string
+                        xml:
+                          attribute: true
+                      seed:
+                        type: integer
+                        xml:
+                          attribute: true
+                      statistics:
+                        properties:
+                          aces:
+                            type: integer
+                            xml:
+                              attribute: true
+                          backhand_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          backhand_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          backhand_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          breakpoints_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          double_faults:
+                            type: integer
+                            xml:
+                              attribute: true
+                          drop_shot_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          drop_shot_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          first_serve_points_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          first_serve_successful:
+                            type: integer
+                            xml:
+                              attribute: true
+                          forehand_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          forehand_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          forehand_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          games_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          groundstroke_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          groundstroke_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          groundstroke_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          lob_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          lob_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          max_games_in_a_row:
+                            type: integer
+                            xml:
+                              attribute: true
+                          max_points_in_a_row:
+                            type: integer
+                            xml:
+                              attribute: true
+                          overhead_stroke_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          overhead_stroke_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          overhead_stroke_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          points_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          points_won_from_last_10:
+                            type: integer
+                            xml:
+                              attribute: true
+                          return_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          return_errors_unforced:
+                            type: integer
+                            xml:
+                              attribute: true
+                          return_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                          returns_played:
+                            type: integer
+                            xml:
+                              attribute: true
+                          second_serve_points_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          second_serve_successful:
+                            type: integer
+                            xml:
+                              attribute: true
+                          service_games_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          service_points_lost:
+                            type: integer
+                            xml:
+                              attribute: true
+                          service_points_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          tiebreaks_won:
+                            type: integer
+                            xml:
+                              attribute: true
+                          total_breakpoints:
+                            type: integer
+                            xml:
+                              attribute: true
+                          volley_unforced_errors:
+                            type: integer
+                            xml:
+                              attribute: true
+                          volley_winners:
+                            type: integer
+                            xml:
+                              attribute: true
+                        type: object
+                        xml:
+                          name: statistics
+                          x-sr-object-name: CompetitorStatisticsStatistics
+                      virtual:
+                        type: boolean
+                        xml:
+                          attribute: true
+                    required:
+                    - id
+                    - name
+                    type: object
+                    xml:
+                      name: competitor
+                      x-sr-object-name: CompetitorStatistics
+                  type: array
+                  xml:
+                    name: competitors
+                    wrapped: true
+                    x-sr-object-name: CompetitorStatisticsCompetitors
+              type: object
+              xml:
+                name: statistics
+                x-sr-object-name: StreamPayloadStatistics
+          type: object
+          xml:
+            name: payload
+            x-sr-object-name: PayloadStreamStatistics
+      type: object
+      xml:
+        name: root
+        x-sr-object-name: RootStreamStatistics
+    summary:
+      additionalProperties: false
+      properties:
+        sport_event:
+          $ref: '#/components/schemas/sport_event'
+        sport_event_status:
+          $ref: '#/components/schemas/sport_event_status'
+        statistics:
+          $ref: '#/components/schemas/sport_event_statistics'
+      required:
+      - sport_event
+      - sport_event_status
+      type: object
+      xml:
+        name: summary
+    surface:
+      additionalProperties: false
+      properties:
+        statistics:
+          $ref: '#/components/schemas/statistics_surface'
+        type:
+          $ref: '#/components/schemas/enum_surface_type'
+      type: object
+      xml:
+        name: surface
+    venue:
+      additionalProperties: false
+      properties:
+        capacity:
+          type: integer
+          xml:
+            attribute: true
+        changed:
+          type: boolean
+          xml:
+            attribute: true
+        city_name:
+          type: string
+          xml:
+            attribute: true
+        country_code:
+          description: ISO 3361-1 A3 Country Code
+          type: string
+          xml:
+            attribute: true
+        country_name:
+          type: string
+          xml:
+            attribute: true
+        id:
+          description: Venue URN (sr:venue:x)
+          type: string
+          xml:
+            attribute: true
+        map_coordinates:
+          type: string
+          xml:
+            attribute: true
+        name:
+          type: string
+          xml:
+            attribute: true
+        reduced_capacity:
+          type: boolean
+          xml:
+            attribute: true
+        reduced_capacity_max:
+          type: integer
+          xml:
+            attribute: true
+        timezone:
+          description: Australia/Melbourne
+          type: string
+          xml:
+            attribute: true
+      required:
+      - id
+      - name
+      type: object
+      xml:
+        name: venue
+    winner_last_season:
+      additionalProperties: false
+      properties:
+        competitor:
+          $ref: '#/components/schemas/competitor'
+      type: object
+      xml:
+        name: winner_last_season
+  responses:
+    competition_info:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              competition:
+                $ref: '#/components/schemas/competition_extended'
+              generated_at:
+                format: date-time
+                type: string
+              info:
+                $ref: '#/components/schemas/info'
+            type: object
+        application/xml:
+          schema:
+            properties:
+              competition:
+                $ref: '#/components/schemas/competition_extended'
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              info:
+                $ref: '#/components/schemas/info'
+            type: object
+            xml:
+              name: competition_info
+              wrapped: true
+              x-sr-object-name: CompetitionInfoEndpoint
+      description: OK
+    competition_seasons:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              seasons:
+                items:
+                  $ref: '#/components/schemas/season'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/season'
+            type: object
+            xml:
+              name: competition_seasons
+              wrapped: true
+              x-sr-object-name: CompetitionSeasons
+      description: OK
+    competitions:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              competitions:
+                items:
+                  $ref: '#/components/schemas/competition_with_category'
+                type: array
+              generated_at:
+                format: date-time
+                type: string
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/competition_with_category'
+            type: object
+            xml:
+              name: competitions
+              wrapped: true
+              x-sr-object-name: CompetitionsEndpoint
+      description: OK
+    competitor_doubles_competitions_played:
+      content:
+        application/json:
+          schema:
+            properties:
+              competitions:
+                items:
+                  $ref: '#/components/schemas/competition_with_competitors'
+                type: array
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/competition_with_competitors'
+            type: object
+            xml:
+              name: competitor_doubles_competitions_played
+              wrapped: true
+              x-sr-object-name: CompetitorDoublesCompetitionsPlayedEndpoint
+      description: OK
+    competitor_itf_mappings:
+      content:
+        application/json:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              mappings:
+                items:
+                  $ref: '#/components/schemas/mapping'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/mapping'
+            type: object
+            xml:
+              name: competitor_itf_mappings
+              wrapped: true
+              x-sr-object-name: CompetitorItfMappings
+      description: OK
+    competitor_merge_mappings:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              mappings:
+                items:
+                  $ref: '#/components/schemas/merge_mapping'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/merge_mapping'
+            type: object
+            xml:
+              name: competitor_merge_mappings
+              wrapped: true
+              x-sr-object-name: CompetitorMergeMappingsEndpoint
+      description: OK
+    competitor_profile:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              competitions_played:
+                items:
+                  $ref: '#/components/schemas/competition'
+                type: array
+              competitor:
+                $ref: '#/components/schemas/competitor'
+              competitor_rankings:
+                items:
+                  $ref: '#/components/schemas/ranking_competitor'
+                type: array
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              info:
+                $ref: '#/components/schemas/competitor_info'
+              periods:
+                items:
+                  $ref: '#/components/schemas/period'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              competitions_played:
+                items:
+                  $ref: '#/components/schemas/competition'
+                type: array
+                xml:
+                  name: competitions_played
+                  wrapped: true
+              competitor:
+                $ref: '#/components/schemas/competitor'
+              competitor_rankings:
+                items:
+                  $ref: '#/components/schemas/ranking_competitor'
+                type: array
+                xml:
+                  name: competitor_rankings
+                  wrapped: true
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              info:
+                $ref: '#/components/schemas/competitor_info'
+              periods:
+                items:
+                  $ref: '#/components/schemas/period'
+                type: array
+                xml:
+                  name: periods
+                  wrapped: true
+            type: object
+            xml:
+              name: competitor_profile
+              x-sr-object-name: CompetitorProfileEndpoint
+      description: OK
+    competitor_summaries:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              summaries:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/summary'
+            type: object
+            xml:
+              name: competitor_summaries
+              wrapped: true
+              x-sr-object-name: CompetitorSummariesEndpoint
+      description: OK
+    competitor_versus_summaries:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              competitors:
+                items:
+                  $ref: '#/components/schemas/competitor'
+                type: array
+              generated_at:
+                format: date-time
+                type: string
+              last_meetings:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+              next_meetings:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              competitors:
+                items:
+                  $ref: '#/components/schemas/competitor'
+                type: array
+                xml:
+                  name: competitors
+                  wrapped: true
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              last_meetings:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+                xml:
+                  name: last_meetings
+                  wrapped: true
+              next_meetings:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+                xml:
+                  name: next_meetings
+                  wrapped: true
+            type: object
+            xml:
+              name: competitor_versus_summaries
+              x-sr-object-name: CompetitorVersusSummariesEndpoint
+      description: OK
+    complexes:
+      content:
+        application/json:
+          schema:
+            properties:
+              complexes:
+                items:
+                  $ref: '#/components/schemas/complex'
+                type: array
+              generated_at:
+                format: date-time
+                type: string
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/complex'
+            type: object
+            xml:
+              name: complexes
+              wrapped: true
+              x-sr-object-name: ComplexesEndpoint
+      description: OK
+    double_competitors_race_rankings:
+      content:
+        application/json:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              rankings:
+                items:
+                  $ref: '#/components/schemas/ranking'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/ranking'
+            type: object
+            xml:
+              name: double_competitors_race_rankings
+              wrapped: true
+              x-sr-object-name: DoubleRaceRankingsEndpoint
+      description: OK
+    double_competitors_rankings:
+      content:
+        application/json:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              rankings:
+                items:
+                  $ref: '#/components/schemas/ranking'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/ranking'
+            type: object
+            xml:
+              name: double_competitors_rankings
+              wrapped: true
+              x-sr-object-name: DoubleRankingsEndpoint
+      description: OK
+    race_rankings:
+      content:
+        application/json:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              rankings:
+                items:
+                  $ref: '#/components/schemas/single_ranking'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/single_ranking'
+            type: object
+            xml:
+              name: race_rankings
+              wrapped: true
+              x-sr-object-name: RaceRankingsEndpoint
+      description: OK
+    rankings:
+      content:
+        application/json:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              rankings:
+                items:
+                  $ref: '#/components/schemas/single_ranking'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/single_ranking'
+            type: object
+            xml:
+              name: rankings
+              wrapped: true
+              x-sr-object-name: RankingEndpoint
+      description: OK
+    schedule_live_summaries:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              summaries:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/summary'
+            type: object
+            xml:
+              name: schedule_live_summaries
+              wrapped: true
+              x-sr-object-name: ScheduleLiveSummariesEndpoint
+      description: OK
+    schedule_live_timelines:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_event_timelines:
+                items:
+                  $ref: '#/components/schemas/sport_event_timeline'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/sport_event_timeline'
+            type: object
+            xml:
+              name: schedule_live_timelines
+              wrapped: true
+              x-sr-object-name: ScheduleLiveTimelinesEndpoint
+      description: OK
+    schedule_live_timelines_delta:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_event_timeline_deltas:
+                items:
+                  properties:
+                    sport_event_timeline:
+                      $ref: '#/components/schemas/sport_event_timeline_delta'
+                  type: object
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/sport_event_timeline_delta'
+            type: object
+            xml:
+              name: schedule_live_timelines_delta
+              wrapped: true
+              x-sr-object-name: ScheduleLiveTimelinesEndpoint
+      description: OK
+    schedule_summaries:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              summaries:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/summary'
+            type: object
+            xml:
+              name: schedule_summaries
+              wrapped: true
+              x-sr-object-name: ScheduleSummariesEndpoint
+      description: OK
+      headers:
+        X-Max-Results:
+          description: Total number of sport events for requested date.
+          schema:
+            type: integer
+        X-Offset:
+          description: Number of sport events skipped before collecting current result
+            set.
+          schema:
+            type: integer
+        X-Result:
+          description: Number of sport events returned for current request.
+          schema:
+            type: integer
+    season_brackets:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              stages:
+                items:
+                  $ref: '#/components/schemas/season_brackets_stage'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              stages:
+                items:
+                  $ref: '#/components/schemas/season_brackets_stage'
+                type: array
+                xml:
+                  name: stages
+                  wrapped: true
+                  x-sr-object-name: SeasonBracketsStages
+            type: object
+            xml:
+              name: season_stages_groups_cup_rounds
+              x-sr-object-name: SeasonBracketsEndpoint
+      description: OK
+    season_competitors:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              season_competitors:
+                items:
+                  $ref: '#/components/schemas/season_competitor'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/season_competitor'
+            type: object
+            xml:
+              name: season_competitors
+              wrapped: true
+              x-sr-object-name: SeasonCompetitorsEndpoint
+      description: OK
+      headers:
+        X-Max-Results:
+          description: Total number of competitors in requested season.
+          schema:
+            type: integer
+        X-Offset:
+          description: Number of competitors skipped before collecting current result
+            set.
+          schema:
+            type: integer
+        X-Result:
+          description: Number of competitors returned for current request.
+          schema:
+            type: integer
+    season_info:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              coverage:
+                $ref: '#/components/schemas/coverage'
+              generated_at:
+                format: date-time
+                type: string
+              season:
+                $ref: '#/components/schemas/season_extended'
+              stages:
+                items:
+                  $ref: '#/components/schemas/season_stage'
+                type: array
+              winner_last_season:
+                $ref: '#/components/schemas/winner_last_season'
+            type: object
+        application/xml:
+          schema:
+            properties:
+              coverage:
+                $ref: '#/components/schemas/coverage'
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              season:
+                $ref: '#/components/schemas/season_extended'
+              stages:
+                items:
+                  $ref: '#/components/schemas/season_stage'
+                type: array
+                xml:
+                  name: stages
+                  wrapped: true
+              winner_last_season:
+                $ref: '#/components/schemas/winner_last_season'
+            type: object
+            xml:
+              name: season_info
+              x-sr-object-name: SeasonInfoEndpoint
+      description: OK
+    season_probabilities:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_event_probabilities:
+                items:
+                  $ref: '#/components/schemas/sport_event_probability'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/sport_event_probability'
+            type: object
+            xml:
+              name: season_probabilities
+              wrapped: true
+              x-sr-object-name: SeasonsProbabilitiesEndpoint
+      description: OK
+      headers:
+        X-Max-Results:
+          description: Total number of sport events in requested season.
+          schema:
+            type: integer
+        X-Offset:
+          description: Number of sport events skipped before collecting current result
+            set.
+          schema:
+            type: integer
+        X-Result:
+          description: Number of sport events returned for current request.
+          schema:
+            type: integer
+    season_simple_team_mappings:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              simple_team_mappings:
+                items:
+                  $ref: '#/components/schemas/simple_team_mapping'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/simple_team_mapping'
+            type: object
+            xml:
+              name: season_simple_team_mappings
+              wrapped: true
+              x-sr-object-name: SeasonSimpleTeamMappingsEndpoint
+      description: OK
+    season_simple_tournament_mappings:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              simple_tournament_mappings:
+                items:
+                  $ref: '#/components/schemas/simple_tournament_mapping'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/simple_tournament_mapping'
+            type: object
+            xml:
+              name: season_simple_tournament_mappings
+              wrapped: true
+              x-sr-object-name: SeasonSimpleTournamentMappingsEndpoint
+      description: OK
+    season_standings:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              standings:
+                items:
+                  $ref: '#/components/schemas/standing'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/standing'
+            type: object
+            xml:
+              name: season_standings
+              wrapped: true
+              x-sr-object-name: SeasonStandingsEndpoint
+      description: OK
+    season_summaries:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              summaries:
+                items:
+                  $ref: '#/components/schemas/summary'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/summary'
+            type: object
+            xml:
+              name: season_summaries
+              wrapped: true
+              x-sr-object-name: SeasonSummariesEndpoint
+      description: OK
+      headers:
+        X-Max-Results:
+          description: Total number of sport events in requested season.
+          schema:
+            type: integer
+        X-Offset:
+          description: Number of sport events skipped before collecting current result
+            set.
+          schema:
+            type: integer
+        X-Result:
+          description: Number of sport events returned for current request.
+          schema:
+            type: integer
+    seasons:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              seasons:
+                items:
+                  $ref: '#/components/schemas/season'
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                $ref: '#/components/schemas/season'
+            type: object
+            xml:
+              name: seasons
+              wrapped: true
+              x-sr-object-name: SeasonsEndpoint
+      description: OK
+    sport_event_summary:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_event:
+                $ref: '#/components/schemas/sport_event'
+              sport_event_status:
+                $ref: '#/components/schemas/sport_event_status'
+              statistics:
+                $ref: '#/components/schemas/sport_event_statistics'
+            required:
+            - sport_event
+            - sport_event_status
+            type: object
+            xml:
+              name: summary
+        application/xml:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              sport_event:
+                $ref: '#/components/schemas/sport_event'
+              sport_event_status:
+                $ref: '#/components/schemas/sport_event_status'
+              statistics:
+                $ref: '#/components/schemas/sport_event_statistics'
+            required:
+            - sport_event
+            - sport_event_status
+            type: object
+            xml:
+              name: sport_event_summary
+              x-sr-object-name: SportEventSummaryEndpoint
+      description: OK
+    sport_event_timeline:
+      content:
+        application/json:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_event:
+                $ref: '#/components/schemas/sport_event'
+              sport_event_status:
+                $ref: '#/components/schemas/sport_event_status'
+              statistics:
+                $ref: '#/components/schemas/sport_event_statistics'
+              timeline:
+                items:
+                  $ref: '#/components/schemas/generic_event'
+                type: array
+                xml:
+                  name: timeline
+                  wrapped: true
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              sport_event:
+                $ref: '#/components/schemas/sport_event'
+              sport_event_status:
+                $ref: '#/components/schemas/sport_event_status'
+              statistics:
+                $ref: '#/components/schemas/sport_event_statistics'
+              timeline:
+                items:
+                  $ref: '#/components/schemas/generic_event'
+                type: array
+                xml:
+                  name: timeline
+                  wrapped: true
+            type: object
+            xml:
+              name: sport_event_timeline
+              wrapped: true
+              x-sr-object-name: SportEventTimelineEndpoint
+      description: OK
+    sport_events_created:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_events_created:
+                items:
+                  properties:
+                    active_season:
+                      type: boolean
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                properties:
+                  active_season:
+                    type: boolean
+                    xml:
+                      attribute: true
+                  created_at:
+                    format: date-time
+                    type: string
+                    xml:
+                      attribute: true
+                  id:
+                    type: string
+                    xml:
+                      attribute: true
+                type: object
+                xml:
+                  name: sport_event_created
+            type: object
+            xml:
+              name: sport_events_created
+              wrapped: true
+              x-sr-object-name: SportEventsCreatedEndpoint
+      description: OK
+      headers:
+        X-Max-Results:
+          description: Total number of created sport events.
+          schema:
+            type: integer
+        X-Offset:
+          description: Number of created sport events skipped before collecting current
+            result set.
+          schema:
+            type: integer
+        X-Result:
+          description: Number of created sport events returned for current request.
+          schema:
+            type: integer
+    sport_events_removed:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_events_removed:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    replaced_by:
+                      description: Sport Event URN (sr:sport_event:x)
+                      type: string
+                  type: object
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                properties:
+                  id:
+                    type: string
+                    xml:
+                      attribute: true
+                  replaced_by:
+                    description: Sport Event URN (sr:sport_event:x)
+                    type: string
+                    xml:
+                      attribute: true
+                type: object
+                xml:
+                  name: sport_event_removed
+            type: object
+            xml:
+              name: sport_events_removed
+              wrapped: true
+              x-sr-object-name: SportEventsRemovedEndpoint
+      description: OK
+    sport_events_updated:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+              sport_events_updated:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+            type: object
+        application/xml:
+          schema:
+            properties:
+              generated_at:
+                format: date-time
+                type: string
+                xml:
+                  attribute: true
+              items:
+                properties:
+                  id:
+                    type: string
+                    xml:
+                      attribute: true
+                  updated_at:
+                    format: date-time
+                    type: string
+                    xml:
+                      attribute: true
+                type: object
+                xml:
+                  name: sport_event_updated
+            type: object
+            xml:
+              name: sport_events_updated
+              wrapped: true
+              x-sr-object-name: SportEventsUpdatedEndpoint
+      description: OK
+      headers:
+        X-Max-Results:
+          description: Total number of updated sport events.
+          schema:
+            type: integer
+        X-Offset:
+          description: Number of updated sport events skipped before collecting current
+            result set.
+          schema:
+            type: integer
+        X-Result:
+          description: Number of updated sport events returned for current request.
+          schema:
+            type: integer
+    stream_events:
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/stream_events'
+            - $ref: '#/components/schemas/stream_heartbeat'
+        application/xml:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/stream_events'
+            - $ref: '#/components/schemas/stream_heartbeat'
+      description: OK
+    stream_statistics:
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/stream_statistics_json'
+            - $ref: '#/components/schemas/stream_heartbeat'
+        application/xml:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/stream_statistics_xml'
+            - $ref: '#/components/schemas/stream_heartbeat'
+      description: OK
+  parameters:
+    created_endpoints_limit:
+      description: 'The numbers of items to return. Default: 200'
+      example: 5
+      in: query
+      name: limit
+      schema:
+        default: 200
+        minimum: 1
+        type: integer
+    limit:
+      description: The numbers of items to return.
+      example: 5
+      in: query
+      name: limit
+      schema:
+        minimum: 1
+        type: integer
+    live:
+      description: Loading of live or static standings.
+      in: query
+      name: live
+      required: false
+      schema:
+        default: true
+        type: boolean
+    locale:
+      description: Locale used for translations
+      example: en
+      in: path
+      name: locale
+      required: true
+      schema:
+        enum:
+        - en
+        - aa
+        - aze
+        - bg
+        - br
+        - bs
+        - cs
+        - da
+        - de
+        - el
+        - es
+        - et
+        - fi
+        - fr
+        - heb
+        - hr
+        - hu
+        - id
+        - it
+        - ja
+        - ka
+        - ko
+        - lt
+        - lv
+        - me
+        - mk
+        - nl
+        - "no"
+        - pl
+        - pt
+        - ro
+        - ru
+        - se
+        - sk
+        - sl
+        - sqi
+        - sr
+        - srl
+        - th
+        - tr
+        - ukr
+        - vi
+        - zh
+        - zht
+        type: string
+    offset:
+      description: 'The number of items to skip before starting to collect the result
+        set. Default: 0'
+      example: 0
+      in: query
+      name: offset
+      schema:
+        default: 0
+        minimum: 0
+        type: integer
+    round:
+      description: Standings for specified round number. If the round number is not
+        specified, last round is displayed by default.
+      example: 2
+      in: query
+      name: round
+      schema:
+        default: 0
+        minimum: 0
+        type: integer
+    season_competitor_limit:
+      description: 'The numbers of items to return. Maximum: 1000'
+      example: 5
+      in: query
+      name: limit
+      schema:
+        default: 1000
+        maximum: 1000
+        minimum: 1
+        type: integer
+    start:
+      description: 'The number of items to skip before starting to collect the result
+        set. Default: 0'
+      example: 5
+      in: query
+      name: start
+      schema:
+        default: 0
+        minimum: 0
+        type: integer
+    stream_competition_id:
+      description: Competition URNs (sr:competition:x), separated by comma
+      explode: false
+      in: query
+      name: competition_id
+      required: false
+      schema:
+        items:
+          pattern: ^sr:competition:\d+$
+          type: string
+        type: array
+      style: form
+    stream_event_id:
+      description: Type of event, i.e. point, separated by comma
+      explode: false
+      in: query
+      name: event_id
+      required: false
+      schema:
+        items:
+          $ref: '#/components/schemas/enum_push_event_type'
+        type: array
+      style: form
+    stream_format:
+      description: Content Type of the response
+      example: json
+      in: query
+      name: format
+      schema:
+        enum:
+        - json
+        - xml
+        type: string
+    stream_season_id:
+      description: Season URNs (sr:season:x), separated by comma
+      explode: false
+      in: query
+      name: season_id
+      required: false
+      schema:
+        items:
+          pattern: ^sr:season:\d+$
+          type: string
+        type: array
+      style: form
+    stream_sport_event_id:
+      description: Sport Event URNs (sr:match:x), separated by comma
+      explode: false
+      in: query
+      name: sport_event_id
+      required: false
+      schema:
+        items:
+          pattern: ^sr:match:\d+$
+          type: string
+        type: array
+      style: form
+    stream_sport_id:
+      description: Sport URNs
+      explode: false
+      in: query
+      name: sport_id
+      required: false
+      schema:
+        items:
+          pattern: ^sr:sport:\d+$
+          type: string
+        type: array
+      style: form
+    updated_removed_endpoints_limit:
+      description: 'The numbers of items to return. Default: 200'
+      example: 5
+      in: query
+      name: limit
+      schema:
+        default: 200
+        minimum: 1
+        type: integer
+    urn_competition:
+      description: Competition URN (sr:competition:x)
+      example: sr:competition:3929
+      in: path
+      name: urn_competition
+      required: true
+      schema:
+        pattern: ^sr:competition:\d+$
+        type: string
+    urn_competitor:
+      description: Competitor URN (sr:competitor:x)
+      example: sr:competitor:94747
+      in: path
+      name: urn_competitor
+      required: true
+      schema:
+        pattern: ^sr:competitor:\d+$
+        type: string
+    urn_competitor2:
+      description: Competitor 2 URN (sr:competitor:x)
+      example: sr:competitor:168544
+      in: path
+      name: urn_competitor2
+      required: true
+      schema:
+        pattern: ^sr:competitor:\d+$
+        type: string
+    urn_date:
+      description: Date (YYYY-MM-DD)
+      example: "2020-11-03"
+      in: path
+      name: urn_date
+      required: true
+      schema:
+        pattern: ^\d{4}-\d{2}-\d{2}$
+        type: string
+    urn_season:
+      description: Season URN (sr:season:x)
+      example: sr:season:79017
+      in: path
+      name: urn_season
+      required: true
+      schema:
+        pattern: ^sr:season:\d+$
+        type: string
+    urn_sport_event:
+      description: Sport Event URN (sr:sport_event:x)
+      example: sr:sport_event:24252699
+      in: path
+      name: urn_sport_event
+      required: true
+      schema:
+        pattern: ^sr:sport_event:\d+$
+        type: string
+  securitySchemes:
+    ApiKeyAuth:
+      in: query
+      name: api_key
+      type: apiKey
+security:
+- ApiKeyAuth: []
+externalDocs:
+  description: Sportradar Developer Portal
+  url: https://developer.sportradar.com/docs/read/baseline_sports_coverage/Tennis_v3

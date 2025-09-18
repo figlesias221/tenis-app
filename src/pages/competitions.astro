@@ -1,0 +1,398 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import CompetitionsTable from "@/components/CompetitionsTable.astro";
+import { tennisApi } from "@/lib/api/tennisApi";
+import { CompetitionFormatter } from "@/lib/utils/competition-formatter";
+
+// Get filter parameters from URL
+const tourType = (Astro.url.searchParams.get('tour') || 'ATP').toUpperCase() as 'ATP' | 'WTA';
+const typeFilter = Astro.url.searchParams.get('type') || 'all'; // all, singles, doubles
+const levelFilter = Astro.url.searchParams.get('level') || 'all'; // all, grand_slam, atp_1000, etc.
+
+let competitions;
+let filteredCompetitions;
+let error;
+
+try {
+  if (tourType === 'WTA') {
+    competitions = await tennisApi.getWTACompetitions();
+  } else {
+    competitions = await tennisApi.getATPCompetitions();
+  }
+
+  // Apply filters
+  if (competitions) {
+    filteredCompetitions = {
+      ...competitions,
+      competitions: competitions.competitions.filter(comp => {
+        // Type filter (singles/doubles)
+        if (typeFilter !== 'all') {
+          if (typeFilter === 'singles' && comp.type !== 'singles') return false;
+          if (typeFilter === 'doubles' && !comp.type.includes('doubles')) return false;
+        }
+
+        // Level filter
+        if (levelFilter !== 'all' && comp.level !== levelFilter) return false;
+
+        return true;
+      })
+    };
+  }
+} catch (e) {
+  error = e instanceof Error ? e.message : "Failed to load competitions";
+  console.error("Competitions page error:", e);
+}
+
+// Get filter counts for display
+const filterCounts = competitions ? {
+  all: competitions.competitions.length,
+  singles: competitions.competitions.filter(c => c.type === 'singles').length,
+  doubles: competitions.competitions.filter(c => c.type.includes('doubles')).length,
+} : null;
+---
+
+<Layout title={`${tourType} Competitions - Tennis Live`} description={`${tourType} Tennis Competitions and Tournaments`}>
+  <Header />
+
+  <div class="min-h-screen bg-yellow-50 dark:bg-yellow-900">
+    <div class="mx-auto max-w-7xl px-4 py-6">
+      <div class="mb-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+          <div class="mb-4 lg:mb-0">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              {tourType} Competitions
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">
+              {filteredCompetitions ? `${filteredCompetitions.competitions.length} of ${competitions?.competitions.length || 0}` : 'All'} {tourType} tournaments and competitions
+            </p>
+            {competitions && (
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Last updated: {new Date(competitions.lastUpdated).toLocaleString()}
+              </p>
+            )}
+          </div>
+
+          <!-- Tour Toggle -->
+          <div class="flex bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-600 p-1">
+            <a
+              href="/competitions?tour=ATP"
+              class={`px-4 py-2 rounded font-medium transition-colors ${
+                tourType === 'ATP'
+                  ? 'bg-yellow-200 dark:bg-yellow-700 text-gray-900 dark:text-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+              }`}
+            >
+              ATP
+            </a>
+            <a
+              href="/competitions?tour=WTA"
+              class={`px-4 py-2 rounded font-medium transition-colors ${
+                tourType === 'WTA'
+                  ? 'bg-yellow-200 dark:bg-yellow-700 text-gray-900 dark:text-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+              }`}
+            >
+              WTA
+            </a>
+          </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        {competitions && (
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-600 p-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"></path>
+              </svg>
+              Filters
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Type Filter -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tournament Type</label>
+                <div class="flex flex-wrap gap-2">
+                  <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=all`}
+                     class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                       typeFilter === 'all'
+                         ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-300 dark:border-yellow-600'
+                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                     }`}>
+                    All ({filterCounts?.all || 0})
+                  </a>
+                  <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=singles`}
+                     class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                       typeFilter === 'singles'
+                         ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-600'
+                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                     }`}>
+                    👤 Singles ({filterCounts?.singles || 0})
+                  </a>
+                  <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=doubles`}
+                     class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                       typeFilter === 'doubles'
+                         ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-300 dark:border-green-600'
+                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                     }`}>
+                    👥 Doubles ({filterCounts?.doubles || 0})
+                  </a>
+                </div>
+              </div>
+
+              <!-- Level Filter -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tournament Level</label>
+                <div class="flex flex-wrap gap-2">
+                  <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=all`}
+                     class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                       levelFilter === 'all'
+                         ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-300 dark:border-yellow-600'
+                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                     }`}>
+                    All
+                  </a>
+                  <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=grand_slam`}
+                     class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                       levelFilter === 'grand_slam'
+                         ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-300 dark:border-yellow-600'
+                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                     }`}>
+                    🏆 Grand Slam
+                  </a>
+                  {tourType === 'ATP' && (
+                    <>
+                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_1000`}
+                         class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                           levelFilter === 'atp_1000'
+                             ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600'
+                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                         }`}>
+                        Masters 1000
+                      </a>
+                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_500`}
+                         class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                           levelFilter === 'atp_500'
+                             ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-600'
+                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                         }`}>
+                        ATP 500
+                      </a>
+                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_250`}
+                         class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                           levelFilter === 'atp_250'
+                             ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-300 dark:border-green-600'
+                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                         }`}>
+                        ATP 250
+                      </a>
+                    </>
+                  )}
+                  {tourType === 'WTA' && (
+                    <>
+                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=wta_1000`}
+                         class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                           levelFilter === 'wta_1000'
+                             ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600'
+                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                         }`}>
+                        WTA 1000
+                      </a>
+                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=wta_500`}
+                         class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                           levelFilter === 'wta_500'
+                             ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-600'
+                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                         }`}>
+                        WTA 500
+                      </a>
+                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=wta_250`}
+                         class={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                           levelFilter === 'wta_250'
+                             ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-300 dark:border-green-600'
+                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                         }`}>
+                        WTA 250
+                      </a>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Filters Summary -->
+            {(typeFilter !== 'all' || levelFilter !== 'all') && (
+              <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <span>Active filters:</span>
+                    <div class="flex items-center gap-2">
+                      {typeFilter !== 'all' && (
+                        <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">
+                          Type: {typeFilter}
+                        </span>
+                      )}
+                      {levelFilter !== 'all' && (
+                        <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded text-xs">
+                          Level: {levelFilter.replace('_', ' ')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <a href={`/competitions?tour=${tourType}`}
+                     class="text-sm text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 font-medium">
+                    Clear all filters
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <!-- Statistics Summary -->
+        {filteredCompetitions && (
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow border border-gray-200 dark:border-gray-700">
+              <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                {filteredCompetitions.competitions.length}
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">
+                {(typeFilter !== 'all' || levelFilter !== 'all') ? 'Filtered' : 'Total'} Competitions
+              </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow border border-gray-200 dark:border-gray-700">
+              <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+                {filteredCompetitions.competitions.filter(c => c.type === 'singles').length}
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Singles</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow border border-gray-200 dark:border-gray-700">
+              <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                {filteredCompetitions.competitions.filter(c => c.type.includes('doubles')).length}
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Doubles</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow border border-gray-200 dark:border-gray-700">
+              <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                {filteredCompetitions.competitions.filter(c => c.level === 'grand_slam').length}
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Grand Slams</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- Error State -->
+      {error && (
+        <div class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900">
+          <div class="flex">
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                Error loading competitions
+              </h3>
+              <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                {error}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Loading State -->
+      {!filteredCompetitions && !error && (
+        <div class="text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
+          <p class="mt-2 text-gray-600 dark:text-gray-400">Loading competitions...</p>
+        </div>
+      )}
+
+      <!-- No Results State -->
+      {filteredCompetitions && filteredCompetitions.competitions.length === 0 && (
+        <div class="text-center py-12">
+          <div class="text-gray-400 dark:text-gray-500 mb-4">
+            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.071-2.33"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No competitions found</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-4">
+            No {tourType} competitions match your current filters.
+          </p>
+          <a href={`/competitions?tour=${tourType}`}
+             class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors">
+            Clear all filters
+          </a>
+        </div>
+      )}
+
+      <!-- Competitions Table -->
+      {filteredCompetitions && (
+        <CompetitionsTable
+          competitions={filteredCompetitions.competitions}
+          title={`${tourType} Competitions`}
+        />
+      )}
+
+      <!-- Info Section -->
+      <div class="mt-8 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">About {tourType} Competitions</h2>
+        <div class="prose dark:prose-invert max-w-none">
+          {tourType === 'ATP' ? (
+            <div class="space-y-3 text-gray-600 dark:text-gray-300">
+              <p>
+                The ATP (Association of Tennis Professionals) tour features the world's best men's tennis players
+                competing across different tournament categories throughout the year.
+              </p>
+              <div class="grid md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Tournament Levels:</h3>
+                  <ul class="space-y-1 text-sm">
+                    <li><span class="font-medium text-yellow-600 dark:text-yellow-400">Grand Slams:</span> The most prestigious tournaments (Australian Open, French Open, Wimbledon, US Open)</li>
+                    <li><span class="font-medium text-red-600 dark:text-red-400">ATP Masters 1000:</span> Nine mandatory tournaments for top players</li>
+                    <li><span class="font-medium text-blue-600 dark:text-blue-400">ATP 500:</span> Mid-tier tournaments with significant ranking points</li>
+                    <li><span class="font-medium text-green-600 dark:text-green-400">ATP 250:</span> Entry-level ATP tournaments</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Special Events:</h3>
+                  <ul class="space-y-1 text-sm">
+                    <li><span class="font-medium text-purple-600 dark:text-purple-400">ATP Finals:</span> Year-end championship for top 8 players</li>
+                    <li><span class="font-medium text-indigo-600 dark:text-indigo-400">Next Gen Finals:</span> Championship for top players under 21</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div class="space-y-3 text-gray-600 dark:text-gray-300">
+              <p>
+                The WTA (Women's Tennis Association) tour showcases the world's best women's tennis players
+                competing in various tournaments throughout the season.
+              </p>
+              <div class="grid md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Tournament Levels:</h3>
+                  <ul class="space-y-1 text-sm">
+                    <li><span class="font-medium text-yellow-600 dark:text-yellow-400">Grand Slams:</span> The four major tournaments</li>
+                    <li><span class="font-medium text-red-600 dark:text-red-400">WTA 1000:</span> Premier mandatory tournaments</li>
+                    <li><span class="font-medium text-blue-600 dark:text-blue-400">WTA 500:</span> Important tour-level events</li>
+                    <li><span class="font-medium text-green-600 dark:text-green-400">WTA 250:</span> Regular tour tournaments</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Special Events:</h3>
+                  <ul class="space-y-1 text-sm">
+                    <li><span class="font-medium text-purple-600 dark:text-purple-400">WTA Finals:</span> Year-end championship</li>
+                    <li><span class="font-medium text-indigo-600 dark:text-indigo-400">WTA 125:</span> Entry-level professional tournaments</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+          Data provided by SportRadar API. Competition information is updated regularly.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

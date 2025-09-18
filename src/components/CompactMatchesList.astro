@@ -1,0 +1,357 @@
+---
+import type { LiveMatches } from "@/lib/api/types";
+import MatchListItem from "./MatchListItem.astro";
+
+export interface Props {
+  matches: LiveMatches;
+  title: string;
+}
+
+const { matches } = Astro.props;
+
+// Group matches by status
+const groupedMatches = {
+  live: matches.matches.filter(m => m.status === 'live'),
+  scheduled: matches.matches.filter(m => m.status === 'scheduled'),
+  completed: matches.matches.filter(m => m.status === 'completed')
+};
+
+// Helper function to detect doubles matches
+function isDoublesMatch(match: any): boolean {
+  // Check if match round contains "Doubles" or if tournament name contains "Doubles"
+  return match.round?.toLowerCase().includes('doubles') ||
+         match.tournament?.name?.toLowerCase().includes('doubles') ||
+         match.event?.name?.toLowerCase().includes('doubles');
+}
+
+// Helper function to get match type for filtering
+function getMatchType(match: any): string {
+  if (isDoublesMatch(match)) return 'Doubles';
+  return match.tournament.category || 'ATP';
+}
+
+// Current date for header
+const today = new Date().toLocaleDateString('en-US', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'short'
+});
+---
+
+<div class="min-h-screen bg-white dark:bg-gray-900">
+  <!-- Header -->
+  <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+    <!-- Tennis header -->
+    <div class="flex items-center justify-between py-3 px-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🎾</span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-white">{matches.matches.length}</span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-white">Tennis</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Title and subtitle -->
+    <div class="px-4 py-3">
+      <h1 class="text-base font-medium text-gray-900 dark:text-gray-100">Tennis live scores and matches today</h1>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="flex items-center justify-between py-2 px-4 text-sm border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center space-x-2 overflow-x-auto">
+        <button
+          id="filter-all"
+          class="filter-btn active text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 pb-2 font-medium whitespace-nowrap"
+          data-filter="all"
+        >
+          All
+        </button>
+        <button
+          id="filter-atp"
+          class="filter-btn text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 pb-2 font-medium whitespace-nowrap"
+          data-filter="ATP"
+        >
+          ATP
+        </button>
+        <button
+          id="filter-wta"
+          class="filter-btn text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 pb-2 font-medium whitespace-nowrap"
+          data-filter="WTA"
+        >
+          WTA
+        </button>
+        <button
+          id="filter-challenger"
+          class="filter-btn text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 pb-2 font-medium whitespace-nowrap"
+          data-filter="Challenger"
+        >
+          Challengers
+        </button>
+        <button
+          id="filter-doubles"
+          class="filter-btn text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 pb-2 font-medium whitespace-nowrap"
+          data-filter="Doubles"
+        >
+          Doubles
+        </button>
+      </div>
+
+      <!-- Tournament Filter -->
+      <div class="relative">
+        <select
+          id="tournament-filter"
+          class="appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8"
+        >
+          <option value="">All Tournaments</option>
+          {Array.from(new Set(matches.matches.map(m => m.tournament.name))).sort().map(tournamentName => (
+            <option value={tournamentName}>{tournamentName}</option>
+          ))}
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+          <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Date and status navigation -->
+    <div class="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-3">
+        <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-900 dark:text-white text-xs font-medium">
+          {today}
+        </div>
+        <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs">
+        {groupedMatches.live.length > 0 && (
+          <div class="flex items-center gap-1 bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 px-2 py-1 rounded-full font-medium">
+            <div class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+            <span class="hidden sm:inline">Live</span>
+            <span>({groupedMatches.live.length})</span>
+          </div>
+        )}
+        {groupedMatches.scheduled.length > 0 && (
+          <span class="text-gray-600 dark:text-gray-400 hidden md:inline">
+            Upcoming
+          </span>
+        )}
+      </div>
+    </div>
+  </header>
+
+  <!-- Matches list -->
+  <main class="bg-white dark:bg-gray-900">
+    <!-- Tournament Sections -->
+    {matches.matches.length > 0 ? (
+      <div class="divide-y divide-gray-200 dark:divide-gray-700">
+        <!-- Group by tournament for better organization -->
+        {Array.from(new Set(matches.matches.map(m => m.tournament.name))).map(tournamentName => {
+          const tournamentMatches = matches.matches.filter(m => m.tournament.name === tournamentName);
+          const tournament = tournamentMatches[0].tournament;
+          const liveMatchesInTournament = tournamentMatches.filter(m => m.status === 'live');
+
+          // Detect if this is primarily a doubles tournament
+          const doublesMatches = tournamentMatches.filter(m => isDoublesMatch(m));
+          const isPrimarilyDoubles = doublesMatches.length > tournamentMatches.length / 2;
+          const matchType = isPrimarilyDoubles ? 'Doubles' : tournament.category;
+
+          return (
+            <section class="tournament-section bg-white dark:bg-gray-900" data-tournament={tournament.name} data-category={tournament.category} data-match-type={matchType}>
+              <!-- Tournament header -->
+              <div class="bg-gray-50 dark:bg-gray-800/50 px-4 py-3 sticky top-[140px] z-5 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 min-w-0 flex-1">
+                    {liveMatchesInTournament.length > 0 && (
+                      <span class="text-xs bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 px-2 py-1 rounded-full font-medium flex-shrink-0">
+                        LIVE
+                      </span>
+                    )}
+                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{tournament.name}</span>
+                    <span class={`text-xs px-2 py-1 rounded-full font-medium flex-shrink-0 ${
+                      tournament.category === 'ATP'
+                        ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200'
+                        : tournament.category === 'WTA'
+                        ? 'bg-pink-100 dark:bg-pink-900/50 text-pink-800 dark:text-pink-200'
+                        : tournament.category === 'Challenger'
+                        ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200'
+                        : 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
+                    }`}>
+                      {tournament.category}
+                    </span>
+                    {isPrimarilyDoubles && (
+                      <span class="text-xs px-2 py-1 rounded-full font-medium flex-shrink-0 bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200">
+                        Doubles
+                      </span>
+                    )}
+                  </div>
+                  <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
+                    <span class="hidden sm:inline">{tournament.location}</span>
+                    <span class="hidden sm:inline">•</span>
+                    <span class="capitalize text-xs">{tournament.surface}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tournament matches -->
+              <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                {tournamentMatches.map(match => (
+                  <MatchListItem match={match} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    ) : (
+      <!-- Empty state -->
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <div class="text-6xl mb-4">🎾</div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No matches today</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Check back later for live scores and match updates</p>
+      </div>
+    )}
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tournamentFilter = document.getElementById('tournament-filter');
+    const tournamentSections = document.querySelectorAll('.tournament-section');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    let currentCategoryFilter = 'all';
+    let currentTournamentFilter = '';
+
+    function applyFilters() {
+      tournamentSections.forEach(section => {
+        const tournamentName = section.getAttribute('data-tournament');
+        const tournamentCategory = section.getAttribute('data-category');
+        const matchType = section.getAttribute('data-match-type');
+
+        // Check category filter
+        let categoryMatch = false;
+        if (currentCategoryFilter === 'all') {
+          categoryMatch = true;
+        } else if (currentCategoryFilter === 'Doubles') {
+          categoryMatch = matchType === 'Doubles';
+        } else if (currentCategoryFilter === 'Challenger') {
+          categoryMatch = tournamentCategory === 'Challenger';
+        } else {
+          // ATP or WTA
+          categoryMatch = tournamentCategory === currentCategoryFilter && matchType !== 'Doubles';
+        }
+
+        // Check tournament filter
+        const tournamentMatch = currentTournamentFilter === '' || tournamentName === currentTournamentFilter;
+
+        if (categoryMatch && tournamentMatch) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
+      });
+
+      // Update tournament filter options based on category
+      if (tournamentFilter) {
+        const options = tournamentFilter.querySelectorAll('option');
+        options.forEach(option => {
+          if (option.value === '') return; // Keep "All Tournaments" option
+
+          const matchingSection = Array.from(tournamentSections).find(section =>
+            section.getAttribute('data-tournament') === option.value
+          );
+
+          if (matchingSection) {
+            const category = matchingSection.getAttribute('data-category');
+            const matchType = matchingSection.getAttribute('data-match-type');
+
+            let shouldShow = false;
+            if (currentCategoryFilter === 'all') {
+              shouldShow = true;
+            } else if (currentCategoryFilter === 'Doubles') {
+              shouldShow = matchType === 'Doubles';
+            } else if (currentCategoryFilter === 'Challenger') {
+              shouldShow = category === 'Challenger';
+            } else {
+              // ATP or WTA
+              shouldShow = category === currentCategoryFilter && matchType !== 'Doubles';
+            }
+
+            if (shouldShow) {
+              option.style.display = 'block';
+            } else {
+              option.style.display = 'none';
+            }
+          }
+        });
+
+        // Reset tournament filter if current selection is not visible
+        if (currentTournamentFilter && currentCategoryFilter !== 'all') {
+          const currentOption = tournamentFilter.querySelector(`option[value="${currentTournamentFilter}"]`);
+          if (currentOption && currentOption.style.display === 'none') {
+            currentTournamentFilter = '';
+            tournamentFilter.value = '';
+          }
+        }
+      }
+    }
+
+    // Category filter buttons
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => {
+          btn.classList.remove('active', 'text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
+          btn.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-gray-100');
+        });
+
+        // Add active class to clicked button
+        this.classList.add('active', 'text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
+        this.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-gray-100');
+
+        currentCategoryFilter = this.getAttribute('data-filter');
+        applyFilters();
+      });
+    });
+
+    // Tournament filter dropdown
+    if (tournamentFilter) {
+      tournamentFilter.addEventListener('change', function(e) {
+        currentTournamentFilter = e.target.value;
+        applyFilters();
+      });
+    }
+  });
+</script>
+
+<style>
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .5;
+    }
+  }
+</style>

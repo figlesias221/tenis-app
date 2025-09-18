@@ -1,0 +1,481 @@
+---
+import type { Competition } from "@/lib/api/types";
+import CountryFlag from "./CountryFlag.astro";
+import { extractTournamentLocation, getTournamentLocationDisplay } from "@/lib/utils/tournament-locations";
+
+interface Props {
+  competitions: Competition[];
+  title: string;
+}
+
+const { competitions, title } = Astro.props;
+
+// Group competitions by level for better organization
+const groupedCompetitions = competitions.reduce((acc, comp) => {
+  const level = comp.level;
+  if (!acc[level]) {
+    acc[level] = [];
+  }
+  acc[level].push(comp);
+  return acc;
+}, {} as Record<string, Competition[]>);
+
+// Level display order and names
+const levelOrder = [
+  { key: 'grand_slam', name: 'Grand Slams', color: 'text-yellow-600 dark:text-yellow-400' },
+  { key: 'atp_1000', name: 'ATP Masters 1000', color: 'text-red-600 dark:text-red-400' },
+  { key: 'atp_500', name: 'ATP 500', color: 'text-blue-600 dark:text-blue-400' },
+  { key: 'atp_250', name: 'ATP 250', color: 'text-green-600 dark:text-green-400' },
+  { key: 'atp_world_tour_finals', name: 'ATP Finals', color: 'text-purple-600 dark:text-purple-400' },
+  { key: 'atp_next_generation', name: 'ATP Next Gen Finals', color: 'text-indigo-600 dark:text-indigo-400' },
+];
+
+function getLevelDisplayName(level: string): string {
+  const found = levelOrder.find(l => l.key === level);
+  return found ? found.name : level.replace(/_/g, ' ').toUpperCase();
+}
+
+
+function getTypeIcon(type: string): string {
+  switch (type) {
+    case 'singles': return '👤';
+    case 'doubles': return '👥';
+    case 'mixed': return '👫';
+    case 'mixed_doubles': return '👫';
+    default: return '🎾';
+  }
+}
+
+function getGenderIcon(gender: string): string {
+  switch (gender) {
+    case 'men': return '♂️';
+    case 'women': return '♀️';
+    case 'mixed': return '⚥';
+    default: return '';
+  }
+}
+---
+
+<div class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow">
+  <div class="px-4 py-5 sm:p-6">
+    <h2 class="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
+      {title}
+    </h2>
+
+    <div class="space-y-8">
+      {levelOrder.map(levelInfo => {
+        const levelCompetitions = groupedCompetitions[levelInfo.key];
+        if (!levelCompetitions || levelCompetitions.length === 0) return null;
+
+        return (
+          <div class="space-y-4">
+            <h3 class={`text-lg font-semibold ${levelInfo.color} border-b border-gray-200 dark:border-gray-700 pb-2`}>
+              {levelInfo.name}
+              <span class="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                ({levelCompetitions.length} competitions)
+              </span>
+            </h3>
+
+            <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {levelCompetitions.map(competition => {
+                const location = extractTournamentLocation(competition.name);
+                const locationDisplay = getTournamentLocationDisplay(location);
+
+                return (
+                  <a
+                    href={`/tournament/${competition.id}`}
+                    class="block w-full text-left rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 transition-all hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-yellow-300 dark:hover:border-yellow-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+                  >
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                          {competition.name}
+                        </h4>
+
+                        {/* Location with flag */}
+                        <div class="mt-1 flex items-center space-x-2">
+                          {location.countryCode && location.countryCode !== 'UN' && (
+                            <CountryFlag
+                              countryCode={location.countryCode}
+                              nationality={location.country}
+                              size="small"
+                            />
+                          )}
+                          <span class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {locationDisplay}
+                          </span>
+                        </div>
+
+                        <div class="mt-2 flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
+                          <span class="inline-flex items-center">
+                            {getTypeIcon(competition.type)}
+                            <span class="ml-1 capitalize">{competition.type.replace('_', ' ')}</span>
+                          </span>
+                          <span class="inline-flex items-center">
+                            {getGenderIcon(competition.gender)}
+                            <span class="ml-1 capitalize">{competition.gender}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-3 flex items-center justify-between">
+                      <span class={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                        levelInfo.key === 'grand_slam' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
+                        levelInfo.key === 'atp_1000' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
+                        levelInfo.key === 'atp_500' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
+                        levelInfo.key === 'atp_250' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                        'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                      }`}>
+                        {levelInfo.name}
+                      </span>
+                      <div class="flex items-center space-x-2">
+                        <span class="text-xs text-gray-400 dark:text-gray-500">
+                          {competition.id.split(':')[2]}
+                        </span>
+                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    {Object.keys(groupedCompetitions).length === 0 && (
+      <div class="text-center py-8">
+        <p class="text-gray-500 dark:text-gray-400">No competitions found.</p>
+      </div>
+    )}
+  </div>
+</div>
+
+<!-- Competition Detail Modal -->
+<div id="competition-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+  <div class="relative max-w-lg w-full mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+      <h3 id="modal-title" class="text-lg font-semibold text-gray-900 dark:text-gray-100"></h3>
+      <button id="close-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="p-6">
+      <div id="modal-loading" class="hidden text-center py-8">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Loading competition details...</p>
+      </div>
+
+      <div id="modal-content" class="space-y-4">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+
+      <div id="modal-error" class="hidden text-center py-8">
+        <div class="text-red-500 dark:text-red-400 mb-2">
+          <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">Failed to load competition details</p>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-3 p-6 border-t border-gray-200 dark:border-gray-700">
+      <button id="close-modal-btn" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Competition modal functionality
+  function initCompetitionModal() {
+    const modal = document.getElementById('competition-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    const modalLoading = document.getElementById('modal-loading');
+    const modalError = document.getElementById('modal-error');
+    const closeModalBtn = document.getElementById('close-modal');
+    const closeModalFooterBtn = document.getElementById('close-modal-btn');
+
+    // Function to fetch competition details
+    async function fetchCompetitionDetails(competitionId) {
+      try {
+        const response = await fetch(`/api/competition/${competitionId}`);
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('Failed to fetch competition details:', error);
+        throw error;
+      }
+    }
+
+    // Function to open modal
+    async function openModal(competitionData) {
+      modalTitle.textContent = competitionData.name;
+
+      // Show modal and loading state
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+
+      modalContent.classList.add('hidden');
+      modalError.classList.add('hidden');
+      modalLoading.classList.remove('hidden');
+
+      try {
+        // Fetch detailed competition info
+        const competitionInfo = await fetchCompetitionDetails(competitionData.id);
+
+        // Hide loading and show content
+        modalLoading.classList.add('hidden');
+        modalContent.classList.remove('hidden');
+
+        // Format prize money
+        const formatPrizeMoney = (amount, currency) => {
+          if (!amount) return 'Not specified';
+          const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currency || 'USD',
+            maximumFractionDigits: 0
+          });
+          return formatter.format(amount);
+        };
+
+        // Format surface
+        const formatSurface = (surface) => {
+          if (!surface) return 'Not specified';
+          return surface.split('_').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+          ).join(' ');
+        };
+
+        // Get status color
+        const getStatusColor = (status) => {
+          switch (status) {
+            case 'active': return 'text-green-600 dark:text-green-400';
+            case 'ended': return 'text-gray-600 dark:text-gray-400';
+            case 'cancelled': return 'text-red-600 dark:text-red-400';
+            case 'delayed': return 'text-yellow-600 dark:text-yellow-400';
+            default: return 'text-gray-600 dark:text-gray-400';
+          }
+        };
+
+        // Populate modal content with detailed information
+        modalContent.innerHTML = `
+          <div class="space-y-6">
+            <!-- Basic Info with Flag -->
+            <div class="flex items-center space-x-3">
+              ${competitionData.countryCode && competitionData.countryCode !== 'UN' ?
+                `<img src="/flags/${competitionData.countryCode.toLowerCase()}.svg" alt="${competitionData.country}" class="w-8 h-auto rounded-sm shadow-sm" />` : ''
+              }
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Location</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">${competitionData.locationDisplay}</p>
+              </div>
+            </div>
+
+            <!-- Competition Details Grid -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Level</p>
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${getLevelBadgeClass(competitionData.level)}">
+                  ${getLevelDisplayName(competitionData.level)}
+                </span>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Type</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 capitalize">${competitionData.type.replace('_', ' ')}</p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Gender</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 capitalize">${competitionData.gender}</p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Surface</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">${formatSurface(competitionInfo.info?.surface)}</p>
+              </div>
+            </div>
+
+            <!-- Venue and Prize Information -->
+            ${competitionInfo.info ? `
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Tournament Details</h4>
+                <div class="space-y-2">
+                  ${competitionInfo.info.complex ? `
+                    <div class="flex justify-between">
+                      <span class="text-sm text-gray-600 dark:text-gray-400">Venue:</span>
+                      <span class="text-sm text-gray-900 dark:text-gray-100">${competitionInfo.info.complex}</span>
+                    </div>
+                  ` : ''}
+
+                  ${competitionInfo.info.prize_money ? `
+                    <div class="flex justify-between">
+                      <span class="text-sm text-gray-600 dark:text-gray-400">Prize Money:</span>
+                      <span class="text-sm text-gray-900 dark:text-gray-100 font-medium">${formatPrizeMoney(competitionInfo.info.prize_money, competitionInfo.info.prize_currency)}</span>
+                    </div>
+                  ` : ''}
+
+                  ${competitionInfo.info.competition_status ? `
+                    <div class="flex justify-between">
+                      <span class="text-sm text-gray-600 dark:text-gray-400">Status:</span>
+                      <span class="text-sm capitalize ${getStatusColor(competitionInfo.info.competition_status)}">${competitionInfo.info.competition_status}</span>
+                    </div>
+                  ` : ''}
+
+                  ${competitionInfo.info.venue_reduced_capacity ? `
+                    <div class="flex justify-between">
+                      <span class="text-sm text-gray-600 dark:text-gray-400">Capacity:</span>
+                      <span class="text-sm text-orange-600 dark:text-orange-400">Reduced (${competitionInfo.info.venue_reduced_capacity_max || 'Limited'})</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Level-specific Information -->
+            ${competitionData.level === 'grand_slam' ? `
+              <div class="bg-yellow-50 dark:bg-yellow-900 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Grand Slam Tournament</h4>
+                <p class="text-xs text-yellow-700 dark:text-yellow-300">One of the four most prestigious tennis tournaments in the world, offering the highest ranking points and prize money.</p>
+              </div>
+            ` : ''}
+
+            ${competitionData.level === 'atp_1000' ? `
+              <div class="bg-red-50 dark:bg-red-900 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-red-800 dark:text-red-200 mb-2">ATP Masters 1000</h4>
+                <p class="text-xs text-red-700 dark:text-red-300">Mandatory tournament for top-ranked players, offering 1000 ranking points to the winner.</p>
+              </div>
+            ` : ''}
+
+            <!-- Competition ID -->
+            <div class="text-center pt-2 border-t border-gray-200 dark:border-gray-700">
+              <p class="text-xs text-gray-400 dark:text-gray-500 font-mono">${competitionData.id}</p>
+            </div>
+          </div>
+        `;
+
+      } catch (error) {
+        // Hide loading and show error
+        modalLoading.classList.add('hidden');
+        modalError.classList.remove('hidden');
+
+        // Fallback to basic information
+        modalContent.innerHTML = `
+          <div class="space-y-4">
+            <div class="flex items-center space-x-3">
+              ${competitionData.countryCode && competitionData.countryCode !== 'UN' ?
+                `<img src="/flags/${competitionData.countryCode.toLowerCase()}.svg" alt="${competitionData.country}" class="w-8 h-auto rounded-sm shadow-sm" />` : ''
+              }
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Location</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">${competitionData.locationDisplay}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Level</p>
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${getLevelBadgeClass(competitionData.level)}">
+                  ${getLevelDisplayName(competitionData.level)}
+                </span>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Type</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 capitalize">${competitionData.type.replace('_', ' ')}</p>
+              </div>
+            </div>
+          </div>
+        `;
+        modalContent.classList.remove('hidden');
+      }
+    }
+
+    // Function to close modal
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Helper functions
+    function getLevelDisplayName(level) {
+      const levelMap = {
+        'grand_slam': 'Grand Slam',
+        'atp_1000': 'ATP Masters 1000',
+        'atp_500': 'ATP 500',
+        'atp_250': 'ATP 250',
+        'atp_world_tour_finals': 'ATP Finals',
+        'atp_next_generation': 'ATP Next Gen Finals'
+      };
+      return levelMap[level] || level.replace(/_/g, ' ').toUpperCase();
+    }
+
+    function getLevelBadgeClass(level) {
+      const classMap = {
+        'grand_slam': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+        'atp_1000': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+        'atp_500': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+        'atp_250': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+      };
+      return classMap[level] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    }
+
+    // Event listeners
+    closeModalBtn?.addEventListener('click', closeModal);
+    closeModalFooterBtn?.addEventListener('click', closeModal);
+
+    // Close modal when clicking outside
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // Add click listeners to competition buttons
+    document.querySelectorAll('[data-competition-id]').forEach(button => {
+      button.addEventListener('click', () => {
+        const competitionData = {
+          id: button.dataset.competitionId,
+          name: button.dataset.competitionName,
+          level: button.dataset.competitionLevel,
+          type: button.dataset.competitionType,
+          gender: button.dataset.competitionGender,
+          city: button.dataset.locationCity,
+          country: button.dataset.locationCountry,
+          countryCode: button.dataset.locationCountryCode,
+          locationDisplay: button.dataset.locationCity && button.dataset.locationCountry
+            ? `${button.dataset.locationCity}, ${button.dataset.locationCountry}`
+            : button.dataset.locationCountry || 'International'
+        };
+        openModal(competitionData);
+      });
+    });
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCompetitionModal);
+  } else {
+    initCompetitionModal();
+  }
+</script>
