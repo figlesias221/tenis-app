@@ -1,0 +1,17 @@
+name = "tennis-app"
+pages_build_output_dir = "dist"
+
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "tennis-app"
+
+[env.preview]
+name = "tennis-app-preview"
+
+# KV namespace for sessions (as mentioned in build output)
+[[kv_namespaces]]
+binding = "SESSION"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
