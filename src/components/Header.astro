@@ -17,16 +17,9 @@ const navLinks = [
       class="inline-flex items-center hover:filter-none sm:relative sm:inline-block text-gray-900 dark:text-gray-100"
       aria-current={Astro.url.pathname === "/" ? "page" : false}
     >
-      <svg class="me-3 h-10 w-6 sm:absolute sm:start-[-4.5rem] sm:me-0 sm:h-6 sm:w-6 text-yellow-600 dark:text-yellow-400" aria-hidden="true" focusable="false" fill="currentColor" viewBox="0 0 24 24">
-        <title>Tennis Ball Logo</title>
-        <!-- Tennis Ball Circle -->
-        <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.9"/>
-        <!-- Tennis Ball Curved Lines -->
-        <path d="M2 12c0-2.5 4-8 10-8s10 5.5 10 8" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
-        <path d="M22 12c0 2.5-4 8-10 8s-10-5.5-10-8" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
-        <!-- Inner shadow for dimension -->
-        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
-      </svg>
+      <span class="me-3 text-2xl sm:absolute sm:start-[-4.5rem] sm:me-0" aria-hidden="true" role="img" aria-label="Tennis Ball">
+        🎾
+      </span>
       <span class="text-xl font-bold sm:text-2xl">{siteConfig.title}</span>
     </a>
     <nav

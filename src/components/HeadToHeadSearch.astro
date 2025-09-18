@@ -201,7 +201,10 @@ const { playerId, playerName } = Astro.props;
 
   // Load players function
   async function loadPlayers() {
-    if (!playerSelect || !tourSelect) return;
+    if (!playerSelect || !tourSelect) {
+      console.warn('Player select or tour select not found');
+      return;
+    }
 
     const tour = tourSelect.value;
     playerSelect.innerHTML = '<option value="">Loading players...</option>';
@@ -210,20 +213,24 @@ const { playerId, playerName } = Astro.props;
       const response = await fetch(`/api/players?tour=${tour}&limit=50`);
       const data = await response.json();
 
-      if (response.ok && data.players) {
+      if (response.ok && data.players && Array.isArray(data.players)) {
         playerSelect.innerHTML = '<option value="">Select a player...</option>';
         data.players.forEach(player => {
-          const option = document.createElement('option');
-          option.value = player.id;
-          option.textContent = `${player.name} (${player.country}) - #${player.ranking}`;
-          playerSelect.appendChild(option);
+          if (player && player.id && player.name) {
+            const option = document.createElement('option');
+            option.value = player.id;
+            option.textContent = `${player.name} (${player.country || 'Unknown'}) - #${player.ranking || 'N/A'}`;
+            playerSelect.appendChild(option);
+          }
         });
       } else {
-        throw new Error(data.message || 'Failed to load players');
+        throw new Error(data.message || data.error || 'Failed to load players');
       }
     } catch (error) {
       console.error('Error loading players:', error);
-      playerSelect.innerHTML = '<option value="">Failed to load players</option>';
+      if (playerSelect) {
+        playerSelect.innerHTML = '<option value="">Failed to load players</option>';
+      }
     }
   }
 
@@ -238,6 +245,8 @@ const { playerId, playerName } = Astro.props;
       const selectedPlayerId = playerSelect.value;
       if (selectedPlayerId) {
         searchHeadToHead(selectedPlayerId);
+      } else {
+        console.warn('No player selected');
       }
     });
   }
