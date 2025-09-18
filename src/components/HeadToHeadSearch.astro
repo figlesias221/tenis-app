@@ -13,10 +13,31 @@ const { playerId, playerName } = Astro.props;
 // In a production app, you'd want to implement a search interface
 ---
 
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
-  <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Head-to-Head Records</h2>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+  <!-- Collapsible Header -->
+  <button
+    id="headToHeadToggle"
+    class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-lg"
+    aria-expanded="false"
+    aria-controls="headToHeadContent"
+  >
+    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Head-to-Head Records</h2>
+    <svg
+      id="headToHeadChevron"
+      class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform duration-200"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
 
-  <div class="mb-4">
+  <!-- Collapsible Content -->
+  <div
+    id="headToHeadContent"
+    class="hidden border-t border-gray-200 dark:border-gray-700 p-4"
+  >
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
       Compare {playerName} against another player by entering their competitor ID:
     </p>
@@ -58,13 +79,16 @@ const { playerId, playerName } = Astro.props;
       <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Example competitor IDs to try:</p>
       <div class="flex flex-wrap gap-2">
         <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:138546">
-          Novak Djokovic
+          <div class="font-medium">Novak Djokovic</div>
+          <div class="text-gray-500 dark:text-gray-400">sr:competitor:138546</div>
         </button>
         <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:225050">
-          Carlos Alcaraz
+          <div class="font-medium">Carlos Alcaraz</div>
+          <div class="text-gray-500 dark:text-gray-400">sr:competitor:225050</div>
         </button>
         <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:119248">
-          Rafael Nadal
+          <div class="font-medium">Rafael Nadal</div>
+          <div class="text-gray-500 dark:text-gray-400">sr:competitor:119248</div>
         </button>
       </div>
     </div>
@@ -79,6 +103,29 @@ const { playerId, playerName } = Astro.props;
   const errorState = document.getElementById('errorState');
   const errorMessage = document.getElementById('errorMessage');
   const exampleButtons = document.querySelectorAll('.example-id');
+
+  // Collapsible functionality
+  const toggleButton = document.getElementById('headToHeadToggle');
+  const content = document.getElementById('headToHeadContent');
+  const chevron = document.getElementById('headToHeadChevron');
+
+  if (toggleButton && content && chevron) {
+    toggleButton.addEventListener('click', () => {
+      const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+
+      if (isExpanded) {
+        // Collapse
+        content.classList.add('hidden');
+        toggleButton.setAttribute('aria-expanded', 'false');
+        chevron.style.transform = 'rotate(0deg)';
+      } else {
+        // Expand
+        content.classList.remove('hidden');
+        toggleButton.setAttribute('aria-expanded', 'true');
+        chevron.style.transform = 'rotate(180deg)';
+      }
+    });
+  }
 
   // Handle example ID clicks
   exampleButtons.forEach(button => {
