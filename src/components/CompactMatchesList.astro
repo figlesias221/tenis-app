@@ -262,9 +262,9 @@ const today = new Date().toLocaleDateString('en-US', {
         const tournamentMatch = currentTournamentFilter === '' || tournamentName === currentTournamentFilter;
 
         if (categoryMatch && tournamentMatch) {
-          section.style.display = 'block';
+          (section as HTMLElement).style.display = 'block';
         } else {
-          section.style.display = 'none';
+          (section as HTMLElement).style.display = 'none';
         }
       });
 
@@ -305,9 +305,9 @@ const today = new Date().toLocaleDateString('en-US', {
         // Reset tournament filter if current selection is not visible
         if (currentTournamentFilter && currentCategoryFilter !== 'all') {
           const currentOption = tournamentFilter.querySelector(`option[value="${currentTournamentFilter}"]`);
-          if (currentOption && currentOption.style.display === 'none') {
+          if (currentOption && (currentOption as HTMLElement).style.display === 'none') {
             currentTournamentFilter = '';
-            tournamentFilter.value = '';
+            (tournamentFilter as HTMLSelectElement).value = '';
           }
         }
       }
@@ -315,7 +315,7 @@ const today = new Date().toLocaleDateString('en-US', {
 
     // Category filter buttons
     filterButtons.forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function(this: HTMLElement) {
         // Remove active class from all buttons
         filterButtons.forEach(btn => {
           btn.classList.remove('active', 'text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
@@ -326,7 +326,7 @@ const today = new Date().toLocaleDateString('en-US', {
         this.classList.add('active', 'text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
         this.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-gray-100');
 
-        currentCategoryFilter = this.getAttribute('data-filter');
+        currentCategoryFilter = this.getAttribute('data-filter') || 'all';
         applyFilters();
       });
     });
@@ -334,7 +334,7 @@ const today = new Date().toLocaleDateString('en-US', {
     // Tournament filter dropdown
     if (tournamentFilter) {
       tournamentFilter.addEventListener('change', function(e) {
-        currentTournamentFilter = e.target.value;
+        currentTournamentFilter = (e.target as HTMLSelectElement)?.value || '';
         applyFilters();
       });
     }

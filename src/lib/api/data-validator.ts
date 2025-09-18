@@ -372,7 +372,7 @@ export class TennisDataValidator {
   }
 
   private validateStatusTransition(oldStatus: string, newStatus: string, errors: string[], warnings: string[]): void {
-    const validTransitions = {
+    const validTransitions: Record<string, string[]> = {
       'scheduled': ['live', 'cancelled'],
       'live': ['completed', 'retired', 'cancelled'],
       'completed': [], // No transitions from completed
@@ -381,9 +381,9 @@ export class TennisDataValidator {
       'walkover': []
     };
 
-    const allowed = validTransitions[oldStatus as keyof typeof validTransitions] || [];
+    const allowed = validTransitions[oldStatus] || [];
 
-    if (oldStatus !== newStatus && !allowed.includes(newStatus as any)) {
+    if (oldStatus !== newStatus && !allowed.includes(newStatus)) {
       errors.push(`Invalid status transition: ${oldStatus} -> ${newStatus}`);
     }
   }

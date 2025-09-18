@@ -289,18 +289,18 @@ export class SportRadarProvider implements TennisApiProvider {
         gender: data.competitor.gender,
         virtual: data.competitor.virtual || false,
         info: {
-          date_of_birth: data.info?.date_of_birth,
-          handedness: data.info?.handedness,
-          height: data.info?.height,
-          weight: data.info?.weight,
-          highest_doubles_ranking: data.info?.highest_doubles_ranking,
-          highest_doubles_ranking_date: data.info?.highest_doubles_ranking_date,
-          highest_singles_ranking: data.info?.highest_singles_ranking,
-          highest_singles_ranking_date: data.info?.highest_singles_ranking_date,
-          pro_year: data.info?.pro_year
+          date_of_birth: (data as any).info?.date_of_birth,
+          handedness: (data as any).info?.handedness,
+          height: (data as any).info?.height,
+          weight: (data as any).info?.weight,
+          highest_doubles_ranking: (data as any).info?.highest_doubles_ranking,
+          highest_doubles_ranking_date: (data as any).info?.highest_doubles_ranking_date,
+          highest_singles_ranking: (data as any).info?.highest_singles_ranking,
+          highest_singles_ranking_date: (data as any).info?.highest_singles_ranking_date,
+          pro_year: (data as any).info?.pro_year
         },
-        competitor_rankings: data.competitor_rankings || [],
-        periods: data.periods || []
+        competitor_rankings: (data as any).competitor_rankings || [],
+        periods: (data as any).periods || []
       };
     } catch (error) {
       console.error('Failed to fetch competitor profile from SportRadar API:', error);

@@ -467,7 +467,7 @@ export class TennisDataCleaner {
   }
 
   private generateMatchId(): string {
-    return `match-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `match-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 }
 

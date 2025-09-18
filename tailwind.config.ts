@@ -31,7 +31,7 @@ export default {
           "Consolas",
           "Liberation Mono",
           "Menlo",
-          defaultTheme.fontFamily.mono,
+          ...defaultTheme.fontFamily.mono,
         ],
       },
     },

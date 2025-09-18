@@ -160,7 +160,7 @@ function isWinner(playerIndex: number, sets: any[]): boolean {
             {match.score?.sets && match.score.sets.length > 0 ? (
               <>
                 {match.score.sets.map((_, index) => (
-                  <th key={index} class="px-2 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-200 w-12">
+                  <th class="px-2 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-200 w-12">
                     Set {index + 1}
                   </th>
                 ))}
@@ -211,7 +211,7 @@ function isWinner(playerIndex: number, sets: any[]): boolean {
             {match.score?.sets && match.score.sets.length > 0 ? (
               <>
                 {match.score.sets.map((set, index) => (
-                  <td key={index} class="px-2 py-4 text-center">
+                  <td class="px-2 py-4 text-center">
                     <span class={`inline-flex items-center justify-center w-8 h-8 rounded-md text-sm font-bold border-2 ${
                       set.player1 > set.player2
                         ? 'bg-green-100 dark:bg-green-900/40 border-green-400 dark:border-green-600 text-green-800 dark:text-green-200'
@@ -270,7 +270,7 @@ function isWinner(playerIndex: number, sets: any[]): boolean {
             {match.score?.sets && match.score.sets.length > 0 ? (
               <>
                 {match.score.sets.map((set, index) => (
-                  <td key={index} class="px-2 py-4 text-center">
+                  <td class="px-2 py-4 text-center">
                     <span class={`inline-flex items-center justify-center w-8 h-8 rounded-md text-sm font-bold border-2 ${
                       set.player2 > set.player1
                         ? 'bg-green-100 dark:bg-green-900/40 border-green-400 dark:border-green-600 text-green-800 dark:text-green-200'

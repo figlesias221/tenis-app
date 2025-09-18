@@ -133,7 +133,7 @@ export interface GameState {
   tie_break?: boolean;
 }
 
-export interface SportEventStatus {
+export interface SportEventStatusData {
   status: SportEventStatus;
   match_status?: string;
   home_score?: number;
@@ -189,7 +189,7 @@ export interface SportEventStatisticsTotals {
 // Main response types
 export interface Summary {
   sport_event: SportEvent;
-  sport_event_status: SportEventStatus;
+  sport_event_status: SportEventStatusData;
   statistics?: SportEventStatistics;
 }
 
@@ -206,7 +206,7 @@ export interface ScheduleSummariesResponse {
 export interface SportEventSummaryResponse {
   generated_at: string; // ISO datetime
   sport_event: SportEvent;
-  sport_event_status: SportEventStatus;
+  sport_event_status: SportEventStatusData;
   statistics?: SportEventStatistics;
 }
 
@@ -488,7 +488,7 @@ export class SportRadarTransformer {
       id: event.id,
       tournament,
       round: event.sport_event_context?.round?.name || 'Round 1',
-      status: this.mapStatus(status.status),
+      status: this.mapStatus((status as any).status),
       players,
       score: this.transformScore(status),
       startTime: event.start_time,
@@ -542,7 +542,7 @@ export class SportRadarTransformer {
     }
   }
 
-  private static transformScore(status: SportEventStatus): TransformedMatch['score'] | undefined {
+  private static transformScore(status: SportEventStatusData): TransformedMatch['score'] | undefined {
     if (!status.period_scores || status.period_scores.length === 0) {
       // Check for current games
       if (status.home_score !== undefined && status.away_score !== undefined) {

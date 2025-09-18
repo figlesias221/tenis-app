@@ -196,7 +196,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
         abbreviation: data.competitor.abbreviation || '',
         country: data.competitor.country || 'Unknown',
         country_code: data.competitor.country_code || 'XX',
-        gender: data.competitor.gender || 'male',
+        gender: (data.competitor.gender === 'female' ? 'female' : 'male') as 'male' | 'female',
         virtual: data.competitor.virtual || false,
         info: {
           date_of_birth: data.info?.date_of_birth,
@@ -256,15 +256,15 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
       id: event.id,
       tournament,
       round: event.sport_event_context?.round?.name || 'Round 1',
-      status: this.mapStatus(status.status),
+      status: this.mapStatus((status as any).status),
       players,
       score: this.transformScore(status),
       startTime: event.start_time,
       court: event.venue?.name,
       liveIndicators: {
-        serving: status.game_state?.serving as (1 | 2) | undefined,
-        advantage: status.game_state?.advantage as (1 | 2) | undefined,
-        tieBreak: status.game_state?.tie_break
+        serving: (status as any).game_state?.serving as (1 | 2) | undefined,
+        advantage: (status as any).game_state?.advantage as (1 | 2) | undefined,
+        tieBreak: (status as any).game_state?.tie_break
       }
     };
   }
@@ -456,11 +456,12 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
       }
 
       // Transform to our internal format
+      const apiData = data as any;
       return {
-        competitors: data.competitors || [],
-        last_meetings: data.last_meetings || [],
-        next_meetings: data.next_meetings || [],
-        generated_at: data.generated_at
+        competitors: apiData.competitors || [],
+        last_meetings: apiData.last_meetings || [],
+        next_meetings: apiData.next_meetings || [],
+        generated_at: apiData.generated_at
       };
     } catch (error) {
       console.error('Failed to fetch head-to-head data from SportRadar API:', error);
