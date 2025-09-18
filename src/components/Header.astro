@@ -17,23 +17,15 @@ const navLinks = [
       class="inline-flex items-center hover:filter-none sm:relative sm:inline-block text-gray-900 dark:text-gray-100"
       aria-current={Astro.url.pathname === "/" ? "page" : false}
     >
-      <svg class="me-3 h-10 w-6 sm:absolute sm:start-[-4.5rem] sm:me-0 sm:h-6 sm:w-6 text-yellow-600 dark:text-yellow-400" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24">
-        <title>Tennis Racket Logo</title>
-        <!-- Racket Head (oval) -->
-        <ellipse cx="12" cy="8" rx="6" ry="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
-        <!-- Racket Handle -->
-        <line x1="12" y1="16" x2="12" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <!-- Strings (horizontal) -->
-        <line x1="8" y1="6" x2="16" y2="6" stroke="currentColor" stroke-width="0.5"/>
-        <line x1="8" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="0.5"/>
-        <line x1="8" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="0.5"/>
-        <!-- Strings (vertical) -->
-        <line x1="10" y1="2" x2="10" y2="14" stroke="currentColor" stroke-width="0.5"/>
-        <line x1="12" y1="1" x2="12" y2="15" stroke="currentColor" stroke-width="0.5"/>
-        <line x1="14" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="0.5"/>
-        <!-- Tennis Ball -->
-        <circle cx="18" cy="4" r="2" stroke="currentColor" stroke-width="1" fill="currentColor" opacity="0.3"/>
-        <path d="M16.5 4c0.8-0.8 1.2-0.8 3 0" stroke="currentColor" stroke-width="0.5" fill="none"/>
+      <svg class="me-3 h-10 w-6 sm:absolute sm:start-[-4.5rem] sm:me-0 sm:h-6 sm:w-6 text-yellow-600 dark:text-yellow-400" aria-hidden="true" focusable="false" fill="currentColor" viewBox="0 0 24 24">
+        <title>Tennis Ball Logo</title>
+        <!-- Tennis Ball Circle -->
+        <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.9"/>
+        <!-- Tennis Ball Curved Lines -->
+        <path d="M2 12c0-2.5 4-8 10-8s10 5.5 10 8" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
+        <path d="M22 12c0 2.5-4 8-10 8s-10-5.5-10-8" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
+        <!-- Inner shadow for dimension -->
+        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
       </svg>
       <span class="text-xl font-bold sm:text-2xl">{siteConfig.title}</span>
     </a>

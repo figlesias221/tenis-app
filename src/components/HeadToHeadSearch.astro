@@ -39,23 +39,65 @@ const { playerId, playerName } = Astro.props;
     class="hidden border-t border-gray-200 dark:border-gray-700 p-4"
   >
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-      Compare {playerName} against another player by entering their competitor ID:
+      Compare {playerName} against another player by selecting from the rankings or entering their competitor ID:
     </p>
 
     <!-- Search Form -->
-    <div class="flex gap-2 mb-4">
-      <input
-        type="text"
-        id="opponentId"
-        placeholder="Enter opponent ID (e.g., sr:competitor:138546)"
-        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-      />
-      <button
-        id="searchBtn"
-        class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium transition-colors"
-      >
-        Compare
-      </button>
+    <div class="space-y-3 mb-4">
+      <!-- Player Selection Method Toggle -->
+      <div class="flex space-x-2">
+        <button
+          id="dropdownModeBtn"
+          class="px-3 py-1 text-sm bg-yellow-400 text-gray-900 rounded font-medium"
+        >
+          Select Player
+        </button>
+        <button
+          id="manualModeBtn"
+          class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded font-medium transition-colors"
+        >
+          Enter ID
+        </button>
+      </div>
+
+      <!-- Dropdown Mode -->
+      <div id="dropdownMode" class="flex gap-2">
+        <select
+          id="tourSelect"
+          class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+        >
+          <option value="ATP">ATP</option>
+          <option value="WTA">WTA</option>
+        </select>
+        <select
+          id="playerSelect"
+          class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+        >
+          <option value="">Loading players...</option>
+        </select>
+        <button
+          id="compareBtn"
+          class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium transition-colors"
+        >
+          Compare
+        </button>
+      </div>
+
+      <!-- Manual ID Mode (Hidden by default) -->
+      <div id="manualMode" class="hidden flex gap-2">
+        <input
+          type="text"
+          id="opponentId"
+          placeholder="Enter opponent ID (e.g., sr:competitor:138546)"
+          class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+        />
+        <button
+          id="searchBtn"
+          class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium transition-colors"
+        >
+          Compare
+        </button>
+      </div>
     </div>
 
     <!-- Results Container -->
@@ -97,12 +139,21 @@ const { playerId, playerName } = Astro.props;
 
 <script define:vars={{ playerId }}>
   const searchBtn = document.getElementById('searchBtn');
+  const compareBtn = document.getElementById('compareBtn');
   const opponentInput = document.getElementById('opponentId');
+  const playerSelect = document.getElementById('playerSelect');
+  const tourSelect = document.getElementById('tourSelect');
   const resultsContainer = document.getElementById('headToHeadResults');
   const loadingState = document.getElementById('loadingState');
   const errorState = document.getElementById('errorState');
   const errorMessage = document.getElementById('errorMessage');
   const exampleButtons = document.querySelectorAll('.example-id');
+
+  // Mode toggle elements
+  const dropdownModeBtn = document.getElementById('dropdownModeBtn');
+  const manualModeBtn = document.getElementById('manualModeBtn');
+  const dropdownMode = document.getElementById('dropdownMode');
+  const manualMode = document.getElementById('manualMode');
 
   // Collapsible functionality
   const toggleButton = document.getElementById('headToHeadToggle');
@@ -123,6 +174,70 @@ const { playerId, playerName } = Astro.props;
         content.classList.remove('hidden');
         toggleButton.setAttribute('aria-expanded', 'true');
         chevron.style.transform = 'rotate(180deg)';
+        // Load players when expanding for the first time
+        if (playerSelect && playerSelect.options.length <= 1) {
+          loadPlayers();
+        }
+      }
+    });
+  }
+
+  // Mode toggle functionality
+  if (dropdownModeBtn && manualModeBtn && dropdownMode && manualMode) {
+    dropdownModeBtn.addEventListener('click', () => {
+      dropdownMode.classList.remove('hidden');
+      manualMode.classList.add('hidden');
+      dropdownModeBtn.className = 'px-3 py-1 text-sm bg-yellow-400 text-gray-900 rounded font-medium';
+      manualModeBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded font-medium transition-colors';
+    });
+
+    manualModeBtn.addEventListener('click', () => {
+      manualMode.classList.remove('hidden');
+      dropdownMode.classList.add('hidden');
+      manualModeBtn.className = 'px-3 py-1 text-sm bg-yellow-400 text-gray-900 rounded font-medium';
+      dropdownModeBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded font-medium transition-colors';
+    });
+  }
+
+  // Load players function
+  async function loadPlayers() {
+    if (!playerSelect || !tourSelect) return;
+
+    const tour = tourSelect.value;
+    playerSelect.innerHTML = '<option value="">Loading players...</option>';
+
+    try {
+      const response = await fetch(`/api/players?tour=${tour}&limit=50`);
+      const data = await response.json();
+
+      if (response.ok && data.players) {
+        playerSelect.innerHTML = '<option value="">Select a player...</option>';
+        data.players.forEach(player => {
+          const option = document.createElement('option');
+          option.value = player.id;
+          option.textContent = `${player.name} (${player.country}) - #${player.ranking}`;
+          playerSelect.appendChild(option);
+        });
+      } else {
+        throw new Error(data.message || 'Failed to load players');
+      }
+    } catch (error) {
+      console.error('Error loading players:', error);
+      playerSelect.innerHTML = '<option value="">Failed to load players</option>';
+    }
+  }
+
+  // Tour selection change handler
+  if (tourSelect) {
+    tourSelect.addEventListener('change', loadPlayers);
+  }
+
+  // Compare button (dropdown mode)
+  if (compareBtn && playerSelect) {
+    compareBtn.addEventListener('click', () => {
+      const selectedPlayerId = playerSelect.value;
+      if (selectedPlayerId) {
+        searchHeadToHead(selectedPlayerId);
       }
     });
   }
@@ -138,7 +253,7 @@ const { playerId, playerName } = Astro.props;
     });
   });
 
-  // Handle search button click
+  // Handle search button click (manual mode)
   if (searchBtn && opponentInput) {
     searchBtn.addEventListener('click', () => {
       const opponentId = opponentInput.value.trim();
