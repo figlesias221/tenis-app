@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { tennisApi } from "@/lib/api";
+import { tennisApi } from "@/lib/api/tennisApi";
 
 export const GET: APIRoute = async ({ url }) => {
   try {
