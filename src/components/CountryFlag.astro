@@ -1,5 +1,5 @@
 ---
-import { normalizeCountryCode, getFlagAlt } from "@/lib/utils/flags";
+import { normalizeCountryCode, getFlagAlt, getFlagUrl, hasFlagSupport } from "@/lib/utils/flags";
 
 export interface Props {
   countryCode: string;
@@ -12,22 +12,30 @@ const { countryCode, nationality, size = 'medium', className = '' } = Astro.prop
 
 // Size classes
 const sizeClasses = {
-  small: 'w-5 h-auto',   // ~20px for table rows
-  medium: 'w-6 h-auto',  // ~24px for cards
-  large: 'w-10 h-auto'   // ~40px for profiles
+  small: 'w-5 h-4',      // ~20px for table rows
+  medium: 'w-6 h-4',     // ~24px for cards
+  large: 'w-8 h-6'       // ~32px for profiles
 };
 
 const normalizedCode = normalizeCountryCode(countryCode);
-const flagPath = `/flags/${normalizedCode.toLowerCase()}.svg`;
+const flagPath = getFlagUrl(normalizedCode, size);
 const altText = getFlagAlt(countryCode, nationality);
+const hasFlag = hasFlagSupport(normalizedCode);
+
+// Debug logging for development
+if (import.meta.env.DEV) {
+  console.log(`CountryFlag Debug: countryCode="${countryCode}", normalizedCode="${normalizedCode}", hasFlag=${hasFlag}, flagPath="${flagPath}"`);
+}
 ---
 
-<img
-  src={flagPath}
-  alt={altText}
-  title={altText}
-  class={`${sizeClasses[size]} ${className} rounded-sm shadow-sm`}
-  loading="lazy"
-  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'"
-/>
-<span class="text-sm hidden">🏳️</span>
+{hasFlag ? (
+  <img
+    src={flagPath}
+    alt={altText}
+    title={altText}
+    class={`${sizeClasses[size]} ${className} rounded-sm shadow-sm object-cover border border-surface-200 dark:border-surface-600`}
+    loading="lazy"
+    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"
+  />
+) : null}
+<span class={`text-xs ${hasFlag ? 'hidden' : 'inline-flex'} items-center justify-center ${sizeClasses[size]} bg-red-100 dark:bg-red-900/50 rounded-sm border border-red-200 dark:border-red-600 text-red-600`} title={`Flag not found for ${normalizedCode}`}>🏳️</span>

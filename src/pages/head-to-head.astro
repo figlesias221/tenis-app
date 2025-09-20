@@ -1,0 +1,668 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import CountryFlag from "@/components/CountryFlag.astro";
+---
+
+<Layout
+  title="Head to Head Comparison - Tennis Live"
+  description="Compare any two tennis players head-to-head. View match history, statistics, and recent encounters between ATP and WTA players."
+>
+  <Header />
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <span class="text-4xl" aria-hidden="true">⚔️</span>
+        <h1 class="text-heading-2">Head to Head</h1>
+      </div>
+      <p class="text-body-large max-w-2xl mx-auto">
+        Compare any two tennis players and explore their match history, statistics, and recent encounters.
+      </p>
+    </div>
+
+    <!-- Player Selection Cards -->
+    <div class="grid lg:grid-cols-2 gap-8 mb-12">
+      <!-- Player 1 Selection -->
+      <div class="card-elevated p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-electric-500 to-electric-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+            1
+          </div>
+          <h2 class="text-heading-3">Select First Player</h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Tour Selection -->
+          <div>
+            <label for="tour1" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              Tour
+            </label>
+            <select id="tour1" class="select-field">
+              <option value="ATP">ATP (Men's)</option>
+              <option value="WTA">WTA (Women's)</option>
+            </select>
+          </div>
+
+          <!-- Player Selection -->
+          <div>
+            <label for="player1" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              Player
+            </label>
+            <select id="player1" class="select-field">
+              <option value="">Loading players...</option>
+            </select>
+          </div>
+
+          <!-- Selected Player Display -->
+          <div id="player1-display" class="hidden card p-4 bg-electric-50/50 dark:bg-electric-950/20 border-electric-200 dark:border-electric-800">
+            <div class="flex items-center gap-3">
+              <div id="player1-flag"></div>
+              <div>
+                <div id="player1-name" class="font-semibold text-surface-900 dark:text-surface-100"></div>
+                <div id="player1-info" class="text-sm text-surface-600 dark:text-surface-400"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Player 2 Selection -->
+      <div class="card-elevated p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-tennis-500 to-tennis-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+            2
+          </div>
+          <h2 class="text-heading-3">Select Second Player</h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Tour Selection -->
+          <div>
+            <label for="tour2" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              Tour
+            </label>
+            <select id="tour2" class="select-field">
+              <option value="ATP">ATP (Men's)</option>
+              <option value="WTA">WTA (Women's)</option>
+            </select>
+          </div>
+
+          <!-- Player Selection -->
+          <div>
+            <label for="player2" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              Player
+            </label>
+            <select id="player2" class="select-field">
+              <option value="">Loading players...</option>
+            </select>
+          </div>
+
+          <!-- Selected Player Display -->
+          <div id="player2-display" class="hidden card p-4 bg-tennis-50/50 dark:bg-tennis-950/20 border-tennis-200 dark:border-tennis-800">
+            <div class="flex items-center gap-3">
+              <div id="player2-flag"></div>
+              <div>
+                <div id="player2-name" class="font-semibold text-surface-900 dark:text-surface-100"></div>
+                <div id="player2-info" class="text-sm text-surface-600 dark:text-surface-400"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compare Button -->
+    <div class="text-center mb-12">
+      <button id="compare-btn" class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+        </svg>
+        Compare Players
+      </button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="hidden">
+      <!-- Comparison Header -->
+      <div id="comparison-header" class="card-elevated p-6 mb-8">
+        <div class="grid md:grid-cols-3 gap-6 items-center">
+          <!-- Player 1 -->
+          <div id="comparison-player1" class="text-center">
+            <!-- Will be populated by JavaScript -->
+          </div>
+
+          <!-- VS and Stats -->
+          <div class="text-center">
+            <div class="text-4xl font-bold text-surface-400 dark:text-surface-600 mb-2">VS</div>
+            <div id="overall-record" class="text-2xl font-bold text-surface-900 dark:text-surface-100">
+              <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="text-sm text-surface-600 dark:text-surface-400">Overall Record</div>
+          </div>
+
+          <!-- Player 2 -->
+          <div id="comparison-player2" class="text-center">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tournament Overview Section -->
+      <div id="tournament-overview" class="card-elevated p-4 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tournament Overview</h3>
+        <div id="tournament-stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Match History -->
+      <div id="match-history" class="card-elevated p-4">
+        <h3 class="text-lg font-semibold mb-4">Match History</h3>
+        <div id="matches-list" class="space-y-3">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="hidden text-center py-12">
+      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-tennis-400 border-r-transparent mb-4"></div>
+      <p class="text-body">Loading head-to-head data...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="hidden card bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 p-6 text-center">
+      <div class="text-4xl mb-4">⚠️</div>
+      <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Data</h3>
+      <p id="error-message" class="text-red-600 dark:text-red-300 mb-4"></p>
+      <button id="retry-btn" class="btn-outline">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Featured Matchups -->
+    <div class="mt-16">
+      <h2 class="text-heading-3 text-center mb-8">Featured Rivalries</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Big 3 Rivalries -->
+        <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
+                data-player1="sr:competitor:14882" data-player2="sr:competitor:407573">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">ATP Champions</span>
+            <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
+              Current
+            </span>
+          </div>
+          <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+            Djokovic vs Alcaraz
+          </div>
+        </button>
+
+        <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
+                data-player1="sr:competitor:407573" data-player2="sr:competitor:14882">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">ATP Rising</span>
+            <span class="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-2 py-1 rounded-full">
+              Stars
+            </span>
+          </div>
+          <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+            Alcaraz vs Djokovic
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  let playersCache = new Map();
+  let selectedPlayer1 = null;
+  let selectedPlayer2 = null;
+
+  // DOM elements
+  const tour1Select = document.getElementById('tour1') as HTMLSelectElement | null;
+  const tour2Select = document.getElementById('tour2') as HTMLSelectElement | null;
+  const player1Select = document.getElementById('player1') as HTMLSelectElement | null;
+  const player2Select = document.getElementById('player2') as HTMLSelectElement | null;
+  const compareBtn = document.getElementById('compare-btn') as HTMLButtonElement | null;
+  const resultsSection = document.getElementById('results-section') as HTMLElement | null;
+  const loadingState = document.getElementById('loading-state') as HTMLElement | null;
+  const errorState = document.getElementById('error-state') as HTMLElement | null;
+  const errorMessage = document.getElementById('error-message') as HTMLElement | null;
+  const retryBtn = document.getElementById('retry-btn') as HTMLButtonElement | null;
+
+  // Load players function
+  async function loadPlayers(tour, selectElement) {
+    const cacheKey = tour;
+
+    if (playersCache.has(cacheKey)) {
+      populatePlayerSelect(selectElement, playersCache.get(cacheKey));
+      return;
+    }
+
+    selectElement.innerHTML = '<option value="">Loading players...</option>';
+
+    try {
+      const response = await fetch(`/api/players?tour=${tour}&limit=50`);
+      const data = await response.json();
+
+      if (response.ok && data.players && Array.isArray(data.players)) {
+        playersCache.set(cacheKey, data.players);
+        populatePlayerSelect(selectElement, data.players);
+      } else {
+        throw new Error(data.message || data.error || 'Failed to load players');
+      }
+    } catch (error) {
+      console.error('Error loading players:', error);
+      selectElement.innerHTML = '<option value="">Failed to load players</option>';
+    }
+  }
+
+  function populatePlayerSelect(selectElement, players) {
+    selectElement.innerHTML = '<option value="">Select a player...</option>';
+    players.forEach(player => {
+      if (player && player.id && player.name) {
+        const option = document.createElement('option');
+        option.value = player.id;
+        option.textContent = `${player.name} (#${player.ranking || 'NR'}) - ${player.country || 'Unknown'}`;
+        option.dataset.player = JSON.stringify(player);
+        selectElement.appendChild(option);
+      }
+    });
+  }
+
+  function updatePlayerDisplay(playerNum, player) {
+    const display = document.getElementById(`player${playerNum}-display`);
+    const flag = document.getElementById(`player${playerNum}-flag`);
+    const name = document.getElementById(`player${playerNum}-name`);
+    const info = document.getElementById(`player${playerNum}-info`);
+
+    if (player) {
+      flag.innerHTML = `<img src="https://flagcdn.com/w20/${(player.country_code || 'xx').toLowerCase()}.png"
+                               alt="${player.country || 'Unknown'}"
+                               class="w-5 h-4 rounded object-cover"
+                               onerror="this.style.display='none'">`;
+      name.textContent = player.name;
+      info.textContent = `#${player.ranking || 'NR'} • ${player.country || 'Unknown'}`;
+      display.classList.remove('hidden');
+    } else {
+      display.classList.add('hidden');
+    }
+
+    updateCompareButton();
+  }
+
+  function updateCompareButton() {
+    if (selectedPlayer1 && selectedPlayer2 && selectedPlayer1.id !== selectedPlayer2.id) {
+      compareBtn.disabled = false;
+    } else {
+      compareBtn.disabled = true;
+    }
+  }
+
+  async function comparePlayersHeadToHead() {
+    if (!selectedPlayer1 || !selectedPlayer2) return;
+
+    // Hide previous results and errors
+    resultsSection?.classList.add('hidden');
+    errorState?.classList.add('hidden');
+    loadingState?.classList.remove('hidden');
+
+    try {
+      const response = await fetch(`/api/head-to-head?player1=${selectedPlayer1.id}&player2=${selectedPlayer2.id}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      displayHeadToHeadResults(data);
+
+    } catch (error) {
+      const err = error as any;
+      console.error('Error fetching head-to-head data:', err);
+      if (errorMessage) errorMessage.textContent = err?.message || 'Failed to load head-to-head data';
+      errorState?.classList.remove('hidden');
+    } finally {
+      loadingState?.classList.add('hidden');
+    }
+  }
+
+  function displayHeadToHeadResults(data) {
+    const competitor1 = data.competitors?.find(c => c.id === selectedPlayer1.id);
+    const competitor2 = data.competitors?.find(c => c.id === selectedPlayer2.id);
+
+    if (!competitor1 || !competitor2) {
+      throw new Error('Invalid competitor data received');
+    }
+
+    // Calculate overall record
+    let player1Wins = 0;
+    let player2Wins = 0;
+
+    data.last_meetings?.forEach(match => {
+      if (match.sport_event_status?.winner_id === selectedPlayer1.id) {
+        player1Wins++;
+      } else if (match.sport_event_status?.winner_id === selectedPlayer2.id) {
+        player2Wins++;
+      }
+    });
+
+    // Update comparison header
+    document.getElementById('comparison-player1').innerHTML = `
+      <img src="https://flagcdn.com/w40/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
+           alt="${selectedPlayer1.country || 'Unknown'}"
+           class="w-8 h-6 rounded mx-auto mb-2"
+           onerror="this.style.display='none'">
+      <div class="text-xl font-bold text-surface-900 dark:text-surface-100">${selectedPlayer1.name}</div>
+      <div class="text-sm text-surface-600 dark:text-surface-400">#${selectedPlayer1.ranking || 'NR'}</div>
+    `;
+
+    document.getElementById('comparison-player2').innerHTML = `
+      <img src="https://flagcdn.com/w40/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
+           alt="${selectedPlayer2.country || 'Unknown'}"
+           class="w-8 h-6 rounded mx-auto mb-2"
+           onerror="this.style.display='none'">
+      <div class="text-xl font-bold text-surface-900 dark:text-surface-100">${selectedPlayer2.name}</div>
+      <div class="text-sm text-surface-600 dark:text-surface-400">#${selectedPlayer2.ranking || 'NR'}</div>
+    `;
+
+    document.getElementById('overall-record').textContent = `${player1Wins} - ${player2Wins}`;
+
+    // Calculate tournament statistics
+    const tournamentStats = {};
+    data.last_meetings?.forEach(match => {
+      const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown';
+      const level = match.sport_event?.sport_event_context?.competition?.level || 'Other';
+      const surface = match.sport_event?.venue?.surface || 'Unknown';
+      const winner = match.sport_event_status?.winner_id;
+
+      if (!tournamentStats[tournament]) {
+        tournamentStats[tournament] = { total: 0, player1Wins: 0, player2Wins: 0, level, surface };
+      }
+
+      tournamentStats[tournament].total++;
+      if (winner === selectedPlayer1.id) {
+        tournamentStats[tournament].player1Wins++;
+      } else if (winner === selectedPlayer2.id) {
+        tournamentStats[tournament].player2Wins++;
+      }
+    });
+
+    // Display tournament overview
+    const tournamentStatsDiv = document.getElementById('tournament-stats');
+    const sortedTournaments = Object.entries(tournamentStats)
+      .sort(([,a], [,b]) => b.total - a.total)
+      .slice(0, 6); // Top 6 tournaments
+
+    if (sortedTournaments.length > 0) {
+      tournamentStatsDiv.innerHTML = sortedTournaments.map(([tournament, stats]) => `
+        <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3 border border-surface-200/50 dark:border-surface-700/50">
+          <div class="flex items-start justify-between mb-2">
+            <div class="min-w-0 flex-1">
+              <div class="font-medium text-surface-900 dark:text-surface-100 text-sm truncate">
+                ${tournament}
+              </div>
+              <div class="text-xs text-surface-500 dark:text-surface-400 mt-0.5">
+                ${stats.level} • ${stats.total} match${stats.total !== 1 ? 'es' : ''}
+              </div>
+            </div>
+            <div class="flex items-center gap-2 ml-3 flex-shrink-0">
+              <div class="text-center">
+                <div class="text-sm font-bold text-electric-600 dark:text-electric-400">${stats.player1Wins}</div>
+                <div class="text-xs text-surface-500">-</div>
+              </div>
+              <div class="text-center">
+                <div class="text-sm font-bold text-tennis-600 dark:text-tennis-400">${stats.player2Wins}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      tournamentStatsDiv.innerHTML = `
+        <div class="col-span-full text-center py-6 text-surface-500 dark:text-surface-500">
+          <div class="text-2xl mb-2">🏆</div>
+          <p>No tournament data available</p>
+        </div>
+      `;
+    }
+
+    // Display match history with detailed scores
+    const matchesList = document.getElementById('matches-list');
+    if (data.last_meetings && data.last_meetings.length > 0) {
+      matchesList.innerHTML = data.last_meetings.slice(0, 10).map(match => {
+        const winner = match.sport_event_status?.winner_id;
+        const isPlayer1Winner = winner === selectedPlayer1.id;
+        const isPlayer2Winner = winner === selectedPlayer2.id;
+
+        // Get competitors and determine which is player1 vs player2
+        const competitors = match.sport_event?.competitors || [];
+        const player1Competitor = competitors.find(c => c.id === selectedPlayer1.id);
+        const player2Competitor = competitors.find(c => c.id === selectedPlayer2.id);
+
+        // Format scores from period_scores (sets)
+        let scoreDisplay = '';
+        if (match.sport_event_status?.period_scores && match.sport_event_status.period_scores.length > 0) {
+          const sets = match.sport_event_status.period_scores;
+          const setScores = sets.map(set => {
+            const player1Score = player1Competitor?.qualifier === 'home' ? set.home_score : set.away_score;
+            const player2Score = player2Competitor?.qualifier === 'home' ? set.home_score : set.away_score;
+            const player1Tiebreak = player1Competitor?.qualifier === 'home' ? set.home_tiebreak_score : set.away_tiebreak_score;
+            const player2Tiebreak = player2Competitor?.qualifier === 'home' ? set.home_tiebreak_score : set.away_tiebreak_score;
+
+            let setScore = `${player1Score}-${player2Score}`;
+            if (player1Tiebreak !== undefined && player2Tiebreak !== undefined) {
+              setScore += ` (${player1Tiebreak}-${player2Tiebreak})`;
+            }
+            return setScore;
+          });
+          scoreDisplay = setScores.join(', ');
+        }
+
+        const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown Tournament';
+        const round = match.sport_event?.sport_event_context?.round?.name || '';
+        const level = match.sport_event?.sport_event_context?.competition?.level || '';
+        const date = new Date(match.sport_event?.start_time).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short'
+        });
+
+        return `
+          <div class="border border-surface-200 dark:border-surface-700 rounded-lg p-3 bg-surface-50/50 dark:bg-surface-800/30">
+            <!-- Compact Header -->
+            <div class="flex items-center justify-between mb-2">
+              <div class="min-w-0 flex-1">
+                <div class="font-medium text-surface-900 dark:text-surface-100 text-sm truncate">
+                  ${tournament}
+                </div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">
+                  ${date}${round ? ` • ${round}` : ''}${level ? ` • ${level}` : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Compact Match Result -->
+            <div class="flex items-center justify-between gap-3">
+              <!-- Player 1 -->
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <img src="https://flagcdn.com/w20/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
+                     alt="${selectedPlayer1.country || 'Unknown'}"
+                     class="w-4 h-3 rounded object-cover flex-shrink-0"
+                     onerror="this.style.display='none'">
+                <span class="${isPlayer1Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm truncate">
+                  ${selectedPlayer1.name.split(',')[0]}
+                </span>
+                ${isPlayer1Winner ? '<span class="text-tennis-600 dark:text-tennis-400 text-xs">✓</span>' : ''}
+              </div>
+
+              <!-- Score -->
+              <div class="text-center px-2 flex-shrink-0">
+                ${scoreDisplay ? `
+                  <div class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100 whitespace-nowrap">
+                    ${scoreDisplay}
+                  </div>
+                ` : `
+                  <div class="text-surface-500 dark:text-surface-500 text-xs">
+                    ${winner ? 'W/L' : 'N/A'}
+                  </div>
+                `}
+              </div>
+
+              <!-- Player 2 -->
+              <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
+                ${isPlayer2Winner ? '<span class="text-tennis-600 dark:text-tennis-400 text-xs">✓</span>' : ''}
+                <span class="${isPlayer2Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm truncate text-right">
+                  ${selectedPlayer2.name.split(',')[0]}
+                </span>
+                <img src="https://flagcdn.com/w20/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
+                     alt="${selectedPlayer2.country || 'Unknown'}"
+                     class="w-4 h-3 rounded object-cover flex-shrink-0"
+                     onerror="this.style.display='none'">
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      matchesList.innerHTML = `
+        <div class="text-center py-8 text-surface-500 dark:text-surface-500">
+          <div class="text-4xl mb-4">🎾</div>
+          <p>No previous matches found between these players.</p>
+        </div>
+      `;
+    }
+
+    resultsSection.classList.remove('hidden');
+  }
+
+  // Event listeners
+  tour1Select?.addEventListener('change', (e) => {
+    const sel = e.target as HTMLSelectElement;
+    if (player1Select) loadPlayers(sel.value, player1Select);
+    selectedPlayer1 = null;
+    updatePlayerDisplay(1, null);
+  });
+
+  tour2Select?.addEventListener('change', (e) => {
+    const sel = e.target as HTMLSelectElement;
+    if (player2Select) loadPlayers(sel.value, player2Select);
+    selectedPlayer2 = null;
+    updatePlayerDisplay(2, null);
+  });
+
+  player1Select?.addEventListener('change', (e) => {
+    const sel = e.target as HTMLSelectElement;
+    if (sel.value) {
+      selectedPlayer1 = JSON.parse(sel.selectedOptions[0].dataset.player as string);
+      updatePlayerDisplay(1, selectedPlayer1);
+    } else {
+      selectedPlayer1 = null;
+      updatePlayerDisplay(1, null);
+    }
+  });
+
+  player2Select?.addEventListener('change', (e) => {
+    const sel = e.target as HTMLSelectElement;
+    if (sel.value) {
+      selectedPlayer2 = JSON.parse(sel.selectedOptions[0].dataset.player as string);
+      updatePlayerDisplay(2, selectedPlayer2);
+    } else {
+      selectedPlayer2 = null;
+      updatePlayerDisplay(2, null);
+    }
+  });
+
+  compareBtn?.addEventListener('click', comparePlayersHeadToHead);
+  retryBtn?.addEventListener('click', comparePlayersHeadToHead);
+
+  // Featured matchup buttons
+  document.querySelectorAll('.featured-matchup').forEach(button => {
+    button.addEventListener('click', async () => {
+      const btn = button as HTMLElement;
+      const player1Id = (btn.dataset as any).player1 as string;
+      const player2Id = (btn.dataset as any).player2 as string;
+
+      console.log(`Featured matchup clicked: ${player1Id} vs ${player2Id}`);
+
+      // Reset selections and show loading
+      selectedPlayer1 = null;
+      selectedPlayer2 = null;
+      updatePlayerDisplay(1, null);
+      updatePlayerDisplay(2, null);
+      resultsSection?.classList.add('hidden');
+      errorState?.classList.add('hidden');
+      loadingState?.classList.remove('hidden');
+
+      try {
+        // Fetch the head-to-head data directly
+        const response = await fetch(`/api/head-to-head?player1=${player1Id}&player2=${player2Id}`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Extract player information from the response
+        console.log('API Response competitors:', data.competitors);
+        console.log('Looking for player1Id:', player1Id);
+        console.log('Looking for player2Id:', player2Id);
+
+        const competitor1 = data.competitors?.find(c => c.id === player1Id);
+        const competitor2 = data.competitors?.find(c => c.id === player2Id);
+
+        console.log('Found competitor1:', competitor1);
+        console.log('Found competitor2:', competitor2);
+
+        if (competitor1 && competitor2) {
+          // Set the selected players with the data from the API
+          selectedPlayer1 = {
+            id: competitor1.id,
+            name: competitor1.name,
+            country: competitor1.country,
+            country_code: competitor1.country_code,
+            ranking: competitor1.ranking || 'NR'
+          };
+
+          selectedPlayer2 = {
+            id: competitor2.id,
+            name: competitor2.name,
+            country: competitor2.country,
+            country_code: competitor2.country_code,
+            ranking: competitor2.ranking || 'NR'
+          };
+
+          // Update the player displays
+          updatePlayerDisplay(1, selectedPlayer1);
+          updatePlayerDisplay(2, selectedPlayer2);
+
+          // Display the results
+          displayHeadToHeadResults(data);
+
+          // Scroll to results
+          resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          throw new Error('Player data not found in response');
+        }
+
+      } catch (error) {
+        const err = error as any;
+        console.error('Error fetching featured matchup data:', err);
+        if (errorMessage) errorMessage.textContent = err?.message || 'Failed to load matchup data';
+        errorState?.classList.remove('hidden');
+      } finally {
+        loadingState?.classList.add('hidden');
+      }
+    });
+  });
+
+  // Initialize
+  if (tour1Select && tour2Select && player1Select && player2Select) {
+    loadPlayers(tour1Select.value, player1Select);
+    loadPlayers(tour2Select.value, player2Select);
+  }
+</script>

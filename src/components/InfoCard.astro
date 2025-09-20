@@ -1,0 +1,47 @@
+---
+import Icons from "./Icons.astro";
+
+export interface Props {
+  title: string;
+  icon: string;
+  value: string | number;
+  subtitle?: string;
+  variant?: 'default' | 'minimal';
+  className?: string;
+}
+
+const {
+  title,
+  icon,
+  value,
+  subtitle,
+  variant = 'default',
+  className = ''
+} = Astro.props;
+---
+
+{variant === 'minimal' ? (
+  <!-- Minimal variant for compact layouts -->
+  <div class={`text-center ${className}`}>
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <Icons name={icon} class="w-4 h-4 text-surface-600 dark:text-surface-400" />
+      <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{title}</span>
+    </div>
+    <div class="text-lg font-bold text-surface-900 dark:text-surface-100">{value}</div>
+    {subtitle && (
+      <div class="text-xs text-surface-500 dark:text-surface-400">{subtitle}</div>
+    )}
+  </div>
+) : (
+  <!-- Default variant -->
+  <div class={`bg-surface-50 dark:bg-surface-800 rounded-lg p-4 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors ${className}`}>
+    <div class="flex items-center gap-2 mb-2">
+      <Icons name={icon} class="w-4 h-4 text-surface-600 dark:text-surface-400" />
+      <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300">{title}</h3>
+    </div>
+    <div class="text-xl font-bold text-surface-900 dark:text-surface-100 mb-1">{value}</div>
+    {subtitle && (
+      <p class="text-xs text-surface-500 dark:text-surface-400">{subtitle}</p>
+    )}
+  </div>
+)}

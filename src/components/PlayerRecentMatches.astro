@@ -1,0 +1,144 @@
+---
+import PlayerImage from "./PlayerImage.astro";
+
+export interface Props {
+  playerId: string;
+  playerName: string;
+  limit?: number;
+}
+
+const { limit = 5 } = Astro.props;
+
+// Mock recent matches data (in a real app, this would come from an API)
+const recentMatches = [
+  {
+    id: "match1",
+    tournament: "Australian Open 2024",
+    round: "Quarter-finals",
+    date: "2024-01-24",
+    opponent: {
+      id: "opp1",
+      name: "Carlos Alcaraz",
+      nationality: "Spain",
+      countryCode: "ES"
+    },
+    result: "W",
+    score: "6-4, 6-2, 6-3",
+    isWin: true
+  },
+  {
+    id: "match2",
+    tournament: "French Open 2024",
+    round: "Semi-finals",
+    date: "2024-06-07",
+    opponent: {
+      id: "opp2",
+      name: "Novak Djokovic",
+      nationality: "Serbia",
+      countryCode: "RS"
+    },
+    result: "L",
+    score: "4-6, 6-7, 2-6",
+    isWin: false
+  },
+  {
+    id: "match3",
+    tournament: "Wimbledon 2024",
+    round: "Final",
+    date: "2024-07-14",
+    opponent: {
+      id: "opp3",
+      name: "Roger Federer",
+      nationality: "Switzerland",
+      countryCode: "CH"
+    },
+    result: "W",
+    score: "7-6, 6-4, 6-2",
+    isWin: true
+  }
+];
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
+---
+
+<div class="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
+  <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 mb-4 flex items-center gap-2">
+    <span>🎾</span>
+    Recent Matches
+  </h2>
+
+  <div class="space-y-4">
+    {recentMatches.slice(0, limit).map((match) => (
+      <div class={`p-4 rounded-lg border transition-colors ${
+        match.isWin
+          ? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
+          : 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
+      }`}>
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <!-- Match result badge -->
+            <div class={`px-2 py-1 rounded-full text-sm font-bold ${
+              match.isWin
+                ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
+                : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200'
+            }`}>
+              {match.result}
+            </div>
+
+            <!-- Tournament and round -->
+            <div class="text-sm">
+              <div class="font-medium text-surface-900 dark:text-surface-100">{match.tournament}</div>
+              <div class="text-surface-600 dark:text-surface-400">{match.round}</div>
+            </div>
+          </div>
+
+          <!-- Match date -->
+          <div class="text-xs text-surface-500 dark:text-surface-400">
+            {formatDate(match.date)}
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <!-- Opponent info with image -->
+          <div class="flex items-center gap-3">
+            <PlayerImage
+              player={match.opponent}
+              size="medium"
+              showFlag={true}
+              showRankingBadge={false}
+            />
+            <div>
+              <div class="font-medium text-surface-900 dark:text-surface-100">
+                vs {match.opponent.name}
+              </div>
+              <div class="text-sm text-surface-600 dark:text-surface-400">
+                {match.opponent.nationality}
+              </div>
+            </div>
+          </div>
+
+          <!-- Match score -->
+          <div class="text-right">
+            <div class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+              {match.score}
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- View all matches link -->
+  <div class="mt-4 text-center">
+    <button class="text-tennis-600 dark:text-tennis-400 hover:text-tennis-700 dark:hover:text-tennis-300 text-sm font-medium transition-colors">
+      View All Matches →
+    </button>
+  </div>
+</div>

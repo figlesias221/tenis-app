@@ -4,6 +4,8 @@ export interface Player {
   nationality: string;
   countryCode: string;
   abbreviation?: string;
+  imageUrl?: string; // URL to official player photo (e.g., from Wikipedia/Wikidata)
+  avatarUrl?: string; // Generated avatar URL using initials as fallback
 }
 
 export interface RankingEntry {
@@ -257,6 +259,7 @@ export interface TennisApiProvider {
   getRankings(type: "ATP" | "WTA", limit?: number): Promise<Rankings>;
   getLiveMatches(): Promise<LiveMatches>;
   getTodayMatches(): Promise<LiveMatches>;
+  getMatchesByDate(date: string): Promise<LiveMatches>;
   getCompetitorProfile(competitorId: string): Promise<CompetitorProfile>;
   getCompetitionsByCategory?(categoryId: string): Promise<CompetitionsData>;
   getHeadToHead?(competitor1Id: string, competitor2Id: string): Promise<HeadToHeadData>;

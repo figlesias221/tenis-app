@@ -1,0 +1,156 @@
+---
+import CountryFlag from "./CountryFlag.astro";
+import { imageService } from "@/lib/utils/image-service";
+
+export interface Props {
+  player: {
+    id: string;
+    name: string;
+    nationality: string;
+    countryCode: string;
+    abbreviation?: string;
+  };
+  size?: 'small' | 'medium' | 'large' | 'xl';
+  showFlag?: boolean;
+  showRankingBadge?: boolean;
+  ranking?: number;
+  tourType?: 'ATP' | 'WTA';
+  className?: string;
+}
+
+const {
+  player,
+  size = 'medium',
+  showFlag = true,
+  showRankingBadge = false,
+  ranking,
+  tourType = 'ATP',
+  className = ''
+} = Astro.props;
+
+// Size configurations
+const sizeConfig = {
+  small: {
+    containerClasses: 'w-12 h-12',
+    imageClasses: 'w-12 h-12 rounded-lg',
+    flagSize: 'small' as const,
+    flagPosition: '-bottom-1 -right-1',
+    textSize: 'text-xs'
+  },
+  medium: {
+    containerClasses: 'w-20 h-20',
+    imageClasses: 'w-20 h-20 rounded-xl',
+    flagSize: 'small' as const,
+    flagPosition: '-bottom-1 -right-1',
+    textSize: 'text-sm'
+  },
+  large: {
+    containerClasses: 'w-32 h-32',
+    imageClasses: 'w-32 h-32 rounded-2xl',
+    flagSize: 'medium' as const,
+    flagPosition: '-bottom-2 -right-2',
+    textSize: 'text-xl'
+  },
+  xl: {
+    containerClasses: 'w-40 h-40',
+    imageClasses: 'w-40 h-40 rounded-2xl',
+    flagSize: 'medium' as const,
+    flagPosition: '-bottom-2 -right-2',
+    textSize: 'text-2xl'
+  }
+};
+
+const config = sizeConfig[size];
+
+// Get colors based on tour type and ranking
+const colors = imageService.getColorVariation(tourType, ranking);
+
+// Generate image URL
+let playerImageUrl: string;
+let isWikipediaImage = false;
+
+try {
+  playerImageUrl = await imageService.getPlayerImageUrlAsync(player, {
+    size: size === 'xl' ? 300 : size === 'large' ? 200 : size === 'medium' ? 120 : 80,
+    backgroundColor: colors.backgroundColor,
+    textColor: colors.textColor,
+    rounded: true
+  });
+
+  // Check if this is a Wikipedia/Wikidata image
+  isWikipediaImage = playerImageUrl.includes('wikipedia.org') || playerImageUrl.includes('wikimedia.org');
+} catch (error) {
+  console.warn(`Failed to get async image for ${player.name}, using fallback:`, error);
+  playerImageUrl = imageService.getPlayerImageUrl(player, {
+    size: size === 'xl' ? 300 : size === 'large' ? 200 : size === 'medium' ? 120 : 80,
+    backgroundColor: colors.backgroundColor,
+    textColor: colors.textColor,
+    rounded: true
+  });
+}
+
+// Generate initials for fallback
+const initials = player.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+---
+
+<div class={`relative group ${config.containerClasses} ${className}`}>
+  <!-- Glow effect background -->
+  <div class={`absolute inset-0 ${config.imageClasses} bg-gradient-to-br ${colors.backgroundColor === '#3B82F6' ? 'from-blue-400/20 to-teal-500/20' : 'from-pink-400/20 to-purple-500/20'} rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-60`}></div>
+
+  <div class="relative">
+    <img
+      src={playerImageUrl}
+      alt={`${player.name} profile picture`}
+      class={`${config.imageClasses} border-3 border-surface-200/80 dark:border-surface-700/80 shadow-lg hover:shadow-xl transition-all duration-500 group-hover:scale-105 group-hover:border-tennis-300/50 dark:group-hover:border-tennis-600/50 object-cover backdrop-blur-sm`}
+      loading="lazy"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+    />
+
+    <!-- Enhanced Fallback for failed image loads -->
+    <div class={`hidden ${config.imageClasses} border-3 border-surface-200/80 dark:border-surface-700/80 shadow-lg bg-gradient-to-br from-tennis-100 via-tennis-200 to-electric-100 dark:from-tennis-900/40 dark:via-tennis-800/40 dark:to-electric-800/40 items-center justify-center relative overflow-hidden`}>
+      <!-- Background pattern -->
+      <div class="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+      <div class={`relative ${config.textSize} font-bold bg-gradient-to-br from-tennis-600 to-electric-600 dark:from-tennis-300 dark:to-electric-300 bg-clip-text text-transparent`}>
+        {initials}
+      </div>
+    </div>
+
+    <!-- Subtle shine effect -->
+    <div class={`absolute inset-0 ${config.imageClasses} bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
+  </div>
+
+  <!-- Country flag overlay -->
+  {showFlag && (
+    <div class={`absolute ${config.flagPosition} bg-white dark:bg-surface-800 rounded-full p-1 shadow-md`}>
+      <CountryFlag
+        countryCode={player.countryCode}
+        nationality={player.nationality}
+        size={config.flagSize}
+      />
+    </div>
+  )}
+
+  <!-- Enhanced Ranking badge for top players -->
+  {showRankingBadge && ranking && ranking <= 10 && (
+    <div class="absolute -top-2 -left-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 text-yellow-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg border-2 border-yellow-200/50 animate-pulse-slow group-hover:scale-110 transition-transform duration-300">
+      <div class="flex items-center gap-1">
+        <span class="text-xs">👑</span>
+        <span>#{ranking}</span>
+      </div>
+    </div>
+  )}
+
+  <!-- Wikipedia attribution (small badge) -->
+  {isWikipediaImage && size !== 'small' && (
+    <div class="absolute top-1 left-1 bg-black/70 text-white text-xs px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+      📷 Wiki
+    </div>
+  )}
+</div>
+
+<!-- Wikipedia attribution notice for larger images -->
+{isWikipediaImage && (size === 'large' || size === 'xl') && (
+  <p class="text-xs text-surface-500 dark:text-surface-400 mt-2 text-center">
+    📷 Image from Wikipedia (CC licensed)
+  </p>
+)}

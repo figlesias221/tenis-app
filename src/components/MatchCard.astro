@@ -1,12 +1,24 @@
 ---
 import type { Match } from "@/lib/api/types";
 import CountryFlag from "./CountryFlag.astro";
+import { imageService } from "@/lib/utils/image-service";
 
 export interface Props {
   match: Match;
 }
 
 const { match } = Astro.props;
+
+// Generate avatar URLs for both players
+const player1AvatarUrl = imageService.getPlayerImageUrl(match.players[0], {
+  size: 60,
+  rounded: true
+});
+
+const player2AvatarUrl = imageService.getPlayerImageUrl(match.players[1], {
+  size: 60,
+  rounded: true
+});
 
 function getStatusColor(status: Match['status']): string {
   switch (status) {
@@ -187,20 +199,33 @@ function isWinner(playerIndex: number, sets: any[]): boolean {
           } hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors`}>
             <td class="px-4 py-4">
               <div class="flex items-center gap-3">
-                <CountryFlag
-                  countryCode={match.players[0].countryCode}
-                  nationality={match.players[0].nationality}
-                  size="medium"
-                  className="flex-shrink-0"
-                />
+                <div class="flex-shrink-0 relative">
+                  <img
+                    src={player1AvatarUrl}
+                    alt={`${match.players[0].name} avatar`}
+                    class="w-12 h-12 rounded-full border-2 border-surface-200 dark:border-surface-600"
+                    loading="lazy"
+                  />
+                  <div class="absolute -bottom-1 -right-1">
+                    <CountryFlag
+                      countryCode={match.players[0].countryCode}
+                      nationality={match.players[0].nationality}
+                      size="small"
+                      className="flex-shrink-0"
+                    />
+                  </div>
+                </div>
                 <div class="min-w-0 flex-1">
-                  <p class={`font-bold text-base leading-tight break-words ${
-                    match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
-                      ? 'text-green-700 dark:text-green-400'
-                      : 'text-gray-900 dark:text-gray-100'
-                  }`}>
+                  <a
+                    href={`/player/${match.players[0].id}`}
+                    class={`font-bold text-base leading-tight break-words hover:underline transition-colors ${
+                      match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
+                        ? 'text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300'
+                        : 'text-gray-900 dark:text-gray-100 hover:text-tennis-600 dark:hover:text-tennis-400'
+                    }`}
+                  >
                     {match.players[0].name}
-                  </p>
+                  </a>
                   <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
                     {match.players[0].nationality}
                   </p>
@@ -246,20 +271,33 @@ function isWinner(playerIndex: number, sets: any[]): boolean {
           } hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors`}>
             <td class="px-4 py-4">
               <div class="flex items-center gap-3">
-                <CountryFlag
-                  countryCode={match.players[1].countryCode}
-                  nationality={match.players[1].nationality}
-                  size="medium"
-                  className="flex-shrink-0"
-                />
+                <div class="flex-shrink-0 relative">
+                  <img
+                    src={player2AvatarUrl}
+                    alt={`${match.players[1].name} avatar`}
+                    class="w-12 h-12 rounded-full border-2 border-surface-200 dark:border-surface-600"
+                    loading="lazy"
+                  />
+                  <div class="absolute -bottom-1 -right-1">
+                    <CountryFlag
+                      countryCode={match.players[1].countryCode}
+                      nationality={match.players[1].nationality}
+                      size="small"
+                      className="flex-shrink-0"
+                    />
+                  </div>
+                </div>
                 <div class="min-w-0 flex-1">
-                  <p class={`font-bold text-base leading-tight break-words ${
-                    match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
-                      ? 'text-green-700 dark:text-green-400'
-                      : 'text-gray-900 dark:text-gray-100'
-                  }`}>
+                  <a
+                    href={`/player/${match.players[1].id}`}
+                    class={`font-bold text-base leading-tight break-words hover:underline transition-colors ${
+                      match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
+                        ? 'text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300'
+                        : 'text-gray-900 dark:text-gray-100 hover:text-tennis-600 dark:hover:text-tennis-400'
+                    }`}
+                  >
                     {match.players[1].name}
-                  </p>
+                  </a>
                   <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
                     {match.players[1].nationality}
                   </p>

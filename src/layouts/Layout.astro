@@ -63,12 +63,192 @@ const {
       })();
     </script>
   </head>
-  <body class="bg-yellow-50 dark:bg-yellow-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
-    <main class="flex-1">
+  <body class="bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-surface-50 transition-colors duration-300 min-h-screen flex flex-col antialiased">
+    <!-- Subtle Background Pattern -->
+    <div class="fixed inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,197,94,0.03),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(34,197,94,0.01),transparent_50%)] pointer-events-none"></div>
+    <div class="fixed inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(14,165,233,0.03),transparent_50%)] dark:bg-[radial-gradient(circle_at_80%_80%,rgba(14,165,233,0.01),transparent_50%)] pointer-events-none"></div>
+
+    <main class="flex-1 relative z-10">
       <slot />
     </main>
-    <footer class="mt-auto py-6 text-center text-sm border-t border-yellow-200 dark:border-yellow-700 bg-white dark:bg-gray-800">
-      <p class="text-gray-600 dark:text-gray-400">&copy; {new Date().getFullYear()} Tennis Live - Your source for tennis rankings and live scores</p>
+
+    <!-- Premium Footer -->
+    <footer class="mt-auto relative z-10">
+      <!-- Footer gradient background -->
+      <div class="absolute inset-0 bg-gradient-to-t from-surface-100 via-surface-50 to-transparent dark:from-surface-900 dark:via-surface-900 dark:to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+
+      <!-- Main footer content -->
+      <div class="relative border-t border-surface-200/60 dark:border-surface-700/60 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <!-- Footer grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+
+            <!-- Brand Section -->
+            <div class="lg:col-span-2">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10">
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <radialGradient id="footerBallGradient" cx="30%" cy="30%" r="70%">
+                        <stop offset="0%" style="stop-color:#7dd955;stop-opacity:1" />
+                        <stop offset="70%" style="stop-color:#22c55e;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#16a34a;stop-opacity:1" />
+                      </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="url(#footerBallGradient)" stroke="#16a34a" stroke-width="2"/>
+                    <path d="M15 35 Q50 15, 85 35" stroke="white" stroke-width="3" fill="none"/>
+                    <path d="M15 65 Q50 85, 85 65" stroke="white" stroke-width="3" fill="none"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold bg-gradient-to-r from-tennis-600 to-electric-600 bg-clip-text text-transparent">
+                    Tennis Live
+                  </h3>
+                  <p class="text-sm text-surface-600 dark:text-surface-400">Premium Tennis Experience</p>
+                </div>
+              </div>
+              <p class="text-surface-700 dark:text-surface-300 mb-4 max-w-md">
+                Your ultimate destination for live tennis scores, rankings, and tournament coverage. Experience the game like never before with real-time updates and comprehensive statistics.
+              </p>
+
+              <!-- Newsletter Signup -->
+              <div class="mb-6">
+                <h4 class="font-semibold text-surface-900 dark:text-surface-100 mb-3">Stay Updated</h4>
+                <div class="flex gap-2">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    class="flex-1 px-4 py-2.5 bg-surface-100 dark:bg-surface-800 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 placeholder-surface-500 focus:outline-none focus:border-tennis-500 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200"
+                  />
+                  <button class="px-6 py-2.5 bg-gradient-to-r from-tennis-500 to-tennis-600 hover:from-tennis-600 hover:to-tennis-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    Subscribe
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+              <h4 class="font-semibold text-surface-900 dark:text-surface-100 mb-4">Quick Links</h4>
+              <ul class="space-y-3">
+                <li><a href="/" class="text-surface-600 dark:text-surface-400 hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors duration-200 hover:translate-x-1 inline-block">Home</a></li>
+                <li><a href="/live" class="text-surface-600 dark:text-surface-400 hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors duration-200 hover:translate-x-1 inline-block">Live Scores</a></li>
+                <li><a href="/rankings" class="text-surface-600 dark:text-surface-400 hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors duration-200 hover:translate-x-1 inline-block">Rankings</a></li>
+                <li><a href="/competitions" class="text-surface-600 dark:text-surface-400 hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors duration-200 hover:translate-x-1 inline-block">Tournaments</a></li>
+                <li><a href="/head-to-head" class="text-surface-600 dark:text-surface-400 hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors duration-200 hover:translate-x-1 inline-block">Head to Head</a></li>
+              </ul>
+            </div>
+
+            <!-- Live Stats -->
+            <div>
+              <h4 class="font-semibold text-surface-900 dark:text-surface-100 mb-4">Live Stats</h4>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  <span class="text-sm text-surface-600 dark:text-surface-400">Live Matches</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span class="text-sm text-surface-600 dark:text-surface-400">Tournaments Active</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span class="text-sm text-surface-600 dark:text-surface-400">Players Ranked</span>
+                </div>
+                <div class="mt-4 p-3 bg-gradient-to-r from-tennis-50 to-electric-50 dark:from-tennis-950/20 dark:to-electric-950/20 rounded-xl border border-tennis-200/50 dark:border-tennis-800/50">
+                  <p class="text-xs font-medium text-tennis-700 dark:text-tennis-300">Real-time updates every 30 seconds</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer bottom -->
+          <div class="pt-8 border-t border-surface-200/50 dark:border-surface-700/50">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div class="text-sm text-surface-500 dark:text-surface-500">
+                <p>&copy; {new Date().getFullYear()} Tennis Live - Premium tennis experience</p>
+              </div>
+              <div class="flex items-center gap-6 text-sm text-surface-500 dark:text-surface-500">
+                <a href="#" class="hover:text-surface-700 dark:hover:text-surface-300 transition-colors">Privacy</a>
+                <a href="#" class="hover:text-surface-700 dark:hover:text-surface-300 transition-colors">Terms</a>
+                <span class="text-xs">Powered by SportRadar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll to top button -->
+      <button
+        id="scroll-to-top"
+        class="fixed bottom-6 right-6 w-12 h-12 bg-gradient-to-r from-tennis-500 to-tennis-600 hover:from-tennis-600 hover:to-tennis-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform translate-y-16 opacity-0 hover:scale-110 active:scale-95 z-20"
+        aria-label="Scroll to top"
+      >
+        <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+      </button>
     </footer>
+
+    <!-- Footer Scripts -->
+    <script>
+      // Scroll to top functionality
+      const scrollButton = document.getElementById('scroll-to-top');
+
+      if (scrollButton) {
+        // Show/hide scroll button
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 500) {
+            scrollButton.classList.remove('translate-y-16', 'opacity-0');
+            scrollButton.classList.add('translate-y-0', 'opacity-100');
+          } else {
+            scrollButton.classList.add('translate-y-16', 'opacity-0');
+            scrollButton.classList.remove('translate-y-0', 'opacity-100');
+          }
+        });
+
+        // Scroll to top on click
+        scrollButton.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      // Newsletter subscription
+      const newsletterForm = document.querySelector('footer input[type="email"]') as HTMLInputElement | null;
+      const subscribeButton = document.querySelector('footer button') as HTMLButtonElement | null;
+
+      if (newsletterForm && subscribeButton) {
+        subscribeButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          const email = newsletterForm.value;
+
+          if (email && email.includes('@')) {
+            // Add success animation
+            subscribeButton.innerHTML = '<svg class="w-5 h-5 mx-auto animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>';
+
+            setTimeout(() => {
+              subscribeButton.innerHTML = '✓ Subscribed!';
+              subscribeButton.classList.add('bg-green-500', 'hover:bg-green-600');
+              newsletterForm.value = '';
+
+              setTimeout(() => {
+                subscribeButton.innerHTML = 'Subscribe';
+                subscribeButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+              }, 3000);
+            }, 1000);
+          } else {
+            // Show error animation
+            newsletterForm.classList.add('border-red-500', 'animate-shake');
+            setTimeout(() => {
+              newsletterForm.classList.remove('border-red-500', 'animate-shake');
+            }, 500);
+          }
+        });
+      }
+    </script>
   </body>
 </html>

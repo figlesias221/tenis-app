@@ -29,7 +29,11 @@ export const GET: APIRoute = async ({ url }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=300' // Cache for 5 minutes
+          'Cache-Control': 'public, max-age=1800, s-maxage=1800', // 30 minutes cache
+          'CDN-Cache-Control': 'max-age=1800',
+          'Cloudflare-CDN-Cache-Control': 'max-age=1800',
+          'Vary': 'Accept-Encoding',
+          'ETag': `"h2h-${player1Id}-${player2Id}"`
         }
       }
     );

@@ -1,47 +1,152 @@
 ---
 import { siteConfig } from "@/site.config";
 import ThemeToggle from "./ThemeToggle.astro";
+import Icons from "./Icons.astro";
 
 const navLinks = [
-  { href: "/", text: "Home" },
-  { href: "/rankings", text: "Rankings" },
-  { href: "/competitions", text: "Competitions" },
-  { href: "/live", text: "Live Matches" },
+  { href: "/", text: "Home", icon: "home" },
+  { href: "/rankings", text: "Rankings", icon: "rankings" },
+  { href: "/competitions", text: "Tournaments", icon: "trophy" },
+  { href: "/head-to-head", text: "Head to Head", icon: "battle" },
+  { href: "/live", text: "Live", icon: "live" },
 ];
 ---
 
-<header class="group relative mb-28 flex items-center justify-between sm:ps-[4.5rem]">
-  <div class="flex sm:flex-col">
-    <a
-      href="/"
-      class="inline-flex items-center hover:filter-none sm:relative sm:inline-block text-gray-900 dark:text-gray-100"
-      aria-current={Astro.url.pathname === "/" ? "page" : false}
-    >
-      <span class="me-3 text-2xl sm:absolute sm:start-[-4.5rem] sm:me-0" aria-hidden="true" role="img" aria-label="Tennis Ball">
-        🎾
-      </span>
-      <span class="text-xl font-bold sm:text-2xl">{siteConfig.title}</span>
-    </a>
-    <nav
-      class="hidden sm:mt-2 sm:flex sm:flex-row sm:gap-x-4 sm:ps-0"
-      aria-label="Main menu"
-    >
-      {
-        navLinks.map((link) => (
+<!-- Premium Header with Glass Effect -->
+<header class="sticky top-0 z-50 w-full">
+  <div class="header-glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo and Brand -->
+        <div class="flex items-center gap-4 lg:gap-8">
           <a
-            href={link.href}
-            class="underline decoration-dashed underline-offset-4 hover:text-yellow-700 dark:hover:text-yellow-400 hover:decoration-yellow-600 dark:hover:decoration-yellow-500 text-gray-700 dark:text-gray-300 transition-colors"
-            aria-current={Astro.url.pathname === link.href ? "page" : false}
+            href="/"
+            class="flex items-center gap-2 lg:gap-3 group flex-shrink-0"
+            aria-current={Astro.url.pathname === "/" ? "page" : false}
           >
-            {link.text}
+            <div class="w-7 h-7 lg:w-8 lg:h-8 group-hover:scale-105 transition-transform duration-200">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                <defs>
+                  <radialGradient id="headerBallGradient" cx="30%" cy="30%" r="70%">
+                    <stop offset="0%" style="stop-color:#7dd955;stop-opacity:1" />
+                    <stop offset="70%" style="stop-color:#22c55e;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#16a34a;stop-opacity:1" />
+                  </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="45" fill="url(#headerBallGradient)" stroke="#16a34a" stroke-width="2"/>
+                <path d="M15 35 Q50 15, 85 35" stroke="white" stroke-width="3" fill="none"/>
+                <path d="M15 65 Q50 85, 85 65" stroke="white" stroke-width="3" fill="none"/>
+              </svg>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-base lg:text-lg xl:text-xl font-bold text-surface-900 dark:text-surface-100 truncate">
+                {siteConfig.title}
+              </span>
+              <span class="text-xs text-surface-500 dark:text-surface-400 font-medium hidden 2xl:block">
+                Live Tennis Scores
+              </span>
+            </div>
           </a>
-        ))
-      }
-    </nav>
-  </div>
 
-  <!-- Theme Toggle Button -->
-  <div class="flex items-center">
-    <ThemeToggle />
+          <!-- Desktop Navigation -->
+          <nav class="hidden lg:flex items-center gap-1 overflow-hidden" aria-label="Main menu">
+            {navLinks.map((link) => {
+              const isActive = Astro.url.pathname === link.href ||
+                              (link.href !== "/" && Astro.url.pathname.startsWith(link.href));
+              return (
+                <a
+                  href={link.href}
+                  class={`inline-flex items-center gap-2 px-3 xl:px-4 py-2 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100 font-medium rounded-lg transition-colors duration-200 ${
+                    isActive ? 'text-tennis-600 dark:text-tennis-400 bg-surface-100/70 dark:bg-surface-800/50' : ''
+                  }`}
+                  aria-current={isActive ? "page" : false}
+                >
+                  <Icons name={link.icon} class="w-4 h-4 flex-shrink-0" />
+                  <span class="truncate">{link.text}</span>
+                </a>
+              );
+            })}
+          </nav>
+        </div>
+
+        <!-- Right side actions -->
+        <div class="flex items-center gap-3">
+          <!-- Live Indicator -->
+          <div class="hidden lg:flex items-center justify-center w-8 h-8 bg-red-50/80 dark:bg-red-950/50 border border-red-200/50 dark:border-red-800/50 rounded-full flex-shrink-0">
+            <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+          </div>
+
+          <!-- Theme Toggle -->
+          <ThemeToggle />
+
+          <!-- Mobile Menu Button -->
+          <button
+            id="mobile-menu-toggle"
+            class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-100/80 dark:bg-surface-800/80 hover:bg-surface-200/80 dark:hover:bg-surface-700/80 transition-colors duration-200 border border-surface-200/50 dark:border-surface-700/50"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Toggle navigation menu"
+          >
+            <Icons name="menu" class="w-5 h-5 text-surface-700 dark:text-surface-300" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div id="mobile-menu" class="lg:hidden hidden">
+      <div class="header-glass border-t border-surface-200/30 dark:border-surface-700/30">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+          <nav class="flex flex-col gap-2" aria-label="Mobile menu">
+            {navLinks.map((link) => {
+              const isActive = Astro.url.pathname === link.href ||
+                              (link.href !== "/" && Astro.url.pathname.startsWith(link.href));
+              return (
+                <a
+                  href={link.href}
+                  class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-tennis-500/20 to-electric-500/20 border border-tennis-500/30 text-tennis-600 dark:text-tennis-400 font-semibold'
+                      : 'hover:bg-gradient-to-r hover:from-surface-100/50 hover:to-surface-200/50 dark:hover:from-surface-700/50 dark:hover:to-surface-800/50 text-surface-700 dark:text-surface-300 hover:border hover:border-surface-300/50 dark:hover:border-surface-600/50'
+                  } border border-transparent`}
+                  aria-current={isActive ? "page" : false}
+                >
+                  <Icons name={link.icon} class="w-5 h-5" />
+                  <span class="font-medium">{link.text}</span>
+                </a>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  if (mobileMenuToggle && mobileMenu) {
+    mobileMenuToggle.addEventListener('click', () => {
+      const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+
+      mobileMenuToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+
+      if (isExpanded) {
+        mobileMenu.classList.add('hidden');
+      } else {
+        mobileMenu.classList.remove('hidden');
+      }
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenuToggle.contains(e.target as Node) && !mobileMenu.contains(e.target as Node)) {
+        mobileMenu.classList.add('hidden');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>

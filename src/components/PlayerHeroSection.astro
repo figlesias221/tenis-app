@@ -1,0 +1,145 @@
+---
+import PlayerImage from "./PlayerImage.astro";
+import Icons from "./Icons.astro";
+import type { CompetitorProfile } from "@/lib/api/types";
+
+export interface Props {
+  profile: CompetitorProfile;
+  player: {
+    id: string;
+    name: string;
+    nationality: string;
+    countryCode: string;
+    abbreviation?: string;
+  };
+  tourType: 'ATP' | 'WTA';
+  currentRank?: number;
+}
+
+const { profile, player, tourType, currentRank } = Astro.props;
+
+function calculateAge(birthDate?: string): string {
+  if (!birthDate) return 'Unknown';
+  try {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    const age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      return `${age - 1}`;
+    }
+    return `${age}`;
+  } catch {
+    return 'Unknown';
+  }
+}
+
+// Calculate actual stats from profile data
+const currentSeasonStats = profile.periods[0]?.surfaces || [];
+const totalWins = currentSeasonStats.reduce((acc, surface) => acc + surface.statistics.matches_won, 0);
+const totalMatches = currentSeasonStats.reduce((acc, surface) => acc + surface.statistics.matches_played, 0);
+const winPercentage = totalMatches > 0 ? Math.round((totalWins / totalMatches) * 100) : 0;
+const totalTitles = currentSeasonStats.reduce((acc, surface) => acc + surface.statistics.competitions_won, 0);
+const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles');
+---
+
+<div class="bg-white dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700">
+  <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex items-start gap-6">
+
+      <!-- Player Image -->
+      <div class="relative flex-shrink-0">
+        <PlayerImage
+          player={player}
+          size="large"
+          showFlag={true}
+          showRankingBadge={false}
+          ranking={currentRank}
+          tourType={tourType}
+        />
+        {primaryRanking && (
+          <div class={`absolute -top-2 -right-2 ${
+            tourType === 'ATP' ? 'bg-blue-600' : 'bg-pink-600'
+          } text-white px-2 py-1 rounded-full shadow text-sm font-bold`}>
+            #{primaryRanking.rank}
+          </div>
+        )}
+      </div>
+
+      <!-- Player Info -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <h1 class="text-2xl lg:text-3xl font-bold text-surface-900 dark:text-surface-100">
+                {profile.name}
+              </h1>
+              {profile.abbreviation && (
+                <span class={`px-2 py-1 text-xs font-bold rounded ${
+                  tourType === 'ATP'
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                    : 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300'
+                }`}>
+                  {profile.abbreviation}
+                </span>
+              )}
+            </div>
+
+            <div class="flex flex-wrap items-center gap-4 text-sm text-surface-600 dark:text-surface-400 mb-3">
+              <span class="flex items-center gap-1">
+                <Icons name="globe" class="w-3 h-3" />
+                {profile.country}
+              </span>
+              {profile.info.date_of_birth && (
+                <span>{calculateAge(profile.info.date_of_birth)} years old</span>
+              )}
+              {profile.info.handedness && (
+                <span>Plays {profile.info.handedness}</span>
+              )}
+            </div>
+
+            {/* Physical stats inline */}
+            <div class="flex flex-wrap items-center gap-4 text-xs text-surface-500 dark:text-surface-400">
+              {profile.info.height && <span>{profile.info.height}cm</span>}
+              {profile.info.weight && <span>{profile.info.weight}kg</span>}
+              {profile.info.pro_year && <span>Pro since {profile.info.pro_year}</span>}
+            </div>
+          </div>
+
+          <!-- Current season stats -->
+          <div class="flex gap-6 text-center">
+            <div>
+              <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+                {totalWins}-{totalMatches - totalWins}
+              </div>
+              <div class="text-xs text-surface-600 dark:text-surface-400">Record</div>
+            </div>
+            <div>
+              <div class={`text-lg font-bold ${
+                winPercentage >= 70 ? 'text-green-600' :
+                winPercentage >= 50 ? 'text-tennis-600' : 'text-red-600'
+              }`}>
+                {winPercentage}%
+              </div>
+              <div class="text-xs text-surface-600 dark:text-surface-400">Win Rate</div>
+            </div>
+            {totalTitles > 0 && (
+              <div>
+                <div class="text-lg font-bold text-yellow-600">{totalTitles}</div>
+                <div class="text-xs text-surface-600 dark:text-surface-400">Titles</div>
+              </div>
+            )}
+            {primaryRanking && (
+              <div>
+                <div class="text-lg font-bold text-tennis-600">
+                  {primaryRanking.points.toLocaleString()}
+                </div>
+                <div class="text-xs text-surface-600 dark:text-surface-400">Points</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

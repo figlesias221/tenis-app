@@ -13,18 +13,18 @@ const { playerId, playerName } = Astro.props;
 // In a production app, you'd want to implement a search interface
 ---
 
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+<div class="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700">
   <!-- Collapsible Header -->
   <button
     id="headToHeadToggle"
-    class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-lg"
+    class="w-full flex items-center justify-between p-6 text-left hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors rounded-xl"
     aria-expanded="false"
     aria-controls="headToHeadContent"
   >
-    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Head-to-Head Records</h2>
+    <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100">Head-to-Head Records</h2>
     <svg
       id="headToHeadChevron"
-      class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform duration-200"
+      class="w-5 h-5 text-surface-500 dark:text-surface-400 transform transition-transform duration-200"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -36,64 +36,64 @@ const { playerId, playerName } = Astro.props;
   <!-- Collapsible Content -->
   <div
     id="headToHeadContent"
-    class="hidden border-t border-gray-200 dark:border-gray-700 p-4"
+    class="hidden border-t border-surface-200 dark:border-surface-700 p-6"
   >
-    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+    <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
       Compare {playerName} against another player by selecting from the rankings or entering their competitor ID:
     </p>
 
     <!-- Search Form -->
-    <div class="space-y-3 mb-4">
+    <div class="space-y-4 mb-4">
       <!-- Player Selection Method Toggle -->
       <div class="flex space-x-2">
         <button
           id="dropdownModeBtn"
-          class="px-3 py-1 text-sm bg-yellow-400 text-gray-900 rounded font-medium"
+          class="px-4 py-2 text-sm bg-tennis-500 hover:bg-tennis-600 text-white rounded-lg font-medium transition-colors"
         >
           Select Player
         </button>
         <button
           id="manualModeBtn"
-          class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded font-medium transition-colors"
+          class="px-4 py-2 text-sm bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-300 dark:hover:bg-surface-600 rounded-lg font-medium transition-colors"
         >
           Enter ID
         </button>
       </div>
 
       <!-- Dropdown Mode -->
-      <div id="dropdownMode" class="flex gap-2">
+      <div id="dropdownMode" class="flex gap-3">
         <select
           id="tourSelect"
-          class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          class="px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-lg bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-tennis-500 focus:border-transparent"
         >
           <option value="ATP">ATP</option>
           <option value="WTA">WTA</option>
         </select>
         <select
           id="playerSelect"
-          class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          class="flex-1 px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-lg bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-tennis-500 focus:border-transparent"
         >
           <option value="">Loading players...</option>
         </select>
         <button
           id="compareBtn"
-          class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium transition-colors"
+          class="px-6 py-2 bg-tennis-500 hover:bg-tennis-600 text-white rounded-lg font-medium transition-colors"
         >
           Compare
         </button>
       </div>
 
       <!-- Manual ID Mode (Hidden by default) -->
-      <div id="manualMode" class="hidden flex gap-2">
+      <div id="manualMode" class="hidden flex gap-3">
         <input
           type="text"
           id="opponentId"
           placeholder="Enter opponent ID (e.g., sr:competitor:138546)"
-          class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          class="flex-1 px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-lg bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 placeholder-surface-500 dark:placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-tennis-500 focus:border-transparent"
         />
         <button
           id="searchBtn"
-          class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded font-medium transition-colors"
+          class="px-6 py-2 bg-tennis-500 hover:bg-tennis-600 text-white rounded-lg font-medium transition-colors"
         >
           Compare
         </button>
@@ -106,31 +106,31 @@ const { playerId, playerName } = Astro.props;
     </div>
 
     <!-- Loading State -->
-    <div id="loadingState" class="hidden text-center py-4">
-      <div class="inline-block h-6 w-6 animate-spin rounded-full border-4 border-yellow-400 border-r-transparent"></div>
-      <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Loading head-to-head data...</p>
+    <div id="loadingState" class="hidden text-center py-6">
+      <div class="inline-block h-6 w-6 animate-spin rounded-full border-4 border-tennis-400 border-r-transparent"></div>
+      <p class="text-sm text-surface-600 dark:text-surface-300 mt-3">Loading head-to-head data...</p>
     </div>
 
     <!-- Error State -->
-    <div id="errorState" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded p-3">
+    <div id="errorState" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
       <p class="text-sm text-red-800 dark:text-red-200" id="errorMessage"></p>
     </div>
 
     <!-- Example IDs for testing -->
-    <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded border border-gray-200 dark:border-gray-700">
-      <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Example competitor IDs to try:</p>
+    <div class="mt-6 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-200 dark:border-surface-700">
+      <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Example competitor IDs to try:</p>
       <div class="flex flex-wrap gap-2">
-        <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:138546">
-          <div class="font-medium">Novak Djokovic</div>
-          <div class="text-gray-500 dark:text-gray-400">sr:competitor:138546</div>
+        <button class="example-id text-sm bg-white dark:bg-surface-800 border border-surface-300 dark:border-surface-600 px-3 py-2 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors" data-id="sr:competitor:138546">
+          <div class="font-medium text-surface-900 dark:text-surface-100">Novak Djokovic</div>
+          <div class="text-surface-500 dark:text-surface-400 text-xs">sr:competitor:138546</div>
         </button>
-        <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:225050">
-          <div class="font-medium">Carlos Alcaraz</div>
-          <div class="text-gray-500 dark:text-gray-400">sr:competitor:225050</div>
+        <button class="example-id text-sm bg-white dark:bg-surface-800 border border-surface-300 dark:border-surface-600 px-3 py-2 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors" data-id="sr:competitor:225050">
+          <div class="font-medium text-surface-900 dark:text-surface-100">Carlos Alcaraz</div>
+          <div class="text-surface-500 dark:text-surface-400 text-xs">sr:competitor:225050</div>
         </button>
-        <button class="example-id text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="sr:competitor:119248">
-          <div class="font-medium">Rafael Nadal</div>
-          <div class="text-gray-500 dark:text-gray-400">sr:competitor:119248</div>
+        <button class="example-id text-sm bg-white dark:bg-surface-800 border border-surface-300 dark:border-surface-600 px-3 py-2 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors" data-id="sr:competitor:119248">
+          <div class="font-medium text-surface-900 dark:text-surface-100">Rafael Nadal</div>
+          <div class="text-surface-500 dark:text-surface-400 text-xs">sr:competitor:119248</div>
         </button>
       </div>
     </div>
@@ -187,15 +187,15 @@ const { playerId, playerName } = Astro.props;
     dropdownModeBtn.addEventListener('click', () => {
       dropdownMode.classList.remove('hidden');
       manualMode.classList.add('hidden');
-      dropdownModeBtn.className = 'px-3 py-1 text-sm bg-yellow-400 text-gray-900 rounded font-medium';
-      manualModeBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded font-medium transition-colors';
+      dropdownModeBtn.className = 'px-4 py-2 text-sm bg-tennis-500 hover:bg-tennis-600 text-white rounded-lg font-medium transition-colors';
+      manualModeBtn.className = 'px-4 py-2 text-sm bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-300 dark:hover:bg-surface-600 rounded-lg font-medium transition-colors';
     });
 
     manualModeBtn.addEventListener('click', () => {
       manualMode.classList.remove('hidden');
       dropdownMode.classList.add('hidden');
-      manualModeBtn.className = 'px-3 py-1 text-sm bg-yellow-400 text-gray-900 rounded font-medium';
-      dropdownModeBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded font-medium transition-colors';
+      manualModeBtn.className = 'px-4 py-2 text-sm bg-tennis-500 hover:bg-tennis-600 text-white rounded-lg font-medium transition-colors';
+      dropdownModeBtn.className = 'px-4 py-2 text-sm bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-300 dark:hover:bg-surface-600 rounded-lg font-medium transition-colors';
     });
   }
 
@@ -341,35 +341,35 @@ const { playerId, playerName } = Astro.props;
     });
 
     resultsContainer.innerHTML = `
-      <div class="bg-yellow-50 dark:bg-yellow-800/20 border border-yellow-200 dark:border-yellow-700 rounded p-4">
+      <div class="bg-tennis-50 dark:bg-tennis-900/20 border border-tennis-200 dark:border-tennis-700 rounded-lg p-4">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2">
-            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">${competitor1.name}</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-100">${competitor1.name}</span>
           </div>
           <div class="text-center">
-            <div class="text-xl font-bold text-gray-900 dark:text-gray-100">${wins} - ${losses}</div>
-            <div class="text-xs text-gray-600 dark:text-gray-400">${data.last_meetings.length} matches</div>
+            <div class="text-2xl font-bold text-surface-900 dark:text-surface-100">${wins} - ${losses}</div>
+            <div class="text-xs text-surface-600 dark:text-surface-400">${data.last_meetings.length} matches</div>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">${competitor2.name}</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-100">${competitor2.name}</span>
           </div>
         </div>
         ${data.last_meetings.length > 0 ? `
           <div class="space-y-2">
-            <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">Recent Matches (${Math.min(5, data.last_meetings.length)})</h4>
+            <h4 class="text-sm font-medium text-surface-900 dark:text-surface-100">Recent Matches (${Math.min(5, data.last_meetings.length)})</h4>
             ${data.last_meetings.slice(0, 5).map(match => {
               const result = match.sport_event_status.winner_id === playerId ? 'W' : 'L';
               const resultClass = result === 'W' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
               return `
                 <div class="flex justify-between items-center text-xs">
-                  <span class="text-gray-600 dark:text-gray-400">${new Date(match.sport_event.start_time).toLocaleDateString()}</span>
-                  <span class="text-gray-900 dark:text-gray-100">${match.sport_event.sport_event_context.competition.name}</span>
+                  <span class="text-surface-600 dark:text-surface-400">${new Date(match.sport_event.start_time).toLocaleDateString()}</span>
+                  <span class="text-surface-900 dark:text-surface-100">${match.sport_event.sport_event_context.competition.name}</span>
                   <span class="font-bold ${resultClass}">${result}</span>
                 </div>
               `;
             }).join('')}
           </div>
-        ` : '<p class="text-sm text-gray-600 dark:text-gray-400">No previous matches found.</p>'}
+        ` : '<p class="text-sm text-surface-600 dark:text-surface-400">No previous matches found.</p>'}
       </div>
     `;
 

@@ -25,66 +25,62 @@ try {
 <Layout title={`${rankingType} Rankings - Tennis Live`} description={`Live ${rankingType} Rankings Top 100`}>
   <Header />
 
-  <div class="min-h-screen bg-yellow-50 dark:bg-yellow-900">
-    <div class="mx-auto max-w-6xl px-4 py-6">
-      <div class="mb-6">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
-          <div class="mb-4 lg:mb-0">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
-              {rankingType} Rankings
-            </h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">
-              Top 100 players worldwide
-            </p>
-          </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+        <div class="inline-flex items-center gap-3">
+          <span class="text-4xl" aria-hidden="true">📊</span>
+          <h1 class="text-heading-2">{rankingType} Rankings</h1>
+        </div>
 
-          <!-- Simple Toggle -->
-          <div class="flex bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-600 p-1">
-            <a
-              href="/rankings?type=ATP"
-              class={`px-4 py-2 rounded font-medium transition-colors ${
-                rankingType === 'ATP'
-                  ? 'bg-yellow-200 dark:bg-yellow-700 text-gray-900 dark:text-gray-100'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-              }`}
-            >
-              ATP
-            </a>
-            <a
-              href="/rankings?type=WTA"
-              class={`px-4 py-2 rounded font-medium transition-colors ${
-                rankingType === 'WTA'
-                  ? 'bg-yellow-200 dark:bg-yellow-700 text-gray-900 dark:text-gray-100'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-              }`}
-            >
-              WTA
-            </a>
-          </div>
+        <!-- Tour Toggle -->
+        <div class="toggle-container">
+          <a
+            href="/rankings?type=ATP"
+            class={`toggle-item ${
+              rankingType === 'ATP'
+                ? 'toggle-item-active-atp'
+                : 'toggle-item-inactive'
+            }`}
+          >
+            ATP
+          </a>
+          <a
+            href="/rankings?type=WTA"
+            class={`toggle-item ${
+              rankingType === 'WTA'
+                ? 'toggle-item-active-wta'
+                : 'toggle-item-inactive'
+            }`}
+          >
+            WTA
+          </a>
         </div>
       </div>
+      <p class="text-body-large max-w-4xl mx-auto">
+        Top 100 players worldwide - Live rankings updated regularly
+      </p>
+    </div>
 
       {error ? (
-        <div class="max-w-md mx-auto">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-red-200 dark:border-red-700 p-6">
-            <h3 class="font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Rankings</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-            <button
-              onclick="window.location.reload()"
-              class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 py-2 rounded font-medium"
-            >
-              Try Again
-            </button>
-          </div>
+        <div class="card bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 p-6 text-center max-w-md mx-auto">
+          <div class="text-4xl mb-4">⚠️</div>
+          <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Rankings</h3>
+          <p class="text-red-600 dark:text-red-300 mb-4">{error}</p>
+          <button
+            onclick="window.location.reload()"
+            class="btn-outline"
+          >
+            Try Again
+          </button>
         </div>
       ) : rankings ? (
         <RankingsTable rankings={rankings} />
       ) : (
-        <div class="flex items-center justify-center py-12">
-          <div class="text-center">
-            <div class="w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-gray-600 dark:text-gray-400">Loading rankings...</p>
-          </div>
+        <div class="text-center py-12">
+          <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-tennis-400 border-r-transparent mb-4"></div>
+          <p class="text-body">Loading rankings...</p>
         </div>
       )}
     </div>

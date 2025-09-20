@@ -25,6 +25,10 @@ class TennisApi {
     return this.provider.getTodayMatches();
   }
 
+  async getMatchesByDate(date: string) {
+    return this.provider.getMatchesByDate(date);
+  }
+
   async getCompetitorProfile(competitorId: string) {
     return this.provider.getCompetitorProfile(competitorId);
   }

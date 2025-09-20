@@ -1,86 +1,105 @@
 ---
-// Theme toggle component for switching between light and dark modes
+// Premium theme toggle component with enhanced animations
+import Icons from "./Icons.astro";
 ---
 
 <button
   id="theme-toggle"
   type="button"
-  class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-800 hover:bg-yellow-200 dark:hover:bg-yellow-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:focus:ring-yellow-600"
+  class="relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-surface-100 to-surface-200 dark:from-surface-700 dark:to-surface-800 hover:from-surface-200 hover:to-surface-300 dark:hover:from-surface-600 dark:hover:to-surface-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tennis-400 dark:focus:ring-tennis-500 backdrop-blur-sm border border-surface-200/50 dark:border-surface-600/50 hover:border-surface-300/70 dark:hover:border-surface-500/70 hover:scale-105 active:scale-95 group overflow-hidden"
   aria-label="Toggle theme"
   title="Toggle between light and dark mode"
 >
+  <!-- Premium animated background effect -->
+  <div class="absolute inset-0 bg-gradient-to-r from-tennis-400/20 to-electric-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+
   <!-- Sun icon (visible in dark mode) -->
-  <svg
-    id="theme-toggle-light-icon"
-    class="w-5 h-5 text-yellow-600 dark:text-yellow-300 hidden dark:block"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      fill-rule="evenodd"
-      d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-      clip-rule="evenodd"
-    ></path>
-  </svg>
+  <div id="theme-toggle-light-icon" class="hidden dark:block transition-all duration-500 transform dark:rotate-0 dark:scale-100 rotate-180 scale-75">
+    <Icons name="sun" class="w-5 h-5 text-amber-500 group-hover:text-amber-400 transition-colors duration-300 drop-shadow-sm" />
+  </div>
+
   <!-- Moon icon (visible in light mode) -->
-  <svg
-    id="theme-toggle-dark-icon"
-    class="w-5 h-5 text-yellow-700 dark:text-yellow-400 block dark:hidden"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-  </svg>
+  <div id="theme-toggle-dark-icon" class="block dark:hidden transition-all duration-500 transform scale-100 rotate-0 dark:rotate-180 dark:scale-75">
+    <Icons name="moon" class="w-5 h-5 text-slate-600 group-hover:text-slate-700 transition-colors duration-300 drop-shadow-sm" />
+  </div>
 </button>
 
 <script>
-  // Theme toggle functionality
-  function initTheme() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const html = document.documentElement;
-
-    // Check for saved theme preference or default to system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-      html.classList.add('dark');
-    } else {
-      html.classList.remove('dark');
+  // Simple and reliable theme toggle
+  function setupThemeToggle() {
+    const button = document.getElementById('theme-toggle');
+    if (!button) {
+      console.warn('Theme toggle button not found');
+      return;
     }
 
-    // Theme toggle click handler
-    themeToggle?.addEventListener('click', () => {
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
-    });
+    // Remove any existing listeners to prevent duplicates
+    const newButton = button.cloneNode(true) as HTMLElement;
+    button.parentNode?.replaceChild(newButton, button);
 
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) {
-        if (e.matches) {
-          html.classList.add('dark');
-        } else {
+    // Add click handler with enhanced animations
+    newButton.addEventListener('click', function() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('dark');
+
+      console.log('Theme toggle clicked, current mode:', isDark ? 'dark' : 'light');
+
+      // Add premium click animation
+      newButton.style.transform = 'scale(0.95)';
+      newButton.style.transition = 'transform 0.1s ease-out';
+
+      // Add ripple effect
+      const ripple = document.createElement('div');
+      ripple.className = 'absolute inset-0 bg-white/30 rounded-xl animate-ping';
+      newButton.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+
+      setTimeout(() => {
+        if (isDark) {
           html.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+          console.log('Switched to light mode');
+        } else {
+          html.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+          console.log('Switched to dark mode');
         }
-      }
+
+        // Reset button transform with bounce
+        newButton.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          newButton.style.transform = 'scale(1)';
+          newButton.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        }, 100);
+      }, 50);
     });
+
+    console.log('Theme toggle setup complete');
   }
 
-  // Initialize theme when DOM is loaded
+  // Global functions for manual control
+  (window as any).setLightMode = function() {
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+    console.log('Light mode activated');
+  };
+
+  (window as any).setDarkMode = function() {
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+    console.log('Dark mode activated');
+  };
+
+  // Setup immediately if DOM is ready, otherwise wait
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTheme);
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
   } else {
-    initTheme();
+    setupThemeToggle();
   }
 
-  // Re-initialize on navigation (for SPA-like behavior)
-  document.addEventListener('astro:page-load', initTheme);
+  // Also setup on Astro page loads
+  document.addEventListener('astro:page-load', setupThemeToggle);
 </script>

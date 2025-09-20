@@ -18,18 +18,30 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
   private apiKey: string;
   private baseUrl = "https://api.sportradar.com/tennis/trial/v3/en";
   private cache = new Map<string, { data: any, timestamp: number }>();
-  private cacheTimeout = 5 * 60 * 1000; // 5 minutes
+
+  // Different cache durations for different data types
+  private cacheTimeouts = {
+    rankings: 60 * 60 * 1000, // 1 hour for rankings
+    live: 30 * 1000, // 30 seconds for live matches
+    today: 2 * 60 * 1000, // 2 minutes for today's matches
+    profiles: 24 * 60 * 60 * 1000, // 24 hours for player profiles
+    competitions: 12 * 60 * 60 * 1000, // 12 hours for competitions
+    headToHead: 30 * 60 * 1000, // 30 minutes for head-to-head
+    default: 5 * 60 * 1000 // 5 minutes default
+  };
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
   }
 
-  private async request<T>(endpoint: string): Promise<T> {
+  private async request<T>(endpoint: string, cacheType: keyof typeof this.cacheTimeouts = 'default'): Promise<T> {
     // Check cache first
     const cacheKey = endpoint;
     const cached = this.cache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      console.log(`Cache hit for ${endpoint}`);
+    const cacheTimeout = this.cacheTimeouts[cacheType];
+
+    if (cached && Date.now() - cached.timestamp < cacheTimeout) {
+      console.log(`Cache hit for ${endpoint} (${cacheType}, ${Math.round((cacheTimeout - (Date.now() - cached.timestamp)) / 1000)}s remaining)`);
       return cached.data;
     }
 
@@ -41,7 +53,8 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
         headers: {
           'accept': 'application/json',
           'x-api-key': this.apiKey,
-          'cache-control': 'max-age=300'
+          'cache-control': `max-age=${Math.floor(cacheTimeout / 1000)}`,
+          'user-agent': 'TennisLive/1.0'
         }
       });
 
@@ -69,7 +82,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
 
   async getRankings(type: "ATP" | "WTA", limit = 100): Promise<Rankings> {
     try {
-      const data: RankingsResponse = await this.request("/rankings.json");
+      const data: RankingsResponse = await this.request("/rankings.json", "rankings");
 
       console.log(`SportRadar Rankings: Found ${data.rankings?.length || 0} ranking types`);
 
@@ -132,7 +145,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
 
   async getLiveMatches(): Promise<LiveMatches> {
     try {
-      const data: ScheduleLiveSummariesResponse = await this.request(`/schedules/live/summaries.json`);
+      const data: ScheduleLiveSummariesResponse = await this.request(`/schedules/live/summaries.json`, "live");
 
       console.log(`SportRadar Live: Found ${data.summaries?.length || 0} live matches`);
 
@@ -157,7 +170,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
   async getTodayMatches(): Promise<LiveMatches> {
     try {
       const today = new Date().toISOString().split('T')[0];
-      const data: ScheduleSummariesResponse = await this.request(`/schedules/${today}/summaries.json`);
+      const data: ScheduleSummariesResponse = await this.request(`/schedules/${today}/summaries.json`, "today");
 
       console.log(`SportRadar Today: Found ${data.summaries?.length || 0} matches today`);
 
@@ -179,9 +192,38 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
     }
   }
 
+  async getMatchesByDate(date: string): Promise<LiveMatches> {
+    try {
+      // Validate date format (YYYY-MM-DD)
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        throw new Error('Invalid date format. Expected YYYY-MM-DD');
+      }
+
+      const data: ScheduleSummariesResponse = await this.request(`/schedules/${date}/summaries.json`, "today");
+
+      console.log(`SportRadar ${date}: Found ${data.summaries?.length || 0} matches`);
+
+      const transformedMatches = (data.summaries || [])
+        .map((summary: Summary) => this.transformSummaryToMatch(summary))
+        .map((match: any) => tennisDataCleaner.cleanMatch(match, {
+          fillMissingData: true,
+          validateScores: true,
+          defaultLocation: 'Unknown Location'
+        }));
+
+      return {
+        matches: transformedMatches,
+        lastUpdated: data.generated_at
+      };
+    } catch (error) {
+      console.error(`Failed to fetch matches for ${date} from SportRadar API:`, error);
+      throw new Error(`Failed to fetch matches for ${date}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
   async getCompetitorProfile(competitorId: string): Promise<CompetitorProfile> {
     try {
-      const data: CompetitorProfileResponse = await this.request(`/competitors/${competitorId}/profile.json`);
+      const data: CompetitorProfileResponse = await this.request(`/competitors/${competitorId}/profile.json`, "profiles");
 
       console.log(`Profile loaded for ${data.competitor?.name} (${data.competitor?.id})`);
 
@@ -400,7 +442,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
 
   async getCompetitionsByCategory(categoryId: string): Promise<CompetitionsData> {
     try {
-      const data: CompetitionsByCategoryResponse = await this.request(`/categories/${categoryId}/competitions.json`);
+      const data: CompetitionsByCategoryResponse = await this.request(`/categories/${categoryId}/competitions.json`, "competitions");
 
       console.log(`SportRadar Competitions: Found ${data.competitions?.length || 0} competitions for category ${categoryId}`);
 
@@ -430,7 +472,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
 
   async getCompetitionInfo(competitionId: string): Promise<CompetitionInfoResponse> {
     try {
-      const data: CompetitionInfoResponse = await this.request(`/competitions/${competitionId}/info.json`);
+      const data: CompetitionInfoResponse = await this.request(`/competitions/${competitionId}/info.json`, "competitions");
 
       console.log(`SportRadar Competition Info: Loaded details for ${data.competition?.name} (${competitionId})`);
 
@@ -447,7 +489,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
 
   async getHeadToHead(competitor1Id: string, competitor2Id: string): Promise<HeadToHeadData> {
     try {
-      const data = await this.request(`/competitors/${competitor1Id}/versus/${competitor2Id}/summaries.json`);
+      const data = await this.request(`/competitors/${competitor1Id}/versus/${competitor2Id}/summaries.json`, "headToHead");
 
       console.log(`SportRadar Head-to-Head: Loaded data for ${competitor1Id} vs ${competitor2Id}`);
 

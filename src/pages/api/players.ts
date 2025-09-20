@@ -19,15 +19,20 @@ export const GET: APIRoute = async ({ url }) => {
       throw new Error('Invalid rankings data structure');
     }
 
+
     const players = rankings.rankings
-      .filter((entry: any) => entry && entry.competitor)
-      .map((entry: any) => ({
-        id: entry.competitor.id,
-        name: entry.competitor.name,
-        country: entry.competitor.country || 'Unknown',
-        country_code: entry.competitor.country_code || 'XX',
-        ranking: entry.rank || entry.position || 'N/A'
-      }));
+      .filter((entry: any) => entry && (entry.competitor || entry.player))
+      .map((entry: any) => {
+        // Handle both data structures (competitor from raw API, player from processed)
+        const playerData = entry.competitor || entry.player;
+        return {
+          id: playerData.id,
+          name: playerData.name,
+          country: playerData.country || playerData.nationality || 'Unknown',
+          country_code: playerData.country_code || playerData.countryCode || 'XX',
+          ranking: entry.rank || entry.position || 'N/A'
+        };
+      });
 
     return new Response(JSON.stringify({
       players,
@@ -37,6 +42,11 @@ export const GET: APIRoute = async ({ url }) => {
       status: 200,
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600", // 1 hour cache
+        "CDN-Cache-Control": "max-age=3600",
+        "Cloudflare-CDN-Cache-Control": "max-age=3600",
+        "Vary": "Accept-Encoding",
+        "ETag": `"players-${tour}-${limit}-${Date.now()}"`
       },
     });
 

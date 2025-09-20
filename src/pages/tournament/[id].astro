@@ -37,73 +37,41 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
 >
   <Header />
 
-  <div class="min-h-screen bg-yellow-50 dark:bg-yellow-900">
-    <div class="mx-auto max-w-4xl px-4 py-6">
+  <div class="max-w-6xl mx-auto px-4 py-4">
       <!-- Back Navigation -->
-      <div class="mb-6">
-        <a
-          href="/competitions"
-          class="inline-flex items-center gap-2 text-yellow-700 dark:text-yellow-300 hover:text-yellow-800 dark:hover:text-yellow-200 transition-colors"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-          </svg>
-          Back to Competitions
-        </a>
+      <div class="mb-4">
+        <a href="/competitions" class="btn-outline">← Back to Competitions</a>
       </div>
 
       <!-- Error State -->
       {error && (
-        <div class="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
-                Error loading tournament information
-              </h3>
-              <div class="mt-2 text-sm text-red-700 dark:text-red-300">
-                {error}
-              </div>
-              <div class="mt-4">
-                <button
-                  onclick="window.location.reload()"
-                  class="text-sm bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded hover:bg-red-200 dark:hover:bg-red-700 transition-colors"
-                >
-                  Try Again
-                </button>
-              </div>
-            </div>
-          </div>
+        <div class="card bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 p-4 text-center">
+          <div class="text-2xl mb-2">⚠️</div>
+          <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Tournament</h3>
+          <p class="text-red-600 dark:text-red-300 mb-3">{error}</p>
+          <button onclick="window.location.reload()" class="btn-outline">Try Again</button>
         </div>
       )}
 
       <!-- Loading State -->
       {!tournament && !error && (
-        <div class="text-center py-12">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">Loading tournament information...</p>
+        <div class="card p-8 text-center">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-tennis-600"></div>
+          <p class="mt-2 text-surface-600 dark:text-surface-400">Loading tournament information...</p>
         </div>
       )}
 
       <!-- Tournament Information -->
       {tournament && (
-        <div class="space-y-6">
+        <div class="space-y-4">
           <!-- Main Tournament Card -->
           <TournamentInfoCard tournament={tournament} />
 
           <!-- Children Tournaments -->
           {tournamentData?.competition.children && tournamentData.competition.children.length > 0 && (
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                <span class="text-xl">🏆</span>
-                Tournament Events
-              </h2>
-
-              <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div class="card p-4">
+              <h3 class="text-lg font-semibold mb-3">Tournament Events</h3>
+              <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
                 {tournamentData.competition.children.map((child) => {
                   const childDisplay = CompetitionFormatter.formatCompetitionInfo({
                     generated_at: tournamentData.generated_at,
@@ -114,19 +82,19 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
                   return (
                     <a
                       href={`/tournament/${child.competition.id}`}
-                      class="block p-4 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      class="block p-3 rounded-lg bg-surface-50 dark:bg-surface-800/50 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
                     >
-                      <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                      <div class="font-medium text-surface-900 dark:text-surface-100 mb-1 text-sm">
                         {childDisplay.name}
                       </div>
-                      <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                      <div class="text-xs text-surface-600 dark:text-surface-400 flex items-center gap-1">
                         <span class={CompetitionFormatter.getLevelColor(childDisplay.level.toLowerCase().replace(/\s+/g, '_'))}>
                           {childDisplay.level}
                         </span>
                         <span>•</span>
                         <span>{childDisplay.gender} {childDisplay.type}</span>
                       </div>
-                      <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <div class="text-xs text-surface-500 dark:text-surface-500 mt-1">
                         {CompetitionFormatter.getSurfaceIcon(childDisplay.surface || 'Hard')} {childDisplay.surface || 'Hard'}
                       </div>
                     </a>
@@ -137,64 +105,60 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
           )}
 
           <!-- Tournament Quick Stats -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <span class="text-xl">📊</span>
-              Tournament Details
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="space-y-3">
-                <h3 class="font-medium text-gray-900 dark:text-gray-100">Classification</h3>
-                <div class="space-y-2 text-sm">
+          <div class="card p-4">
+            <h3 class="text-lg font-semibold mb-3">Tournament Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
+                <h4 class="font-medium text-surface-900 dark:text-surface-100 mb-2 text-sm">Classification</h4>
+                <div class="space-y-1 text-xs">
                   <div class="flex justify-between">
-                    <span class="text-gray-600 dark:text-gray-400">Level:</span>
+                    <span class="text-surface-600 dark:text-surface-400">Level:</span>
                     <span class={`font-medium ${CompetitionFormatter.getLevelColor(tournament.level.toLowerCase().replace(/\s+/g, '_'))}`}>
                       {tournament.level}
                     </span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-600 dark:text-gray-400">Category:</span>
-                    <span class="font-medium text-gray-900 dark:text-gray-100">{tournament.category}</span>
+                    <span class="text-surface-600 dark:text-surface-400">Category:</span>
+                    <span class="font-medium">{tournament.category}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-600 dark:text-gray-400">Type:</span>
-                    <span class="font-medium text-gray-900 dark:text-gray-100">{tournament.gender} {tournament.type}</span>
+                    <span class="text-surface-600 dark:text-surface-400">Type:</span>
+                    <span class="font-medium">{tournament.gender} {tournament.type}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="space-y-3">
-                <h3 class="font-medium text-gray-900 dark:text-gray-100">Playing Conditions</h3>
-                <div class="space-y-2 text-sm">
+              <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
+                <h4 class="font-medium text-surface-900 dark:text-surface-100 mb-2 text-sm">Playing Conditions</h4>
+                <div class="space-y-1 text-xs">
                   <div class="flex justify-between">
-                    <span class="text-gray-600 dark:text-gray-400">Surface:</span>
-                    <span class="font-medium text-gray-900 dark:text-gray-100 flex items-center gap-1">
+                    <span class="text-surface-600 dark:text-surface-400">Surface:</span>
+                    <span class="font-medium flex items-center gap-1">
                       {CompetitionFormatter.getSurfaceIcon(tournament.surface || 'Hard')}
                       {tournament.surface || 'Hard'}
                     </span>
                   </div>
                   {tournament.venue && (
                     <div class="flex justify-between">
-                      <span class="text-gray-600 dark:text-gray-400">Venue:</span>
-                      <span class="font-medium text-gray-900 dark:text-gray-100">{tournament.venue.complex}</span>
+                      <span class="text-surface-600 dark:text-surface-400">Venue:</span>
+                      <span class="font-medium truncate">{tournament.venue.complex}</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div class="space-y-3">
-                <h3 class="font-medium text-gray-900 dark:text-gray-100">Prize Information</h3>
-                <div class="space-y-2 text-sm">
+              <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
+                <h4 class="font-medium text-surface-900 dark:text-surface-100 mb-2 text-sm">Prize Information</h4>
+                <div class="text-xs">
                   {tournament.prizeMoney ? (
                     <div class="flex justify-between">
-                      <span class="text-gray-600 dark:text-gray-400">Prize Pool:</span>
+                      <span class="text-surface-600 dark:text-surface-400">Prize Pool:</span>
                       <span class="font-medium text-green-600 dark:text-green-400">
                         {CompetitionFormatter.formatPrizeMoney(tournament.prizeMoney, !tournament.prizeMoney || tournament.prizeMoney.currency === 'USD')}
                       </span>
                     </div>
                   ) : (
-                    <div class="text-gray-500 dark:text-gray-400">Prize information not available</div>
+                    <div class="text-surface-500 dark:text-surface-500">Not available</div>
                   )}
                 </div>
               </div>
@@ -202,13 +166,13 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
           </div>
 
           <!-- API Information -->
-          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-            <div class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-              <p><strong>Tournament ID:</strong> {tournament.id}</p>
-              <p><strong>Data Source:</strong> SportRadar Tennis API v3</p>
-              <p><strong>Last Updated:</strong> {tournamentData ? new Date(tournamentData.generated_at).toLocaleString() : 'Unknown'}</p>
+          <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
+            <div class="text-xs text-surface-600 dark:text-surface-400 space-y-1">
+              <p><strong>ID:</strong> {tournament.id}</p>
+              <p><strong>Source:</strong> SportRadar Tennis API v3</p>
+              <p><strong>Updated:</strong> {tournamentData ? new Date(tournamentData.generated_at).toLocaleString() : 'Unknown'}</p>
               {tournament.prizeMoney && tournament.prizeMoney.currency === 'USD' && (
-                <p><strong>Note:</strong> Prize money estimates are based on typical tournament levels and may not reflect actual amounts.</p>
+                <p><strong>Note:</strong> Prize estimates based on tournament level</p>
               )}
             </div>
           </div>

@@ -1,12 +1,33 @@
 ---
 import type { Rankings } from "@/lib/api/types";
 import CountryFlag from "./CountryFlag.astro";
+import { imageService } from "@/lib/utils/image-service";
 
 export interface Props {
   rankings: Rankings;
 }
 
 const { rankings } = Astro.props;
+
+// Generate avatar URLs for all players
+const playersWithAvatars = rankings.rankings.map(entry => {
+  const player = entry.player;
+  const colors = imageService.getColorVariation(rankings.type, entry.rank);
+  const avatarUrl = imageService.getPlayerImageUrl(player, {
+    size: 80,
+    backgroundColor: colors.backgroundColor,
+    textColor: colors.textColor,
+    rounded: true
+  });
+
+  return {
+    ...entry,
+    player: {
+      ...player,
+      avatarUrl
+    }
+  };
+});
 ---
 
 <div class="space-y-4">
@@ -25,53 +46,69 @@ const { rankings } = Astro.props;
 
   <!-- Mobile Card View -->
   <div class="block sm:hidden space-y-3">
-    {rankings.rankings.map((entry, index) => (
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-4 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30 px-2 py-1 rounded">
-              #{entry.rank}
-            </span>
-            <CountryFlag
-              countryCode={entry.player.countryCode}
-              nationality={entry.player.nationality}
-              size="medium"
-            />
+    {playersWithAvatars.map((entry, index) => (
+      <div class="card-elevated p-4">
+        <div class="flex items-start gap-4 mb-3">
+          <div class="flex-shrink-0">
+            <div class="relative">
+              <img
+                src={entry.player.avatarUrl}
+                alt={`${entry.player.name} avatar`}
+                class="w-16 h-16 rounded-full border-2 border-surface-200 dark:border-surface-700"
+                loading="lazy"
+              />
+              <div class="absolute -bottom-1 -right-1">
+                <CountryFlag
+                  countryCode={entry.player.countryCode}
+                  nationality={entry.player.nationality}
+                  size="small"
+                />
+              </div>
+            </div>
           </div>
-          {entry.movement !== undefined && (
-            <span class={`text-sm font-medium px-2 py-1 rounded ${
-              entry.movement > 0
-                ? 'text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-900/30'
-                : entry.movement < 0
-                  ? 'text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-900/30'
-                  : 'text-gray-500 dark:text-gray-400'
-            }`}>
-              {entry.movement > 0 && "↑"}
-              {entry.movement < 0 && "↓"}
-              {entry.movement === 0 && "—"}
-              {entry.movement !== 0 && Math.abs(entry.movement)}
-            </span>
-          )}
-        </div>
-        <div class="space-y-2">
-          <div>
-            <a
-              href={`/player/${entry.player.id}`}
-              class="font-semibold text-lg text-yellow-700 dark:text-yellow-300 hover:text-yellow-800 dark:hover:text-yellow-200 hover:underline"
-            >
-              {entry.player.name}
-            </a>
-            {entry.player.abbreviation && (
-              <span class="ml-2 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-2 py-1 rounded">
-                {entry.player.abbreviation}
+
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl font-bold text-tennis-600 dark:text-tennis-400 bg-tennis-50 dark:bg-tennis-950/30 px-2 py-1 rounded-lg">
+                #{entry.rank}
               </span>
-            )}
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-gray-600 dark:text-gray-400">{entry.player.nationality}</span>
-            <div class="text-right">
-              <div class="font-bold text-gray-900 dark:text-gray-100">{entry.points.toLocaleString()} pts</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">{entry.competitionsPlayed || '—'} tournaments</div>
+              {entry.movement !== undefined && (
+                <span class={`text-sm font-medium px-2 py-1 rounded ${
+                  entry.movement > 0
+                    ? 'text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-900/30'
+                    : entry.movement < 0
+                      ? 'text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-900/30'
+                      : 'text-gray-500 dark:text-gray-400'
+                }`}>
+                  {entry.movement > 0 && "↑"}
+                  {entry.movement < 0 && "↓"}
+                  {entry.movement === 0 && "—"}
+                  {entry.movement !== 0 && Math.abs(entry.movement)}
+                </span>
+              )}
+            </div>
+
+            <div class="space-y-2">
+              <div>
+                <a
+                  href={`/player/${entry.player.id}`}
+                  class="font-semibold text-lg text-tennis-700 dark:text-tennis-300 hover:text-tennis-800 dark:hover:text-tennis-200 hover:underline"
+                >
+                  {entry.player.name}
+                </a>
+                {entry.player.abbreviation && (
+                  <span class="ml-2 text-xs bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400 px-2 py-1 rounded">
+                    {entry.player.abbreviation}
+                  </span>
+                )}
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-surface-600 dark:text-surface-400">{entry.player.nationality}</span>
+                <div class="text-right">
+                  <div class="font-bold text-surface-900 dark:text-surface-100">{entry.points.toLocaleString()} pts</div>
+                  <div class="text-xs text-surface-500 dark:text-surface-400">{entry.competitionsPlayed || '—'} tournaments</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -80,22 +117,22 @@ const { rankings } = Astro.props;
   </div>
 
   <!-- Desktop Table View -->
-  <div class="hidden sm:block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden">
+  <div class="hidden sm:block card overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="bg-yellow-50 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-700/50">
-            <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Rank</th>
-            <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Player</th>
-            <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Country</th>
-            <th class="px-3 py-3 text-right text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Points</th>
-            <th class="px-3 py-3 text-center text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Movement</th>
-            <th class="px-3 py-3 text-center text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Tournaments</th>
+          <tr class="bg-tennis-50 dark:bg-tennis-950/30 border-b border-tennis-200 dark:border-tennis-700/50">
+            <th class="px-3 py-3 text-left text-xs font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wider">Rank</th>
+            <th class="px-3 py-3 text-left text-xs font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wider">Player</th>
+            <th class="px-3 py-3 text-left text-xs font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wider">Country</th>
+            <th class="px-3 py-3 text-right text-xs font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wider">Points</th>
+            <th class="px-3 py-3 text-center text-xs font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wider">Movement</th>
+            <th class="px-3 py-3 text-center text-xs font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wider">Tournaments</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-          {rankings.rankings.map((entry, index) => (
-            <tr class={`group ${index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-900/50'} hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-150`}>
+        <tbody class="divide-y divide-surface-100 dark:divide-surface-700">
+          {playersWithAvatars.map((entry, index) => (
+            <tr class={`group ${index % 2 === 0 ? 'bg-surface-50 dark:bg-surface-800' : 'bg-surface-100 dark:bg-surface-900/50'} hover:bg-tennis-50 dark:hover:bg-tennis-900/20 transition-colors duration-150`}>
               <td class="px-3 py-3">
                 <span class={`inline-flex items-center justify-center w-8 h-8 rounded font-bold text-sm ${
                   entry.rank <= 10
@@ -105,8 +142,16 @@ const { rankings } = Astro.props;
                   {entry.rank}
                 </span>
               </td>
-              <td class="px-3 py-3">
+              <td class="px-3 py-4">
                 <div class="flex items-center gap-3">
+                  <div class="flex-shrink-0">
+                    <img
+                      src={entry.player.avatarUrl}
+                      alt={`${entry.player.name} avatar`}
+                      class="w-10 h-10 rounded-full border border-surface-200 dark:border-surface-600"
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="min-w-0 flex-1">
                     <a
                       href={`/player/${entry.player.id}`}

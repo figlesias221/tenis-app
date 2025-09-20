@@ -173,6 +173,28 @@ export class SportRadarProvider implements TennisApiProvider {
     }
   }
 
+  async getMatchesByDate(date: string): Promise<LiveMatches> {
+    try {
+      const data = await this.request<any>(`/schedules/${date}/summaries.json`);
+
+      const matches: Match[] = (data.summaries || [])
+        .map((summary: any) => this.transformMatch(summary))
+        .map((match: any) => tennisDataCleaner.cleanMatch(match, {
+          fillMissingData: true,
+          validateScores: true,
+          defaultLocation: 'Unknown Location'
+        }));
+
+      return {
+        matches,
+        lastUpdated: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error(`Failed to fetch matches for date ${date} from SportRadar API:`, error);
+      throw new Error(`Failed to fetch matches for ${date}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
   private transformMatch(summary: any): Match {
     // Extract tournament info from the sport_event structure
     const tournament: Tournament = {

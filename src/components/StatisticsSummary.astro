@@ -1,0 +1,242 @@
+---
+import type { LiveMatches } from "@/lib/api/types";
+
+export interface Props {
+  matches: LiveMatches;
+}
+
+const { matches } = Astro.props;
+
+// Calculate summary statistics
+function calculateSummaryStats() {
+  const allMatches = matches.matches;
+
+  const liveMatches = allMatches.filter(m => m.status === 'live');
+  const scheduledMatches = allMatches.filter(m => m.status === 'scheduled');
+  const completedMatches = allMatches.filter(m => m.status === 'completed');
+
+  // Tournament distribution
+  const tournamentCounts = allMatches.reduce((acc, match) => {
+    const category = match.tournament.category;
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Surface distribution
+  const surfaceCounts = allMatches.reduce((acc, match) => {
+    const surface = match.tournament.surface || 'Unknown';
+    acc[surface] = (acc[surface] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Notable statistics from live matches
+  let totalAces = 0;
+  let totalDoubleFaults = 0;
+  let longestMatchDuration = 0;
+  let longestMatchPlayers = '';
+
+  liveMatches.forEach(match => {
+    const m = match as any;
+    if (m?.statistics?.totals?.competitors) {
+      (m.statistics.totals.competitors as any[]).forEach((competitor: any) => {
+        totalAces += competitor.statistics?.aces || 0;
+        totalDoubleFaults += competitor.statistics?.double_faults || 0;
+      });
+    }
+
+    if (m?.stats?.duration && m.stats.duration > longestMatchDuration) {
+      longestMatchDuration = m.stats.duration as number;
+      longestMatchPlayers = `${match.players[0].name} vs ${match.players[1].name}`;
+    }
+  });
+
+  return {
+    counts: {
+      live: liveMatches.length,
+      scheduled: scheduledMatches.length,
+      completed: completedMatches.length,
+      total: allMatches.length
+    },
+    tournaments: tournamentCounts,
+    surfaces: surfaceCounts,
+    liveStats: {
+      totalAces,
+      totalDoubleFaults,
+      longestMatchDuration,
+      longestMatchPlayers
+    }
+  };
+}
+
+function formatDuration(minutes: number): string {
+  if (minutes === 0) return '0m';
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+}
+
+function getCategoryColor(category: string): string {
+  switch (category) {
+    case 'ATP': return 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200';
+    case 'WTA': return 'bg-pink-100 dark:bg-pink-900/50 text-pink-800 dark:text-pink-200';
+    case 'Challenger': return 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200';
+    default: return 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200';
+  }
+}
+
+const stats = calculateSummaryStats();
+---
+
+<div class="bg-gradient-to-br from-white to-surface-50 dark:from-gray-900 dark:to-surface-900 border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden shadow-sm">
+  <div class="bg-gradient-to-r from-tennis-500 to-tennis-600 px-6 py-4">
+    <div class="flex items-center justify-between text-white">
+      <div class="flex items-center gap-3">
+        <div class="bg-white/20 rounded-full p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold">Today's Tennis Statistics</h2>
+          <p class="text-tennis-100 text-sm">Live data and match insights</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-2xl font-bold">{stats.counts.total}</div>
+        <div class="text-tennis-100 text-sm">Total Matches</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <!-- Match Status Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <!-- Live Matches -->
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <span class="text-red-800 dark:text-red-200 font-medium text-sm">Live Now</span>
+          </div>
+          <span class="text-2xl font-bold text-red-600 dark:text-red-400">{stats.counts.live}</span>
+        </div>
+      </div>
+
+      <!-- Scheduled Matches -->
+      <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+            <span class="text-blue-800 dark:text-blue-200 font-medium text-sm">Scheduled</span>
+          </div>
+          <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.counts.scheduled}</span>
+        </div>
+      </div>
+
+      <!-- Completed Matches -->
+      <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            <span class="text-green-800 dark:text-green-200 font-medium text-sm">Completed</span>
+          </div>
+          <span class="text-2xl font-bold text-green-600 dark:text-green-400">{stats.counts.completed}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tournament Distribution & Live Stats -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <!-- Tournament Categories -->
+      <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
+        <h3 class="font-semibold text-surface-900 dark:text-surface-100 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
+          Tournament Categories
+        </h3>
+        <div class="space-y-2">
+          {Object.entries(stats.tournaments).map(([category, count]) => (
+            <div class="flex items-center justify-between">
+              <span class={`text-xs px-2 py-1 rounded-full font-medium ${getCategoryColor(category)}`}>
+                {category}
+              </span>
+              <span class="text-surface-900 dark:text-surface-100 font-medium">{count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Live Match Statistics -->
+      {stats.counts.live > 0 && (
+        <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
+          <h3 class="font-semibold text-surface-900 dark:text-surface-100 mb-3 flex items-center gap-2">
+            <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            Live Match Highlights
+          </h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-surface-600 dark:text-surface-400">Total Aces</span>
+              <span class="text-green-600 dark:text-green-400 font-bold">{stats.liveStats.totalAces}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-surface-600 dark:text-surface-400">Double Faults</span>
+              <span class="text-red-600 dark:text-red-400 font-bold">{stats.liveStats.totalDoubleFaults}</span>
+            </div>
+            {stats.liveStats.longestMatchDuration > 0 && (
+              <div class="pt-2 border-t border-surface-200 dark:border-surface-700">
+                <div class="text-xs text-surface-500 dark:text-surface-400 mb-1">Longest Match</div>
+                <div class="text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {formatDuration(stats.liveStats.longestMatchDuration)}
+                </div>
+                <div class="text-xs text-surface-600 dark:text-surface-400 truncate">
+                  {stats.liveStats.longestMatchPlayers}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- Surface Distribution -->
+    <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
+      <h3 class="font-semibold text-surface-900 dark:text-surface-100 mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+        </svg>
+        Court Surfaces
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {Object.entries(stats.surfaces).map(([surface, count]) => (
+          <div class="text-center">
+            <div class="text-lg font-bold text-surface-900 dark:text-surface-100">{count}</div>
+            <div class="text-xs text-surface-600 dark:text-surface-400 capitalize">{surface.replace('_', ' ')}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    {stats.counts.live > 0 && (
+      <div class="mt-6 flex items-center justify-center">
+        <button
+          id="refresh-live-stats"
+          class="inline-flex items-center gap-2 bg-tennis-500 hover:bg-tennis-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Refresh Live Data
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
+<script>
+  // Add refresh functionality
+  document.getElementById('refresh-live-stats')?.addEventListener('click', () => {
+    window.location.reload();
+  });
+</script>

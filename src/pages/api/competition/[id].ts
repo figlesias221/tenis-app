@@ -45,7 +45,11 @@ export const GET: APIRoute = async ({ params, request }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=300' // Cache for 5 minutes
+        'Cache-Control': 'public, max-age=43200, s-maxage=43200', // 12 hours cache
+        'CDN-Cache-Control': 'max-age=43200',
+        'Cloudflare-CDN-Cache-Control': 'max-age=43200',
+        'Vary': 'Accept-Encoding',
+        'ETag': `"competition-${id}"`
       }
     });
 

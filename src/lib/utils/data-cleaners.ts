@@ -1,5 +1,6 @@
 // Data cleaning utilities for tennis match data
 // import type { EnhancedMatch, EnhancedPlayer, EnhancedTournament } from '../api/enhanced-types';
+import { normalizeCountryCode } from './flags';
 
 export interface DataCleaningOptions {
   fillMissingData?: boolean;
@@ -189,7 +190,7 @@ export class TennisDataCleaner {
     return value.trim();
   }
 
-  // Clean country code
+  // Clean country code - use the flags utility for proper normalization
   private cleanCountryCode(countryCode?: string, altCode?: string, nationality?: string): string {
     let code = countryCode || altCode;
 
@@ -201,9 +202,17 @@ export class TennisDataCleaner {
       }
     }
 
-    // Validate format (should be 2 uppercase letters)
-    if (code && /^[A-Z]{2}$/.test(code)) {
-      return code;
+    // If we have a code, use the flags utility to normalize it (handles 3-letter to 2-letter conversion)
+    if (code) {
+      try {
+        const normalized = normalizeCountryCode(code);
+        // Only return the normalized code if it's not the fallback 'UN'
+        if (normalized && normalized !== 'UN') {
+          return normalized;
+        }
+      } catch (e) {
+        console.warn('Failed to normalize country code:', e);
+      }
     }
 
     return 'XX'; // Default for unknown/invalid codes

@@ -1,12 +1,25 @@
 ---
 import type { Match } from "@/lib/api/types";
 import CountryFlag from "./CountryFlag.astro";
+import MatchStatistics from "./MatchStatistics.astro";
+import { imageService } from "@/lib/utils/image-service";
 
 export interface Props {
   match: Match;
 }
 
 const { match } = Astro.props;
+
+// Generate avatar URLs for both players
+const player1AvatarUrl = imageService.getPlayerImageUrl(match.players[0], {
+  size: 40,
+  rounded: true
+});
+
+const player2AvatarUrl = imageService.getPlayerImageUrl(match.players[1], {
+  size: 40,
+  rounded: true
+});
 
 
 function formatTime(timeString?: string): string {
@@ -45,123 +58,253 @@ function getScoreDisplay(match: Match): string {
 
   return `${player1Sets}-${player2Sets}`;
 }
+
+// Statistics are optional and may not be present on Match.
+function hasStatistics(match: Match): boolean {
+  const m = match as any;
+  return !!(m?.statistics?.totals?.competitors && m.statistics.totals.competitors.length > 0);
+}
+
+// Generate unique ID for this match
+const matchId = `match-${match.id || `${match.players[0].id}-${match.players[1].id}`}`;
 ---
 
-<div class="group flex items-center py-3 px-3 sm:py-4 sm:px-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-  <!-- Status indicator -->
-  <div class="w-10 sm:w-12 flex-shrink-0 flex justify-center">
-    {match.status === 'live' ? (
-      <div class="flex flex-col items-center">
-        <div class="text-xs font-bold text-red-600 dark:text-red-400 mb-1">LIVE</div>
-        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-      </div>
-    ) : match.status === 'scheduled' ? (
-      <div class="text-xs font-medium text-gray-600 dark:text-gray-400 text-center">
-        {formatTime(match.startTime)}
-      </div>
-    ) : (
-      <div class="text-xs font-medium text-gray-500 dark:text-gray-400">FT</div>
-    )}
-  </div>
+<div class="bg-white dark:bg-gray-900 border border-surface-200 dark:border-surface-700 rounded-lg p-3 hover:shadow-md transition-shadow">
+  <div class="flex items-center gap-3">
+    <!-- Compact status indicator -->
+    <div class="flex-shrink-0">
+      {match.status === 'live' ? (
+        <div class="flex items-center gap-1 bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 px-2 py-1 rounded-full text-xs font-medium">
+          <div class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+          LIVE
+        </div>
+      ) : match.status === 'scheduled' ? (
+        <div class="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs font-medium">
+          {formatTime(match.startTime)}
+        </div>
+      ) : (
+        <div class="bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 px-2 py-1 rounded-full text-xs font-medium">
+          FT
+        </div>
+      )}
+    </div>
 
-  <!-- Players and scores -->
-  <div class="flex-1 min-w-0 px-2 sm:px-3">
-    <!-- Player 1 -->
-    <div class="flex items-center justify-between mb-1.5">
-      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-        <CountryFlag
-          countryCode={match.players[0].countryCode}
-          nationality={match.players[0].nationality}
-          size="small"
-          className="flex-shrink-0"
-        />
-        <a
-          href={`/player/${match.players[0].id}`}
-          class={`text-sm truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors ${
-            match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
-              ? 'font-bold text-gray-900 dark:text-gray-100'
-              : 'font-medium text-gray-700 dark:text-gray-300'
-          }`}
-        >
-          {match.players[0].name}
-        </a>
-      </div>
+    <!-- Players section -->
+    <div class="flex-1 min-w-0">
+      <!-- Player 1 row -->
+      <div class="flex items-center justify-between mb-1">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <div class="flex-shrink-0 relative">
+            <img
+              src={player1AvatarUrl}
+              alt={`${match.players[0].name} avatar`}
+              class="w-8 h-8 rounded-full border border-surface-200 dark:border-surface-600"
+              loading="lazy"
+            />
+            <div class="absolute -bottom-0.5 -right-0.5">
+              <CountryFlag
+                countryCode={match.players[0].countryCode}
+                nationality={match.players[0].nationality}
+                size="small"
+                className="flex-shrink-0"
+              />
+            </div>
+          </div>
+          <a
+            href={`/player/${match.players[0].id}`}
+            class={`text-sm truncate hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors ${
+              match.status === 'completed' && match.score?.sets && isWinner(0, match.score.sets)
+                ? 'font-semibold text-surface-900 dark:text-surface-100'
+                : 'font-medium text-surface-700 dark:text-surface-300'
+            }`}
+          >
+            {match.players[0].name}
+          </a>
+        </div>
 
-      <!-- Player 1 set scores -->
-      <div class="flex items-center gap-1 sm:gap-1.5 ml-2">
-        {match.score?.sets && match.score.sets.length > 0 ? (
-          match.score.sets.map((set, index) => (
-            <span class={`text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded font-medium ${
-              set.player1 > set.player2
-                ? 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 font-bold'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-            }`}>
-              {set.player1}
+        <!-- Player 1 scores -->
+        <div class="flex items-center gap-1 ml-2">
+          {match.score?.sets && match.score.sets.length > 0 ? (
+            match.score.sets.map((set, index) => (
+              <span class={`text-xs min-w-[18px] h-5 flex items-center justify-center rounded font-medium ${
+                set.player1 > set.player2
+                  ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
+                  : 'bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400'
+              }`}>
+                {set.player1}
+              </span>
+            ))
+          ) : (
+            <span class="text-xs text-surface-500 dark:text-surface-400 min-w-[18px] text-center">-</span>
+          )}
+          {match.score?.games && match.status === 'live' && (
+            <span class="text-xs min-w-[18px] h-5 flex items-center justify-center rounded bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 font-semibold border border-red-300 dark:border-red-700">
+              {match.score.games.player1}
             </span>
-          ))
-        ) : (
-          <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 min-w-[16px] sm:min-w-[20px] text-center">-</span>
-        )}
-        {match.score?.games && match.status === 'live' && (
-          <span class="text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 font-bold animate-pulse border border-red-300 dark:border-red-700">
-            {match.score.games.player1}
-          </span>
-        )}
-      </div>
-    </div>
-
-    <!-- Player 2 -->
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-        <CountryFlag
-          countryCode={match.players[1].countryCode}
-          nationality={match.players[1].nationality}
-          size="small"
-          className="flex-shrink-0"
-        />
-        <a
-          href={`/player/${match.players[1].id}`}
-          class={`text-sm truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors ${
-            match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
-              ? 'font-bold text-gray-900 dark:text-gray-100'
-              : 'font-medium text-gray-700 dark:text-gray-300'
-          }`}
-        >
-          {match.players[1].name}
-        </a>
+          )}
+        </div>
       </div>
 
-      <!-- Player 2 set scores -->
-      <div class="flex items-center gap-1 sm:gap-1.5 ml-2">
-        {match.score?.sets && match.score.sets.length > 0 ? (
-          match.score.sets.map((set, index) => (
-            <span class={`text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded font-medium ${
-              set.player2 > set.player1
-                ? 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 font-bold'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-            }`}>
-              {set.player2}
+      <!-- Player 2 row -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <div class="flex-shrink-0 relative">
+            <img
+              src={player2AvatarUrl}
+              alt={`${match.players[1].name} avatar`}
+              class="w-8 h-8 rounded-full border border-surface-200 dark:border-surface-600"
+              loading="lazy"
+            />
+            <div class="absolute -bottom-0.5 -right-0.5">
+              <CountryFlag
+                countryCode={match.players[1].countryCode}
+                nationality={match.players[1].nationality}
+                size="small"
+                className="flex-shrink-0"
+              />
+            </div>
+          </div>
+          <a
+            href={`/player/${match.players[1].id}`}
+            class={`text-sm truncate hover:text-tennis-600 dark:hover:text-tennis-400 transition-colors ${
+              match.status === 'completed' && match.score?.sets && isWinner(1, match.score.sets)
+                ? 'font-semibold text-surface-900 dark:text-surface-100'
+                : 'font-medium text-surface-700 dark:text-surface-300'
+            }`}
+          >
+            {match.players[1].name}
+          </a>
+        </div>
+
+        <!-- Player 2 scores -->
+        <div class="flex items-center gap-1 ml-2">
+          {match.score?.sets && match.score.sets.length > 0 ? (
+            match.score.sets.map((set, index) => (
+              <span class={`text-xs min-w-[18px] h-5 flex items-center justify-center rounded font-medium ${
+                set.player2 > set.player1
+                  ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
+                  : 'bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400'
+              }`}>
+                {set.player2}
+              </span>
+            ))
+          ) : (
+            <span class="text-xs text-surface-500 dark:text-surface-400 min-w-[18px] text-center">-</span>
+          )}
+          {match.score?.games && match.status === 'live' && (
+            <span class="text-xs min-w-[18px] h-5 flex items-center justify-center rounded bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 font-semibold border border-red-300 dark:border-red-700">
+              {match.score.games.player2}
             </span>
-          ))
-        ) : (
-          <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 min-w-[16px] sm:min-w-[20px] text-center">-</span>
-        )}
-        {match.score?.games && match.status === 'live' && (
-          <span class="text-xs sm:text-sm min-w-[16px] sm:min-w-[20px] h-5 sm:h-6 flex items-center justify-center rounded bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 font-bold animate-pulse border border-red-300 dark:border-red-700">
-            {match.score.games.player2}
-          </span>
-        )}
+          )}
+        </div>
       </div>
+    </div>
+
+    <!-- Compact overall score and actions -->
+    <div class="flex-shrink-0 flex items-center gap-2">
+      <div class="text-center min-w-[40px]">
+        <div class="text-sm font-bold text-surface-900 dark:text-surface-100 bg-surface-50 dark:bg-surface-800 rounded-lg py-2 px-2 border border-surface-200 dark:border-surface-700">
+          {getScoreDisplay(match)}
+        </div>
+      </div>
+
+      <!-- Statistics toggle button -->
+      {hasStatistics(match) && (
+        <button
+          class="stats-toggle-btn flex-shrink-0 p-2 text-surface-600 dark:text-surface-400 hover:text-tennis-600 dark:hover:text-tennis-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors"
+          data-match-id={matchId}
+          title="View match statistics"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </button>
+      )}
     </div>
   </div>
 
-  <!-- Overall score -->
-  <div class="w-10 sm:w-12 flex-shrink-0 text-center">
-    <div class="text-sm font-bold text-gray-900 dark:text-gray-100">
-      {getScoreDisplay(match)}
+  <!-- Expandable statistics panel -->
+  {hasStatistics(match) && (
+    <div id={`stats-${matchId}`} class="stats-panel hidden mt-3 pt-3 border-t border-surface-200 dark:border-surface-700">
+      <MatchStatistics match={match} compact={true} />
     </div>
-  </div>
+  )}
 </div>
+
+<script>
+  // Handle statistics panel toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize stats toggle functionality
+    function initializeStatsToggle() {
+      document.querySelectorAll('.stats-toggle-btn').forEach(button => {
+        // Remove existing event listeners
+        const newButton = button.cloneNode(true);
+        button.parentNode?.replaceChild(newButton, button);
+
+        // Add new event listener
+        newButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const btn = e.currentTarget as HTMLElement;
+          const matchId = btn.getAttribute('data-match-id');
+          const statsPanel = document.getElementById(`stats-${matchId}`);
+          const buttonIcon = btn.querySelector('svg');
+
+          if (statsPanel && buttonIcon) {
+            const isVisible = !statsPanel.classList.contains('hidden');
+
+            if (isVisible) {
+              // Hide stats
+              statsPanel.classList.add('hidden');
+              btn.classList.remove('text-tennis-600', 'dark:text-tennis-400', 'bg-surface-100', 'dark:bg-surface-800');
+              btn.title = 'View match statistics';
+            } else {
+              // Show stats
+              statsPanel.classList.remove('hidden');
+              btn.classList.add('text-tennis-600', 'dark:text-tennis-400', 'bg-surface-100', 'dark:bg-surface-800');
+              btn.title = 'Hide match statistics';
+
+              // Scroll stats panel into view with smooth behavior
+              setTimeout(() => {
+                statsPanel.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'nearest',
+                  inline: 'nearest'
+                });
+              }, 100);
+            }
+          }
+        });
+      });
+    }
+
+    // Initialize on page load
+    initializeStatsToggle();
+
+    // Re-initialize when content might have been refreshed
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          const hasStatsButtons = Array.from(mutation.addedNodes).some(node =>
+            node.nodeType === Node.ELEMENT_NODE &&
+            (node as Element).querySelector?.('.stats-toggle-btn')
+          );
+
+          if (hasStatsButtons) {
+            setTimeout(initializeStatsToggle, 50);
+          }
+        }
+      });
+    });
+
+    // Watch for changes to the main content area
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      observer.observe(mainElement, { childList: true, subtree: true });
+    }
+  });
+</script>
 
 <style>
   .animate-pulse {
@@ -175,5 +318,40 @@ function getScoreDisplay(match: Match): string {
     50% {
       opacity: .5;
     }
+  }
+
+  .stats-panel {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .stats-panel.hidden {
+    animation: slideOut 0.2s ease-in;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  .stats-toggle-btn:hover svg {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
   }
 </style>
