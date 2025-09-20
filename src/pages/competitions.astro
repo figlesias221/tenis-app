@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import CompetitionsTable from "@/components/CompetitionsTable.astro";
 import { tennisApi } from "@/lib/api/tennisApi";
-import { CompetitionFormatter } from "@/lib/utils/competition-formatter";
+// import { CompetitionFormatter } from "@/lib/utils/competition-formatter";
 
 // Get filter parameters from URL
 const tourType = (Astro.url.searchParams.get('tour') || 'ATP').toUpperCase() as 'ATP' | 'WTA';

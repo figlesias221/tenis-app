@@ -1,7 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
-import CountryFlag from "@/components/CountryFlag.astro";
 ---
 
 <Layout
@@ -219,8 +218,8 @@ import CountryFlag from "@/components/CountryFlag.astro";
 
 <script>
   let playersCache = new Map();
-  let selectedPlayer1 = null;
-  let selectedPlayer2 = null;
+  let selectedPlayer1: any = null;
+  let selectedPlayer2: any = null;
 
   // DOM elements
   const tour1Select = document.getElementById('tour1') as HTMLSelectElement | null;
@@ -235,7 +234,7 @@ import CountryFlag from "@/components/CountryFlag.astro";
   const retryBtn = document.getElementById('retry-btn') as HTMLButtonElement | null;
 
   // Load players function
-  async function loadPlayers(tour, selectElement) {
+  async function loadPlayers(tour: string, selectElement: HTMLSelectElement) {
     const cacheKey = tour;
 
     if (playersCache.has(cacheKey)) {
@@ -261,9 +260,9 @@ import CountryFlag from "@/components/CountryFlag.astro";
     }
   }
 
-  function populatePlayerSelect(selectElement, players) {
+  function populatePlayerSelect(selectElement: HTMLSelectElement, players: any[]) {
     selectElement.innerHTML = '<option value="">Select a player...</option>';
-    players.forEach(player => {
+    players.forEach((player: any) => {
       if (player && player.id && player.name) {
         const option = document.createElement('option');
         option.value = player.id;
@@ -274,22 +273,22 @@ import CountryFlag from "@/components/CountryFlag.astro";
     });
   }
 
-  function updatePlayerDisplay(playerNum, player) {
+  function updatePlayerDisplay(playerNum: number, player: any) {
     const display = document.getElementById(`player${playerNum}-display`);
     const flag = document.getElementById(`player${playerNum}-flag`);
     const name = document.getElementById(`player${playerNum}-name`);
     const info = document.getElementById(`player${playerNum}-info`);
 
     if (player) {
-      flag.innerHTML = `<img src="https://flagcdn.com/w20/${(player.country_code || 'xx').toLowerCase()}.png"
+      if (flag) flag.innerHTML = `<img src="https://flagcdn.com/w20/${(player.country_code || 'xx').toLowerCase()}.png"
                                alt="${player.country || 'Unknown'}"
                                class="w-5 h-4 rounded object-cover"
                                onerror="this.style.display='none'">`;
-      name.textContent = player.name;
-      info.textContent = `#${player.ranking || 'NR'} • ${player.country || 'Unknown'}`;
-      display.classList.remove('hidden');
+      if (name) name.textContent = player.name;
+      if (info) info.textContent = `#${player.ranking || 'NR'} • ${player.country || 'Unknown'}`;
+      if (display) display.classList.remove('hidden');
     } else {
-      display.classList.add('hidden');
+      if (display) display.classList.add('hidden');
     }
 
     updateCompareButton();
@@ -297,9 +296,9 @@ import CountryFlag from "@/components/CountryFlag.astro";
 
   function updateCompareButton() {
     if (selectedPlayer1 && selectedPlayer2 && selectedPlayer1.id !== selectedPlayer2.id) {
-      compareBtn.disabled = false;
+      if (compareBtn) compareBtn.disabled = false;
     } else {
-      compareBtn.disabled = true;
+      if (compareBtn) compareBtn.disabled = true;
     }
   }
 
@@ -331,9 +330,9 @@ import CountryFlag from "@/components/CountryFlag.astro";
     }
   }
 
-  function displayHeadToHeadResults(data) {
-    const competitor1 = data.competitors?.find(c => c.id === selectedPlayer1.id);
-    const competitor2 = data.competitors?.find(c => c.id === selectedPlayer2.id);
+  function displayHeadToHeadResults(data: any) {
+    const competitor1 = data.competitors?.find((c: any) => c.id === selectedPlayer1.id);
+    const competitor2 = data.competitors?.find((c: any) => c.id === selectedPlayer2.id);
 
     if (!competitor1 || !competitor2) {
       throw new Error('Invalid competitor data received');
@@ -343,7 +342,7 @@ import CountryFlag from "@/components/CountryFlag.astro";
     let player1Wins = 0;
     let player2Wins = 0;
 
-    data.last_meetings?.forEach(match => {
+    data.last_meetings?.forEach((match: any) => {
       if (match.sport_event_status?.winner_id === selectedPlayer1.id) {
         player1Wins++;
       } else if (match.sport_event_status?.winner_id === selectedPlayer2.id) {
@@ -352,7 +351,7 @@ import CountryFlag from "@/components/CountryFlag.astro";
     });
 
     // Update comparison header
-    document.getElementById('comparison-player1').innerHTML = `
+    document.getElementById('comparison-player1')!.innerHTML = `
       <img src="https://flagcdn.com/w40/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
            alt="${selectedPlayer1.country || 'Unknown'}"
            class="w-8 h-6 rounded mx-auto mb-2"
@@ -361,7 +360,7 @@ import CountryFlag from "@/components/CountryFlag.astro";
       <div class="text-sm text-surface-600 dark:text-surface-400">#${selectedPlayer1.ranking || 'NR'}</div>
     `;
 
-    document.getElementById('comparison-player2').innerHTML = `
+    document.getElementById('comparison-player2')!.innerHTML = `
       <img src="https://flagcdn.com/w40/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
            alt="${selectedPlayer2.country || 'Unknown'}"
            class="w-8 h-6 rounded mx-auto mb-2"
@@ -370,11 +369,11 @@ import CountryFlag from "@/components/CountryFlag.astro";
       <div class="text-sm text-surface-600 dark:text-surface-400">#${selectedPlayer2.ranking || 'NR'}</div>
     `;
 
-    document.getElementById('overall-record').textContent = `${player1Wins} - ${player2Wins}`;
+    document.getElementById('overall-record')!.textContent = `${player1Wins} - ${player2Wins}`;
 
     // Calculate tournament statistics
-    const tournamentStats = {};
-    data.last_meetings?.forEach(match => {
+    const tournamentStats: {[key: string]: any} = {};
+    data.last_meetings?.forEach((match: any) => {
       const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown';
       const level = match.sport_event?.sport_event_context?.competition?.level || 'Other';
       const surface = match.sport_event?.venue?.surface || 'Unknown';
@@ -393,9 +392,9 @@ import CountryFlag from "@/components/CountryFlag.astro";
     });
 
     // Display tournament overview
-    const tournamentStatsDiv = document.getElementById('tournament-stats');
+    const tournamentStatsDiv = document.getElementById('tournament-stats')!;
     const sortedTournaments = Object.entries(tournamentStats)
-      .sort(([,a], [,b]) => b.total - a.total)
+      .sort(([,a], [,b]) => (b as any).total - (a as any).total)
       .slice(0, 6); // Top 6 tournaments
 
     if (sortedTournaments.length > 0) {
@@ -432,23 +431,23 @@ import CountryFlag from "@/components/CountryFlag.astro";
     }
 
     // Display match history with detailed scores
-    const matchesList = document.getElementById('matches-list');
+    const matchesList = document.getElementById('matches-list')!;
     if (data.last_meetings && data.last_meetings.length > 0) {
-      matchesList.innerHTML = data.last_meetings.slice(0, 10).map(match => {
+      matchesList.innerHTML = data.last_meetings.slice(0, 10).map((match: any) => {
         const winner = match.sport_event_status?.winner_id;
         const isPlayer1Winner = winner === selectedPlayer1.id;
         const isPlayer2Winner = winner === selectedPlayer2.id;
 
         // Get competitors and determine which is player1 vs player2
         const competitors = match.sport_event?.competitors || [];
-        const player1Competitor = competitors.find(c => c.id === selectedPlayer1.id);
-        const player2Competitor = competitors.find(c => c.id === selectedPlayer2.id);
+        const player1Competitor = competitors.find((c: any) => c.id === selectedPlayer1.id);
+        const player2Competitor = competitors.find((c: any) => c.id === selectedPlayer2.id);
 
         // Format scores from period_scores (sets)
         let scoreDisplay = '';
         if (match.sport_event_status?.period_scores && match.sport_event_status.period_scores.length > 0) {
           const sets = match.sport_event_status.period_scores;
-          const setScores = sets.map(set => {
+          const setScores = sets.map((set: any) => {
             const player1Score = player1Competitor?.qualifier === 'home' ? set.home_score : set.away_score;
             const player2Score = player2Competitor?.qualifier === 'home' ? set.home_score : set.away_score;
             const player1Tiebreak = player1Competitor?.qualifier === 'home' ? set.home_tiebreak_score : set.away_tiebreak_score;
@@ -536,7 +535,7 @@ import CountryFlag from "@/components/CountryFlag.astro";
       `;
     }
 
-    resultsSection.classList.remove('hidden');
+    resultsSection?.classList.remove('hidden');
   }
 
   // Event listeners
@@ -612,8 +611,8 @@ import CountryFlag from "@/components/CountryFlag.astro";
         console.log('Looking for player1Id:', player1Id);
         console.log('Looking for player2Id:', player2Id);
 
-        const competitor1 = data.competitors?.find(c => c.id === player1Id);
-        const competitor2 = data.competitors?.find(c => c.id === player2Id);
+        const competitor1 = data.competitors?.find((c: any) => c.id === player1Id);
+        const competitor2 = data.competitors?.find((c: any) => c.id === player2Id);
 
         console.log('Found competitor1:', competitor1);
         console.log('Found competitor2:', competitor2);
@@ -644,7 +643,7 @@ import CountryFlag from "@/components/CountryFlag.astro";
           displayHeadToHeadResults(data);
 
           // Scroll to results
-          resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
           throw new Error('Player data not found in response');
         }

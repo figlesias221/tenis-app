@@ -28885,3 +28885,30 @@ Failed to fetch live matches from SportRadar API: Error: {"message":"SportRadar 
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async OfficialSportRadarProvider.getLiveMatches (/Users/federicoiglesias/tenis-app/src/lib/api/providers/official-sportradar.ts:117:20)
     at async Promise.all (index 0)
+24:38:31 [watch] src/pages/head-to-head.astro
+24:38:31 [watch] src/pages/head-to-head.astro
+24:39:07 [watch] src/pages/head-to-head.astro
+24:39:07 [watch] src/pages/head-to-head.astro
+24:39:18 [watch] src/pages/head-to-head.astro
+24:39:18 [watch] src/pages/head-to-head.astro
+24:39:25 [watch] src/pages/head-to-head.astro
+24:39:25 [watch] src/pages/head-to-head.astro
+24:39:34 [watch] src/pages/head-to-head.astro
+24:39:34 [watch] src/pages/head-to-head.astro
+24:39:42 [watch] src/pages/head-to-head.astro
+24:39:42 [watch] src/pages/head-to-head.astro
+24:39:51 [watch] src/pages/head-to-head.astro
+24:39:51 [watch] src/pages/head-to-head.astro
+24:40:19 [watch] src/pages/live.astro
+24:40:32 [watch] src/pages/head-to-head.astro
+24:40:32 [watch] src/pages/head-to-head.astro
+24:40:39 [watch] src/components/HeadToHeadSearch.astro
+24:40:39 [watch] src/components/HeadToHeadSearch.astro
+24:40:47 [watch] src/components/MatchTimeline.astro
+24:40:47 [watch] src/components/MatchTimeline.astro
+24:40:51 [watch] src/components/MatchTimeline.astro
+24:40:51 [watch] src/components/MatchTimeline.astro
+24:40:59 [watch] src/pages/competitions.astro
+24:40:59 [watch] src/pages/competitions.astro
+24:41:27 [watch] src/pages/head-to-head.astro
+24:41:27 [watch] src/pages/head-to-head.astro

@@ -30,7 +30,7 @@ try {
   // Debug logging
   console.log(`Live matches: ${liveMatches?.matches?.length || 0}`);
   console.log(`Today matches: ${todayMatches?.matches?.length || 0}`);
-  if (liveMatches?.matches?.length > 0) {
+  if (liveMatches?.matches && liveMatches.matches.length > 0) {
     console.log('First live match players:', liveMatches.matches[0].players.map(p => ({ name: p.name, countryCode: p.countryCode, nationality: p.nationality })));
   }
 } catch (e) {
@@ -96,7 +96,7 @@ if (targetDate === today && liveMatches && todayMatches) {
 
   <!-- Smart refresh script -->
   <script>
-    let refreshTimer: number | undefined;
+    let refreshTimer: ReturnType<typeof setInterval> | undefined;
     let isVisible = true;
     let isRefreshing = false;
 
@@ -195,7 +195,7 @@ if (targetDate === today && liveMatches && todayMatches) {
     });
 
     // Pause refresh during user interaction
-    let interactionTimer: number | undefined;
+    let interactionTimer: ReturnType<typeof setTimeout> | undefined;
     ['scroll', 'click', 'touchstart', 'keydown'].forEach(event => {
       document.addEventListener(event, () => {
         clearInterval(refreshTimer);

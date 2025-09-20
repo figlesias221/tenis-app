@@ -1,5 +1,5 @@
 ---
-import PlayerImage from "./PlayerImage.astro";
+// import PlayerImage from "./PlayerImage.astro";
 
 export interface Props {
   playerId: string;
@@ -7,7 +7,7 @@ export interface Props {
   limit?: number;
 }
 
-const { playerId, playerName, limit = 3 } = Astro.props;
+const { limit = 3 } = Astro.props;
 
 // Note: In a real application, this would fetch actual match data from the API
 // For now, we'll show a message that match data isn't available
