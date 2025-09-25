@@ -256,7 +256,7 @@ export interface HeadToHeadData {
 }
 
 export interface TennisApiProvider {
-  getRankings(type: "ATP" | "WTA", limit?: number): Promise<Rankings>;
+  getRankings(type: "ATP" | "WTA", limit?: number, date?: string): Promise<Rankings>;
   getLiveMatches(): Promise<LiveMatches>;
   getTodayMatches(): Promise<LiveMatches>;
   getMatchesByDate(date: string): Promise<LiveMatches>;

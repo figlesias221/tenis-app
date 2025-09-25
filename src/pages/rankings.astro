@@ -7,14 +7,26 @@ import { tennisApi } from "@/lib/api/tennisApi";
 // Get the ranking type from URL params, default to ATP
 const rankingType = (Astro.url.searchParams.get('type') || 'ATP').toUpperCase() as 'ATP' | 'WTA';
 
+// Get current page from URL params, default to 1
+const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
+
+// Get selected date from URL params
+const selectedDate = Astro.url.searchParams.get('date') || undefined;
+
 let rankings;
 let error;
+let availableDates: string[] = [];
+let availableYears: number[] = [];
 
 try {
+  // Get available dates and years for selection
+  availableDates = await tennisApi.getAvailableRankingDates();
+  availableYears = await tennisApi.getAvailableRankingYears();
+
   if (rankingType === 'WTA') {
-    rankings = await tennisApi.getWTARankings(100);
+    rankings = await tennisApi.getWTARankings(undefined, selectedDate);
   } else {
-    rankings = await tennisApi.getATPRankings(100);
+    rankings = await tennisApi.getATPRankings(undefined, selectedDate);
   }
 } catch (e) {
   error = e instanceof Error ? e.message : "Failed to load rankings";
@@ -22,7 +34,7 @@ try {
 }
 ---
 
-<Layout title={`${rankingType} Rankings - Tennis Live`} description={`Live ${rankingType} Rankings Top 100`}>
+<Layout title={`${rankingType} Rankings - Tennis Live`} description={`Live ${rankingType} Rankings - All Players`}>
   <Header />
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -59,8 +71,64 @@ try {
         </div>
       </div>
       <p class="text-body-large max-w-4xl mx-auto">
-        Top 100 players worldwide - Live rankings updated regularly
+        All ranked players worldwide - Live rankings updated regularly
       </p>
+
+      <!-- Historical Rankings Selectors -->
+      <div class="mt-6 max-w-2xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <!-- Year Selector -->
+          {availableYears.length > 1 && (
+            <div>
+              <label for="ranking-year" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+                Select Year
+              </label>
+              <select
+                id="ranking-year"
+                class="w-full px-4 py-2 bg-surface-100 dark:bg-surface-800 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 focus:outline-none focus:border-tennis-500 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200"
+              >
+                {availableYears.map(year => (
+                  <option value={year} selected={selectedDate?.startsWith(year.toString())}>
+                    {year} {year === Math.max(...availableYears) ? '(Latest)' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <!-- Date Selector -->
+          {availableDates.length > 0 && (
+            <div>
+              <label for="ranking-date" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+                Select Ranking Date
+              </label>
+              <select
+                id="ranking-date"
+                class="w-full px-4 py-2 bg-surface-100 dark:bg-surface-800 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 focus:outline-none focus:border-tennis-500 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200"
+              >
+                <option value="">Latest Rankings</option>
+                {availableDates.map(date => (
+                  <option value={date} selected={date === selectedDate}>
+                    {new Date(date.slice(0,4) + '-' + date.slice(4,6) + '-' + date.slice(6,8)).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+        </div>
+
+        {availableYears.length > 1 && (
+          <p class="text-xs text-surface-500 dark:text-surface-400 mt-3 text-center">
+            Historical rankings available: {availableYears.join(', ')}
+          </p>
+        )}
+      </div>
     </div>
 
       {error ? (
@@ -76,7 +144,7 @@ try {
           </button>
         </div>
       ) : rankings ? (
-        <RankingsTable rankings={rankings} />
+        <RankingsTable rankings={rankings} currentPage={currentPage} />
       ) : (
         <div class="text-center py-12">
           <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-tennis-400 border-r-transparent mb-4"></div>
@@ -85,4 +153,46 @@ try {
       )}
     </div>
   </div>
+
+  <script>
+    // Handle date and year selection
+    const dateSelector = document.getElementById('ranking-date') as HTMLSelectElement;
+    const yearSelector = document.getElementById('ranking-year') as HTMLSelectElement;
+
+    function updateRankings() {
+      const url = new URL(window.location.href);
+
+      if (dateSelector) {
+        const selectedDate = dateSelector.value;
+        if (selectedDate) {
+          url.searchParams.set('date', selectedDate);
+        } else {
+          url.searchParams.delete('date');
+        }
+      }
+
+      // Reset to page 1 when changing date/year
+      url.searchParams.delete('page');
+
+      window.location.href = url.toString();
+    }
+
+    if (dateSelector) {
+      dateSelector.addEventListener('change', updateRankings);
+    }
+
+    if (yearSelector) {
+      yearSelector.addEventListener('change', async (e) => {
+        const selectedYear = (e.target as HTMLSelectElement).value;
+
+        // When year changes, we need to load new dates for that year
+        // For now, just clear the date and let the server handle it
+        if (dateSelector) {
+          dateSelector.value = '';
+        }
+
+        updateRankings();
+      });
+    }
+  </script>
 </Layout>

@@ -1,6 +1,7 @@
 import type { TennisApiProvider } from "./types";
 import { SportRadarProvider } from "./providers/sportradar";
 import { OfficialSportRadarProvider } from "./providers/official-sportradar";
+import { LocalDatasetProvider } from "./providers/local-dataset";
 
 class TennisApi {
   private provider: TennisApiProvider;
@@ -9,12 +10,26 @@ class TennisApi {
     this.provider = provider;
   }
 
-  async getATPRankings(limit = 100) {
-    return this.provider.getRankings("ATP", limit);
+  async getATPRankings(limit?: number, date?: string) {
+    return this.provider.getRankings("ATP", limit, date);
   }
 
-  async getWTARankings(limit = 100) {
-    return this.provider.getRankings("WTA", limit);
+  async getWTARankings(limit?: number, date?: string) {
+    return this.provider.getRankings("WTA", limit, date);
+  }
+
+  async getAvailableRankingDates() {
+    if (this.provider instanceof LocalDatasetProvider) {
+      return this.provider.getAvailableRankingDates();
+    }
+    return [];
+  }
+
+  async getAvailableRankingYears() {
+    if (this.provider instanceof LocalDatasetProvider) {
+      return this.provider.getAvailableRankingYears();
+    }
+    return [];
   }
 
   async getLiveMatches() {
@@ -62,12 +77,10 @@ class TennisApi {
 
 // Create singleton instance
 function createTennisApi() {
-  const apiKey = import.meta.env.SPORTRADAR_API_KEY || "ghFUX4ygnpBf7wX2Ua6ZtTnfFWdEg0JWKQ4envGp";
-
-  // Use official provider with proper API structure
-  const provider = new OfficialSportRadarProvider(apiKey);
+  // Use local dataset provider instead of SportRadar
+  const provider = new LocalDatasetProvider('./data');
   return new TennisApi(provider);
 }
 
 export const tennisApi = createTennisApi();
-export { TennisApi, SportRadarProvider, OfficialSportRadarProvider };
+export { TennisApi, SportRadarProvider, OfficialSportRadarProvider, LocalDatasetProvider };

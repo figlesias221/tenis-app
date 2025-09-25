@@ -132,7 +132,7 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
     <!-- Data Source -->
     <div class="border-t border-gray-200 dark:border-gray-600 pt-3 mt-4">
       <p class="text-xs text-gray-500 dark:text-gray-400">
-        Competition data provided by SportRadar API
+        Tournament data from Jeff Sackmann's ATP Tennis Database
         {isEstimatedPrize && tournament.prizeMoney && (
           <span class="ml-1">• Prize money estimated based on tournament level</span>
         )}

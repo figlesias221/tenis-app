@@ -80,7 +80,7 @@ export class OfficialSportRadarProvider implements TennisApiProvider {
     }
   }
 
-  async getRankings(type: "ATP" | "WTA", limit = 100): Promise<Rankings> {
+  async getRankings(type: "ATP" | "WTA", limit = 100, date?: string): Promise<Rankings> {
     try {
       const data: RankingsResponse = await this.request("/rankings.json", "rankings");
 

@@ -5,12 +5,60 @@ import { imageService } from "@/lib/utils/image-service";
 
 export interface Props {
   rankings: Rankings;
+  currentPage?: number;
+  pageSize?: number;
 }
 
-const { rankings } = Astro.props;
+const { rankings, currentPage = 1, pageSize = 100 } = Astro.props;
 
-// Generate avatar URLs for all players
-const playersWithAvatars = rankings.rankings.map(entry => {
+// Get current URL params to preserve other parameters like type
+const urlParams = new URLSearchParams(Astro.url.search);
+const rankingType = urlParams.get('type') || 'ATP';
+
+// Helper function to build pagination URLs
+const buildPageUrl = (page: number) => {
+  const newParams = new URLSearchParams(urlParams);
+  newParams.set('page', page.toString());
+  return `?${newParams.toString()}`;
+};
+
+// Calculate pagination
+const totalPlayers = rankings.rankings.length;
+const totalPages = Math.ceil(totalPlayers / pageSize);
+const startIndex = (currentPage - 1) * pageSize;
+const endIndex = startIndex + pageSize;
+const currentRankings = rankings.rankings.slice(startIndex, endIndex);
+
+// Generate page numbers for pagination
+const getPageNumbers = () => {
+  const maxPages = Math.min(5, totalPages);
+  const pages = [];
+
+  if (totalPages <= 5) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+  } else if (currentPage <= 3) {
+    for (let i = 1; i <= 5; i++) {
+      pages.push(i);
+    }
+  } else if (currentPage >= totalPages - 2) {
+    for (let i = totalPages - 4; i <= totalPages; i++) {
+      pages.push(i);
+    }
+  } else {
+    for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+      pages.push(i);
+    }
+  }
+
+  return pages;
+};
+
+const pageNumbers = getPageNumbers();
+
+// Generate avatar URLs for current page players
+const playersWithAvatars = currentRankings.map(entry => {
   const player = entry.player;
   const colors = imageService.getColorVariation(rankings.type, entry.rank);
   const avatarUrl = imageService.getPlayerImageUrl(player, {
@@ -210,6 +258,57 @@ const playersWithAvatars = rankings.rankings.map(entry => {
       </table>
     </div>
   </div>
+
+  <!-- Pagination Controls -->
+  {totalPages > 1 && (
+    <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-sm text-surface-600 dark:text-surface-400">
+        Showing {startIndex + 1}-{Math.min(endIndex, totalPlayers)} of {totalPlayers.toLocaleString()} players
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Previous Button -->
+        {currentPage > 1 && (
+          <a
+            href={buildPageUrl(currentPage - 1)}
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-surface-700 dark:text-surface-300 bg-surface-100 dark:bg-surface-700 border border-surface-300 dark:border-surface-600 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous
+          </a>
+        )}
+
+        <!-- Page Numbers -->
+        {pageNumbers.map(pageNum => (
+          <a
+            href={buildPageUrl(pageNum)}
+            class={`inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg transition-colors ${
+              pageNum === currentPage
+                ? 'bg-tennis-500 text-white border-tennis-500'
+                : 'text-surface-700 dark:text-surface-300 bg-surface-100 dark:bg-surface-700 border-surface-300 dark:border-surface-600 hover:bg-surface-200 dark:hover:bg-surface-600'
+            }`}
+          >
+            {pageNum}
+          </a>
+        ))}
+
+        <!-- Next Button -->
+        {currentPage < totalPages && (
+          <a
+            href={buildPageUrl(currentPage + 1)}
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-surface-700 dark:text-surface-300 bg-surface-100 dark:bg-surface-700 border border-surface-300 dark:border-surface-600 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
+          >
+            Next
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        )}
+      </div>
+    </div>
+  )}
 </div>
 
 

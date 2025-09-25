@@ -8,7 +8,6 @@ const navLinks = [
   { href: "/rankings", text: "Rankings", icon: "rankings" },
   { href: "/competitions", text: "Tournaments", icon: "trophy" },
   { href: "/head-to-head", text: "Head to Head", icon: "battle" },
-  { href: "/live", text: "Live", icon: "live" },
 ];
 ---
 
@@ -43,7 +42,7 @@ const navLinks = [
                 {siteConfig.title}
               </span>
               <span class="text-xs text-surface-500 dark:text-surface-400 font-medium hidden 2xl:block">
-                Live Tennis Scores
+                ATP Tennis Data
               </span>
             </div>
           </a>
@@ -71,11 +70,6 @@ const navLinks = [
 
         <!-- Right side actions -->
         <div class="flex items-center gap-3">
-          <!-- Live Indicator -->
-          <div class="hidden lg:flex items-center justify-center w-8 h-8 bg-red-50/80 dark:bg-red-950/50 border border-red-200/50 dark:border-red-800/50 rounded-full flex-shrink-0">
-            <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-          </div>
-
           <!-- Theme Toggle -->
           <ThemeToggle />
 

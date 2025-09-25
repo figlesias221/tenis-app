@@ -15,7 +15,7 @@ let tournamentData: CompetitionInfoResponse | null = null;
 let error: string | null = null;
 
 try {
-  const apiUrl = `${Astro.url.origin}/api/competition/${id}`;
+  const apiUrl = `${Astro.url.origin}/api/tournament/${id}`;
   const response = await fetch(apiUrl);
 
   if (!response.ok) {
@@ -169,7 +169,7 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
           <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
             <div class="text-xs text-surface-600 dark:text-surface-400 space-y-1">
               <p><strong>ID:</strong> {tournament.id}</p>
-              <p><strong>Source:</strong> SportRadar Tennis API v3</p>
+              <p><strong>Source:</strong> Jeff Sackmann's ATP Tennis Database</p>
               <p><strong>Updated:</strong> {tournamentData ? new Date(tournamentData.generated_at).toLocaleString() : 'Unknown'}</p>
               {tournament.prizeMoney && tournament.prizeMoney.currency === 'USD' && (
                 <p><strong>Note:</strong> Prize estimates based on tournament level</p>
