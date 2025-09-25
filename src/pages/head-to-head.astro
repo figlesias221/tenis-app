@@ -21,6 +21,7 @@ import Header from "@/components/Header.astro";
       </p>
     </div>
 
+
     <!-- Player Selection Cards -->
     <div class="grid lg:grid-cols-2 gap-8 mb-12">
       <!-- Player 1 Selection -->
@@ -148,18 +149,29 @@ import Header from "@/components/Header.astro";
         </div>
       </div>
 
-      <!-- Tournament Overview Section -->
-      <div id="tournament-overview" class="card-elevated p-4 mb-6">
-        <h3 class="text-lg font-semibold mb-4">Tournament Overview</h3>
-        <div id="tournament-stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <!-- Will be populated by JavaScript -->
+      <!-- Simple Statistics -->
+      <div class="card-elevated p-6 mb-8">
+        <h3 class="text-lg font-semibold mb-4">Match Record</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+          <div>
+            <div id="player1-wins" class="text-3xl font-bold text-tennis-600 dark:text-tennis-400">0</div>
+            <div id="player1-wins-label" class="text-sm text-surface-600 dark:text-surface-400">Player 1</div>
+          </div>
+          <div>
+            <div id="total-matches" class="text-3xl font-bold text-surface-900 dark:text-surface-100">0</div>
+            <div class="text-sm text-surface-600 dark:text-surface-400">Total Matches</div>
+          </div>
+          <div>
+            <div id="player2-wins" class="text-3xl font-bold text-electric-600 dark:text-electric-400">0</div>
+            <div id="player2-wins-label" class="text-sm text-surface-600 dark:text-surface-400">Player 2</div>
+          </div>
         </div>
       </div>
 
       <!-- Match History -->
-      <div id="match-history" class="card-elevated p-4">
-        <h3 class="text-lg font-semibold mb-4">Match History</h3>
-        <div id="matches-list" class="space-y-3">
+      <div id="match-history" class="card-elevated p-6">
+        <h3 class="text-lg font-semibold mb-6">Match History</h3>
+        <div id="matches-list" class="space-y-4">
           <!-- Will be populated by JavaScript -->
         </div>
       </div>
@@ -185,13 +197,26 @@ import Header from "@/components/Header.astro";
     <div class="mt-16">
       <h2 class="text-heading-3 text-center mb-8">Featured Rivalries</h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Big 3 Rivalries -->
+        <!-- Current ATP Stars -->
         <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
-                data-player1="sr:competitor:14882" data-player2="sr:competitor:407573">
+                data-player1="206173" data-player2="207989">
           <div class="flex items-center justify-between mb-2">
             <span class="text-sm font-medium text-surface-600 dark:text-surface-400">ATP Champions</span>
             <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
               Current
+            </span>
+          </div>
+          <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+            Sinner vs Alcaraz
+          </div>
+        </button>
+
+        <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
+                data-player1="104925" data-player2="207989">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Legend vs Rising Star</span>
+            <span class="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-2 py-1 rounded-full">
+              Classic
             </span>
           </div>
           <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
@@ -200,15 +225,15 @@ import Header from "@/components/Header.astro";
         </button>
 
         <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
-                data-player1="sr:competitor:407573" data-player2="sr:competitor:14882">
+                data-player1="100644" data-player2="126203">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">ATP Rising</span>
-            <span class="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-2 py-1 rounded-full">
-              Stars
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Next Gen</span>
+            <span class="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">
+              Rising
             </span>
           </div>
           <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
-            Alcaraz vs Djokovic
+            Zverev vs Fritz
           </div>
         </button>
       </div>
@@ -302,6 +327,20 @@ import Header from "@/components/Header.astro";
     }
   }
 
+  // Simple utility function
+  function formatDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch {
+      return 'Unknown';
+    }
+  }
+
   async function comparePlayersHeadToHead() {
     if (!selectedPlayer1 || !selectedPlayer2) return;
 
@@ -371,155 +410,118 @@ import Header from "@/components/Header.astro";
 
     document.getElementById('overall-record')!.textContent = `${player1Wins} - ${player2Wins}`;
 
-    // Calculate tournament statistics
-    const tournamentStats: {[key: string]: any} = {};
-    data.last_meetings?.forEach((match: any) => {
-      const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown';
-      const level = match.sport_event?.sport_event_context?.competition?.level || 'Other';
-      const surface = match.sport_event?.venue?.surface || 'Unknown';
-      const winner = match.sport_event_status?.winner_id;
+    // Update simple statistics
+    document.getElementById('player1-wins')!.textContent = player1Wins.toString();
+    document.getElementById('player2-wins')!.textContent = player2Wins.toString();
+    document.getElementById('total-matches')!.textContent = (player1Wins + player2Wins).toString();
+    document.getElementById('player1-wins-label')!.textContent = selectedPlayer1.name.split(',')[0];
+    document.getElementById('player2-wins-label')!.textContent = selectedPlayer2.name.split(',')[0];
 
-      if (!tournamentStats[tournament]) {
-        tournamentStats[tournament] = { total: 0, player1Wins: 0, player2Wins: 0, level, surface };
-      }
+    // Display match history with sets
+    displayMatchHistory(data.last_meetings || []);
 
-      tournamentStats[tournament].total++;
-      if (winner === selectedPlayer1.id) {
-        tournamentStats[tournament].player1Wins++;
-      } else if (winner === selectedPlayer2.id) {
-        tournamentStats[tournament].player2Wins++;
-      }
-    });
+    resultsSection?.classList.remove('hidden');
+  }
 
-    // Display tournament overview
-    const tournamentStatsDiv = document.getElementById('tournament-stats')!;
-    const sortedTournaments = Object.entries(tournamentStats)
-      .sort(([,a], [,b]) => (b as any).total - (a as any).total)
-      .slice(0, 6); // Top 6 tournaments
-
-    if (sortedTournaments.length > 0) {
-      tournamentStatsDiv.innerHTML = sortedTournaments.map(([tournament, stats]) => `
-        <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3 border border-surface-200/50 dark:border-surface-700/50">
-          <div class="flex items-start justify-between mb-2">
-            <div class="min-w-0 flex-1">
-              <div class="font-medium text-surface-900 dark:text-surface-100 text-sm truncate">
-                ${tournament}
-              </div>
-              <div class="text-xs text-surface-500 dark:text-surface-400 mt-0.5">
-                ${stats.level} • ${stats.total} match${stats.total !== 1 ? 'es' : ''}
-              </div>
-            </div>
-            <div class="flex items-center gap-2 ml-3 flex-shrink-0">
-              <div class="text-center">
-                <div class="text-sm font-bold text-electric-600 dark:text-electric-400">${stats.player1Wins}</div>
-                <div class="text-xs text-surface-500">-</div>
-              </div>
-              <div class="text-center">
-                <div class="text-sm font-bold text-tennis-600 dark:text-tennis-400">${stats.player2Wins}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    } else {
-      tournamentStatsDiv.innerHTML = `
-        <div class="col-span-full text-center py-6 text-surface-500 dark:text-surface-500">
-          <div class="text-2xl mb-2">🏆</div>
-          <p>No tournament data available</p>
-        </div>
-      `;
-    }
-
-    // Display match history with detailed scores
+  function displayMatchHistory(matches: any[]) {
     const matchesList = document.getElementById('matches-list')!;
-    if (data.last_meetings && data.last_meetings.length > 0) {
-      matchesList.innerHTML = data.last_meetings.slice(0, 10).map((match: any) => {
+
+    if (matches.length > 0) {
+      matchesList.innerHTML = matches.map((match: any) => {
         const winner = match.sport_event_status?.winner_id;
         const isPlayer1Winner = winner === selectedPlayer1.id;
         const isPlayer2Winner = winner === selectedPlayer2.id;
 
-        // Get competitors and determine which is player1 vs player2
+        // Get competitors to determine score order
         const competitors = match.sport_event?.competitors || [];
         const player1Competitor = competitors.find((c: any) => c.id === selectedPlayer1.id);
         const player2Competitor = competitors.find((c: any) => c.id === selectedPlayer2.id);
 
-        // Format scores from period_scores (sets)
+        // Format match details
+        const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown Tournament';
+        const round = match.sport_event?.sport_event_context?.round?.name || '';
+        const date = formatDate(match.sport_event?.start_time);
+
+        // Format score with sets
         let scoreDisplay = '';
         if (match.sport_event_status?.period_scores && match.sport_event_status.period_scores.length > 0) {
           const sets = match.sport_event_status.period_scores;
           const setScores = sets.map((set: any) => {
-            const player1Score = player1Competitor?.qualifier === 'home' ? set.home_score : set.away_score;
-            const player2Score = player2Competitor?.qualifier === 'home' ? set.home_score : set.away_score;
-            const player1Tiebreak = player1Competitor?.qualifier === 'home' ? set.home_tiebreak_score : set.away_tiebreak_score;
-            const player2Tiebreak = player2Competitor?.qualifier === 'home' ? set.home_tiebreak_score : set.away_tiebreak_score;
+            // In our data: home = winner, away = loser
+            // We need to map this to player1 vs player2
+            const isPlayer1Winner = winner === selectedPlayer1.id;
+
+            let player1Score, player2Score, player1Tiebreak, player2Tiebreak;
+
+            if (isPlayer1Winner) {
+              // Player 1 won, so they get the winner (home) score
+              player1Score = set.home_score;
+              player2Score = set.away_score;
+              player1Tiebreak = set.home_tiebreak_score;
+              player2Tiebreak = set.away_tiebreak_score;
+            } else {
+              // Player 2 won, so they get the winner (home) score
+              player1Score = set.away_score;
+              player2Score = set.home_score;
+              player1Tiebreak = set.away_tiebreak_score;
+              player2Tiebreak = set.home_tiebreak_score;
+            }
 
             let setScore = `${player1Score}-${player2Score}`;
-            if (player1Tiebreak !== undefined && player2Tiebreak !== undefined) {
+            if (player1Tiebreak !== undefined && player2Tiebreak !== undefined && (player1Tiebreak > 0 || player2Tiebreak > 0)) {
               setScore += ` (${player1Tiebreak}-${player2Tiebreak})`;
             }
             return setScore;
           });
-          scoreDisplay = setScores.join(', ');
+          scoreDisplay = setScores.join(' ');
         }
 
-        const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown Tournament';
-        const round = match.sport_event?.sport_event_context?.round?.name || '';
-        const level = match.sport_event?.sport_event_context?.competition?.level || '';
-        const date = new Date(match.sport_event?.start_time).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short'
-        });
-
         return `
-          <div class="border border-surface-200 dark:border-surface-700 rounded-lg p-3 bg-surface-50/50 dark:bg-surface-800/30">
-            <!-- Compact Header -->
-            <div class="flex items-center justify-between mb-2">
+          <div class="border border-surface-200 dark:border-surface-700 rounded-xl p-4 bg-surface-50/50 dark:bg-surface-800/30">
+            <div class="flex items-center justify-between mb-3">
               <div class="min-w-0 flex-1">
-                <div class="font-medium text-surface-900 dark:text-surface-100 text-sm truncate">
-                  ${tournament}
-                </div>
+                <div class="font-semibold text-surface-900 dark:text-surface-100 text-sm">${tournament}</div>
                 <div class="text-xs text-surface-500 dark:text-surface-400">
-                  ${date}${round ? ` • ${round}` : ''}${level ? ` • ${level}` : ''}
+                  ${date}${round ? ` • ${round}` : ''}
                 </div>
               </div>
+              ${isPlayer1Winner || isPlayer2Winner ?
+                `<div class="text-xs px-2 py-1 rounded-full ${isPlayer1Winner ? 'bg-tennis-100 dark:bg-tennis-900/30 text-tennis-700 dark:text-tennis-300' : 'bg-electric-100 dark:bg-electric-900/30 text-electric-700 dark:text-electric-300'}">
+                  ${isPlayer1Winner ? selectedPlayer1.name.split(',')[0] : selectedPlayer2.name.split(',')[0]} wins
+                </div>` : ''
+              }
             </div>
 
-            <!-- Compact Match Result -->
-            <div class="flex items-center justify-between gap-3">
-              <!-- Player 1 -->
-              <div class="flex items-center gap-2 min-w-0 flex-1">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 min-w-0 flex-1">
                 <img src="https://flagcdn.com/w20/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
                      alt="${selectedPlayer1.country || 'Unknown'}"
-                     class="w-4 h-3 rounded object-cover flex-shrink-0"
+                     class="w-5 h-4 rounded object-cover flex-shrink-0"
                      onerror="this.style.display='none'">
-                <span class="${isPlayer1Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm truncate">
+                <span class="${isPlayer1Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm">
                   ${selectedPlayer1.name.split(',')[0]}
                 </span>
-                ${isPlayer1Winner ? '<span class="text-tennis-600 dark:text-tennis-400 text-xs">✓</span>' : ''}
               </div>
 
-              <!-- Score -->
-              <div class="text-center px-2 flex-shrink-0">
+              <div class="px-4 text-center">
                 ${scoreDisplay ? `
-                  <div class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100 whitespace-nowrap">
+                  <div class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100 bg-surface-100 dark:bg-surface-800 px-3 py-1 rounded-lg">
                     ${scoreDisplay}
                   </div>
                 ` : `
                   <div class="text-surface-500 dark:text-surface-500 text-xs">
-                    ${winner ? 'W/L' : 'N/A'}
+                    ${winner ? 'W/L' : 'No Score'}
                   </div>
                 `}
               </div>
 
-              <!-- Player 2 -->
-              <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
-                ${isPlayer2Winner ? '<span class="text-tennis-600 dark:text-tennis-400 text-xs">✓</span>' : ''}
-                <span class="${isPlayer2Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm truncate text-right">
+              <div class="flex items-center gap-3 min-w-0 flex-1 justify-end">
+                <span class="${isPlayer2Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm">
                   ${selectedPlayer2.name.split(',')[0]}
                 </span>
                 <img src="https://flagcdn.com/w20/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
                      alt="${selectedPlayer2.country || 'Unknown'}"
-                     class="w-4 h-3 rounded object-cover flex-shrink-0"
+                     class="w-5 h-4 rounded object-cover flex-shrink-0"
                      onerror="this.style.display='none'">
               </div>
             </div>
@@ -534,9 +536,8 @@ import Header from "@/components/Header.astro";
         </div>
       `;
     }
-
-    resultsSection?.classList.remove('hidden');
   }
+
 
   // Event listeners
   tour1Select?.addEventListener('change', (e) => {
@@ -607,15 +608,8 @@ import Header from "@/components/Header.astro";
         const data = await response.json();
 
         // Extract player information from the response
-        console.log('API Response competitors:', data.competitors);
-        console.log('Looking for player1Id:', player1Id);
-        console.log('Looking for player2Id:', player2Id);
-
         const competitor1 = data.competitors?.find((c: any) => c.id === player1Id);
         const competitor2 = data.competitors?.find((c: any) => c.id === player2Id);
-
-        console.log('Found competitor1:', competitor1);
-        console.log('Found competitor2:', competitor2);
 
         if (competitor1 && competitor2) {
           // Set the selected players with the data from the API

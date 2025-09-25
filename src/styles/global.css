@@ -265,6 +265,7 @@
   .text-body-small {
     @apply text-sm text-surface-500 dark:text-surface-500 leading-relaxed;
   }
+
 }
 
 /* Custom Scrollbar */
