@@ -4,37 +4,44 @@ import { normalizeCountryCode, getFlagAlt, getFlagUrl, hasFlagSupport } from "@/
 export interface Props {
   countryCode: string;
   nationality?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   className?: string;
 }
 
-const { countryCode, nationality, size = 'medium', className = '' } = Astro.props;
+const { countryCode, nationality, size = "medium", className = "" } = Astro.props;
 
-// Size classes
 const sizeClasses = {
-  small: 'w-5 h-4',      // ~20px for table rows
-  medium: 'w-6 h-4',     // ~24px for cards
-  large: 'w-8 h-6'       // ~32px for profiles
+  small: "w-5 h-4",
+  medium: "w-6 h-4",
+  large: "w-8 h-6",
 };
 
 const normalizedCode = normalizeCountryCode(countryCode);
+const hasFlag = hasFlagSupport(normalizedCode);
 const flagPath = getFlagUrl(normalizedCode, size);
 const altText = getFlagAlt(countryCode, nationality);
-const hasFlag = hasFlagSupport(normalizedCode);
-
-// Debug logging for development
-if (import.meta.env.DEV) {
-}
 ---
 
-{hasFlag ? (
-  <img
-    src={flagPath}
-    alt={altText}
-    title={altText}
-    class={`${sizeClasses[size]} ${className} object-cover border border-grid`}
-    loading="lazy"
-    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"
-  />
-) : null}
-<span class={`text-note ${hasFlag ? "hidden" : "inline-flex"} items-center justify-center ${sizeClasses[size]} border border-grid text-ink-3`} title={`No flag for ${normalizedCode}`}>{normalizedCode}</span>
+{/*
+  Rendered up to ~2,200 times on a ranking page, so the markup is kept lean:
+  whether a flag exists is known at build time, so only one branch ships, with
+  no inline error handler and no hidden fallback alongside it.
+*/}
+{
+  hasFlag ? (
+    <img
+      src={flagPath}
+      alt={altText}
+      class:list={[sizeClasses[size], className, "object-cover border border-grid"]}
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <span
+      class:list={["text-note inline-flex items-center justify-center border border-grid text-ink-3", sizeClasses[size], className]}
+      title={altText}
+    >
+      {normalizedCode}
+    </span>
+  )
+}

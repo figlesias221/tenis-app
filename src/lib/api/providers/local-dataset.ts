@@ -35,10 +35,21 @@ import {
 import { toPeriodScores, type PeriodScore } from "@/lib/utils/score-parser";
 import { MATCH_SEASONS, matchYears } from "@/lib/archive";
 
+/**
+ * Caches shared across every provider instance.
+ *
+ * Prerendering constructs providers freely, and per-instance caches meant the
+ * match index was rebuilt for each of ~3,500 player pages - about a second
+ * each. Hoisting them here makes the work happen once per process.
+ */
+let sharedPlayersCache: AtpPlayer[] | null = null;
+let sharedRankingsCache: AtpRanking[] | null = null;
+const sharedMatchesCache: Map<number, AtpMatch[]> = new Map();
+let sharedPlayerMatchIndex: Map<string, AtpMatch[]> | null = null;
+let sharedCurrentRankingByPlayer: Map<string, AtpRanking> | null = null;
+
 export class LocalDatasetProvider implements TennisApiProvider {
-  private playersCache: AtpPlayer[] | null = null;
-  private rankingsCache: AtpRanking[] | null = null;
-  private matchesCache: Map<number, AtpMatch[]> = new Map();
+
   private dataPath: string;
 
   constructor(dataPath = './data') {
@@ -46,25 +57,26 @@ export class LocalDatasetProvider implements TennisApiProvider {
   }
 
   private getPlayers(): AtpPlayer[] {
-    if (!this.playersCache) {
-      this.playersCache = loadAtpPlayers(this.dataPath);
+    if (!sharedPlayersCache) {
+      sharedPlayersCache = loadAtpPlayers(this.dataPath);
     }
-    return this.playersCache;
+    return sharedPlayersCache;
   }
 
-  private getRankingsData(): AtpRanking[] {
-    if (!this.rankingsCache) {
-      this.rankingsCache = loadAtpRankings(this.dataPath);
+  /** Public so prerendered routes can enumerate the published weeks. */
+  getRankingsData(): AtpRanking[] {
+    if (!sharedRankingsCache) {
+      sharedRankingsCache = loadAtpRankings(this.dataPath);
     }
-    return this.rankingsCache;
+    return sharedRankingsCache;
   }
 
   private getMatches(year: number): AtpMatch[] {
-    if (!this.matchesCache.has(year)) {
+    if (!sharedMatchesCache.has(year)) {
       const matches = loadAtpMatches(year, this.dataPath);
-      this.matchesCache.set(year, matches);
+      sharedMatchesCache.set(year, matches);
     }
-    return this.matchesCache.get(year) || [];
+    return sharedMatchesCache.get(year) || [];
   }
 
   getAvailableRankingDates(): string[] {
@@ -89,6 +101,53 @@ export class LocalDatasetProvider implements TennisApiProvider {
   }
 
   /**
+   * playerId -> every eligible match, built once.
+   *
+   * Prerendering ~3,500 player pages by filtering the full corpus per page
+   * would be roughly 300 million comparisons. One indexing pass makes each
+   * page an O(1) lookup.
+   */
+
+
+  private getPlayerMatchIndex(): Map<string, AtpMatch[]> {
+    if (sharedPlayerMatchIndex) return sharedPlayerMatchIndex;
+
+    const index = new Map<string, AtpMatch[]>();
+    for (const year of matchYears()) {
+      for (const m of this.getMatches(year)) {
+        let w = index.get(m.winner_id);
+        if (!w) index.set(m.winner_id, (w = []));
+        w.push(m);
+        let l = index.get(m.loser_id);
+        if (!l) index.set(m.loser_id, (l = []));
+        l.push(m);
+      }
+    }
+    sharedPlayerMatchIndex = index;
+    return index;
+  }
+
+  /**
+   * Every player in the archive with the name the match records spell for him
+   * and how many matches he played. Built from the same index, so it costs
+   * one pass rather than a lookup per player.
+   */
+  getPlayerDirectory(): Array<{ id: string; name: string; matches: number }> {
+    const out: Array<{ id: string; name: string; matches: number }> = [];
+    for (const [id, matches] of this.getPlayerMatchIndex()) {
+      const first = matches[0];
+      const name = first.winner_id === id ? first.winner_name : first.loser_name;
+      out.push({ id, name, matches: matches.length });
+    }
+    return out.sort((a, b) => b.matches - a.matches);
+  }
+
+  /** Every player id with at least one match in the archive. */
+  getAllPlayerIds(): string[] {
+    return [...this.getPlayerMatchIndex().keys()];
+  }
+
+  /**
    * A player's real match record from the archive: per-season totals and his
    * most recent matches. The filtering already existed inside
    * getCompetitorProfile; this exposes it so the player page can show a record
@@ -102,40 +161,40 @@ export class LocalDatasetProvider implements TennisApiProvider {
       won: boolean; score: string;
     }>;
   } {
-    const seasons: Array<{ year: number; played: number; won: number; lost: number }> = [];
+    const matches = this.getPlayerMatchIndex().get(playerId) ?? [];
+    const byYear = new Map<number, { played: number; won: number }>();
     const recent: Array<{
       year: number; date: string; tourney: string; round: string;
       surface: string; opponent: string; opponentId: string;
       won: boolean; score: string;
     }> = [];
 
-    for (const year of matchYears()) {
-      const matches = this.getMatches(year).filter(
-        (m) => m.winner_id === playerId || m.loser_id === playerId,
-      );
-      if (matches.length === 0) continue;
+    for (const m of matches) {
+      const year = Number(m.tourney_date.slice(0, 4));
+      const isWinner = m.winner_id === playerId;
+      const cur = byYear.get(year) ?? { played: 0, won: 0 };
+      cur.played++;
+      if (isWinner) cur.won++;
+      byYear.set(year, cur);
 
-      let won = 0;
-      for (const m of matches) {
-        const isWinner = m.winner_id === playerId;
-        if (isWinner) won++;
-        recent.push({
-          year,
-          date: m.tourney_date,
-          tourney: m.tourney_name,
-          round: m.round,
-          surface: m.surface,
-          opponent: isWinner ? m.loser_name : m.winner_name,
-          opponentId: isWinner ? m.loser_id : m.winner_id,
-          won: isWinner,
-          score: m.score,
-        });
-      }
-      seasons.push({ year, played: matches.length, won, lost: matches.length - won });
+      recent.push({
+        year,
+        date: m.tourney_date,
+        tourney: m.tourney_name,
+        round: m.round,
+        surface: m.surface,
+        opponent: isWinner ? m.loser_name : m.winner_name,
+        opponentId: isWinner ? m.loser_id : m.winner_id,
+        won: isWinner,
+        score: m.score,
+      });
     }
 
     recent.sort((a, b) => b.date.localeCompare(a.date));
-    seasons.sort((a, b) => b.year - a.year);
+    const seasons = [...byYear.entries()]
+      .map(([year, v]) => ({ year, played: v.played, won: v.won, lost: v.played - v.won }))
+      .sort((a, b) => b.year - a.year);
+
     return { seasons, recent: recent.slice(0, recentLimit) };
   }
 
@@ -339,21 +398,17 @@ export class LocalDatasetProvider implements TennisApiProvider {
       throw new Error(`Player not found: ${competitorId}`);
     }
 
-    // Get current ranking if available
-    const rankings = getCurrentRankings(this.getRankingsData());
-    const currentRanking = rankings.find(r => r.player === competitorId);
-
-    // Get player's match history for statistical analysis
-    const years = matchYears().slice().reverse();
-
-    const allMatches: AtpMatch[] = [];
-    for (const year of years) {
-      const yearMatches = this.getMatches(year);
-      const playerMatches = yearMatches.filter(match =>
-        match.winner_id === competitorId || match.loser_id === competitorId
+    // Cached: getCurrentRankings walks 92k rows, and this runs once per page.
+    if (!sharedCurrentRankingByPlayer) {
+      sharedCurrentRankingByPlayer = new Map(
+        getCurrentRankings(this.getRankingsData()).map((r) => [r.player, r]),
       );
-      allMatches.push(...playerMatches);
     }
+    const currentRanking = sharedCurrentRankingByPlayer.get(competitorId);
+
+    // One indexed lookup rather than a filter across all 34 seasons. Scanning
+    // per player made prerendering ~3,500 profiles take about a second each.
+    const allMatches: AtpMatch[] = this.getPlayerMatchIndex().get(competitorId) ?? [];
 
     // Calculate surface and tournament level performance
     const surfacePerformance = analyzeSurfacePerformance(allMatches, competitorId);
@@ -557,9 +612,11 @@ export class LocalDatasetProvider implements TennisApiProvider {
 
   // Clear cache method for testing/debugging
   clearCache(): void {
-    this.playersCache = null;
-    this.rankingsCache = null;
-    this.matchesCache.clear();
+    sharedPlayersCache = null;
+    sharedRankingsCache = null;
+    sharedMatchesCache.clear();
+    sharedPlayerMatchIndex = null;
+    sharedCurrentRankingByPlayer = null;
   }
 
   async getCompetitionsByCategory(categoryId: string): Promise<any> {
@@ -621,9 +678,9 @@ export class LocalDatasetProvider implements TennisApiProvider {
   // Get cache statistics
   getCacheStats(): { players: number; rankings: number; matchYears: number[] } {
     return {
-      players: this.playersCache?.length || 0,
-      rankings: this.rankingsCache?.length || 0,
-      matchYears: Array.from(this.matchesCache.keys())
+      players: sharedPlayersCache?.length || 0,
+      rankings: sharedRankingsCache?.length || 0,
+      matchYears: Array.from(sharedMatchesCache.keys())
     };
   }
 }

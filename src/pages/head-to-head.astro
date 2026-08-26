@@ -1,659 +1,164 @@
 ---
+export const prerender = true;
+
 import Layout from "@/layouts/Layout.astro";
+import Select from "@/components/Select.astro";
+import { LocalDatasetProvider } from "@/lib/api/tennisApi";
+import { MATCH_SEASONS_LABEL } from "@/lib/archive";
+
+/**
+ * Rendered as a static page. The player list is baked in at build time and the
+ * comparison is done in the browser against one prerendered JSON file per
+ * player, so nothing here needs a server.
+ *
+ * This replaces a version that built result markup with unescaped innerHTML
+ * and could only offer the top 50 players.
+ */
+const provider = new LocalDatasetProvider("./data");
+const roster = provider.getPlayerDirectory();
+
+const options = roster.map((p) => ({
+  value: p.id,
+  label: `${p.name} · ${p.matches} matches`,
+  selected: false,
+}));
 ---
 
 <Layout
-  title="Head to Head Comparison - Tennis Live"
-  description="Compare any two tennis players head-to-head. View match history, statistics, and recent encounters between ATP and WTA players."
+  title="Head to Head — The Tennis Almanac"
+  description={`The complete meeting record between any two players in the archive, ${MATCH_SEASONS_LABEL}.`}
 >
+  <div class="page py-10">
+    <p class="text-kicker">Head to Head</p>
+    <h1 class="text-heading-1 mt-2 text-balance">The meeting record</h1>
+    <p class="text-body-large measure mt-4">
+      Every match the archive holds between any two players, {MATCH_SEASONS_LABEL}.
+      All {roster.length.toLocaleString("en-GB")} players who appear in the record
+      are selectable, not just the ranked ones.
+    </p>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Page Header -->
-    <div class="text-center mb-12">
-      <div class="inline-flex items-center gap-3 mb-4">
-        <span class="text-4xl" aria-hidden="true"></span>
-        <h1 class="text-heading-2">Head to Head</h1>
-      </div>
-      <p class="text-body-large max-w-2xl mx-auto">
-        Compare any two tennis players and explore their match history, statistics, and recent encounters.
-      </p>
+    <div class="mt-7 grid gap-5 md:grid-cols-2">
+      <Select id="h2h-p1" label="First player" class="w-full" options={options} />
+      <Select id="h2h-p2" label="Second player" class="w-full" options={options} />
     </div>
 
+    <p class="note mt-4" id="h2h-status">Choose two players to see their record.</p>
 
-    <!-- Player Selection Cards -->
-    <div class="grid lg:grid-cols-2 gap-8 mb-12">
-      <!-- Player 1 Selection -->
-      <div class="panel p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 from-ink-3 to-ink-2 flex items-center justify-center text-sheet text-xl font-bold">
-            1
-          </div>
-          <h2 class="text-heading-3">Select First Player</h2>
-        </div>
-
-        <div class="space-y-4">
-          <!-- Tour Selection -->
-          <div>
-            <label for="tour1" class="block text-sm font-medium text-ink-2 mb-2">
-              Tour
-            </label>
-            <div class="cselect w-full" data-cselect><select id="tour1" class="select-field cselect-native">
-              <option value="ATP">ATP (Men's)</option>
-              <option value="WTA">WTA (Women's)</option>
-            </select></div>
-          </div>
-
-          <!-- Player Selection -->
-          <div>
-            <label for="player1" class="block text-sm font-medium text-ink-2 mb-2">
-              Player
-            </label>
-            <div class="cselect w-full" data-cselect><select id="player1" class="select-field cselect-native">
-              <option value="">Loading players...</option>
-            </select></div>
-          </div>
-
-          <!-- Selected Player Display -->
-          <div id="player1-display" class="hidden panel p-4 bg-sheet/50 border-grid">
-            <div class="flex items-center gap-3">
-              <div id="player1-flag"></div>
-              <div>
-                <div id="player1-name" class="font-semibold text-ink"></div>
-                <div id="player1-info" class="text-sm text-ink-2"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section class="section hidden" id="h2h-result">
+      <div class="section-head">
+        <p class="text-kicker" id="h2h-heading">Meetings</p>
+        <p class="text-note" id="h2h-summary"></p>
       </div>
-
-      <!-- Player 2 Selection -->
-      <div class="panel p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 from-ink-3 to-ink-2 flex items-center justify-center text-sheet text-xl font-bold">
-            2
-          </div>
-          <h2 class="text-heading-3">Select Second Player</h2>
-        </div>
-
-        <div class="space-y-4">
-          <!-- Tour Selection -->
-          <div>
-            <label for="tour2" class="block text-sm font-medium text-ink-2 mb-2">
-              Tour
-            </label>
-            <div class="cselect w-full" data-cselect><select id="tour2" class="select-field cselect-native">
-              <option value="ATP">ATP (Men's)</option>
-              <option value="WTA">WTA (Women's)</option>
-            </select></div>
-          </div>
-
-          <!-- Player Selection -->
-          <div>
-            <label for="player2" class="block text-sm font-medium text-ink-2 mb-2">
-              Player
-            </label>
-            <div class="cselect w-full" data-cselect><select id="player2" class="select-field cselect-native">
-              <option value="">Loading players...</option>
-            </select></div>
-          </div>
-
-          <!-- Selected Player Display -->
-          <div id="player2-display" class="hidden panel p-4 bg-sheet/50 border-grid">
-            <div class="flex items-center gap-3">
-              <div id="player2-flag"></div>
-              <div>
-                <div id="player2-name" class="font-semibold text-ink"></div>
-                <div id="player2-info" class="text-sm text-ink-2"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="table-scroll">
+        <table class="table table--tight">
+          <thead>
+            <tr>
+              <th class="col-meta" scope="col">Date</th>
+              <th class="col-meta col-hide-sm" scope="col">Tournament</th>
+              <th class="col-meta col-hide-sm" scope="col">Round</th>
+              <th class="col-meta" scope="col">Surface</th>
+              <th class="col-name" scope="col">Winner</th>
+              <th class="col-meta" scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody id="h2h-rows"></tbody>
+        </table>
       </div>
-    </div>
-
-    <!-- Compare Button -->
-    <div class="text-center mb-12">
-      <button id="compare-btn" class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-        </svg>
-        Compare Players
-      </button>
-    </div>
-
-    <!-- Results Section -->
-    <div id="results-section" class="hidden">
-      <!-- Comparison Header -->
-      <div id="comparison-header" class="panel p-6 mb-8">
-        <div class="grid md:grid-cols-3 gap-6 items-center">
-          <!-- Player 1 -->
-          <div id="comparison-player1" class="text-center">
-            <!-- Will be populated by JavaScript -->
-          </div>
-
-          <!-- VS and Stats -->
-          <div class="text-center">
-            <div class="text-4xl font-bold text-ink-3 mb-2">VS</div>
-            <div id="overall-record" class="text-2xl font-bold text-ink">
-              <!-- Will be populated by JavaScript -->
-            </div>
-            <div class="text-sm text-ink-2">Overall Record</div>
-          </div>
-
-          <!-- Player 2 -->
-          <div id="comparison-player2" class="text-center">
-            <!-- Will be populated by JavaScript -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Simple Statistics -->
-      <div class="panel p-6 mb-8">
-        <h3 class="text-lg font-semibold mb-4">Match Record</h3>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
-          <div>
-            <div id="player1-wins" class="text-3xl font-bold text-ink-2">0</div>
-            <div id="player1-wins-label" class="text-sm text-ink-2">Player 1</div>
-          </div>
-          <div>
-            <div id="total-matches" class="text-3xl font-bold text-ink">0</div>
-            <div class="text-sm text-ink-2">Total Matches</div>
-          </div>
-          <div>
-            <div id="player2-wins" class="text-3xl font-bold text-ink-2">0</div>
-            <div id="player2-wins-label" class="text-sm text-ink-2">Player 2</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Match History -->
-      <div id="match-history" class="panel p-6">
-        <h3 class="text-lg font-semibold mb-6">Match History</h3>
-        <div id="matches-list" class="space-y-4">
-          <!-- Will be populated by JavaScript -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div id="loading-state" class="hidden text-center py-12">
-      <div class="inline-block h-8 w-8 animate-spin border-4 border-rule border-r-transparent mb-4"></div>
-      <p class="text-body">Loading head-to-head data...</p>
-    </div>
-
-    <!-- Error State -->
-    <div id="error-state" class="hidden panel bg-below dark:bg-below/20 border-below p-6 text-center">
-      <div class="text-4xl mb-4"></div>
-      <h3 class="text-lg font-semibold text-below dark:text-below mb-2">Error Loading Data</h3>
-      <p id="error-message" class="text-below dark:text-below mb-4"></p>
-      <button id="retry-btn" class="btn-outline">
-        Try Again
-      </button>
-    </div>
-
-    <!-- Featured Matchups -->
-    <div class="mt-16">
-      <h2 class="text-heading-3 text-center mb-8">Featured Rivalries</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Current ATP Stars -->
-        <button class="featured-matchup panel p-4 text-left transition-"
-                data-player1="206173" data-player2="207989">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-ink-2">ATP Champions</span>
-            <span class="text-xs bg-ink/[0.07] text-ink px-2 py-1">
-              Current
-            </span>
-          </div>
-          <div class="text-lg font-bold text-ink">
-            Sinner vs Alcaraz
-          </div>
-        </button>
-
-        <button class="featured-matchup panel p-4 text-left transition-"
-                data-player1="104925" data-player2="207989">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-ink-2">Legend vs Rising Star</span>
-            <span class="text-xs bg-above text-above px-2 py-1">
-              Classic
-            </span>
-          </div>
-          <div class="text-lg font-bold text-ink">
-            Djokovic vs Alcaraz
-          </div>
-        </button>
-
-        <button class="featured-matchup panel p-4 text-left transition-"
-                data-player1="100644" data-player2="126203">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-ink-2">Next Gen</span>
-            <span class="text-xs bg-ink/[0.07] text-ink px-2 py-1">
-              Rising
-            </span>
-          </div>
-          <div class="text-lg font-bold text-ink">
-            Zverev vs Fritz
-          </div>
-        </button>
-      </div>
-    </div>
+    </section>
   </div>
 </Layout>
 
 <script>
-  let playersCache = new Map();
-  let selectedPlayer1: any = null;
-  let selectedPlayer2: any = null;
+  // The Select component puts the id on the <select> itself, not a wrapper.
+  const p1 = document.getElementById("h2h-p1") as HTMLSelectElement | null;
+  const p2 = document.getElementById("h2h-p2") as HTMLSelectElement | null;
+  const status = document.getElementById("h2h-status")!;
+  const result = document.getElementById("h2h-result")!;
+  const rows = document.getElementById("h2h-rows")!;
+  const heading = document.getElementById("h2h-heading")!;
+  const summary = document.getElementById("h2h-summary")!;
 
-  // DOM elements
-  const tour1Select = document.getElementById('tour1') as HTMLSelectElement | null;
-  const tour2Select = document.getElementById('tour2') as HTMLSelectElement | null;
-  const player1Select = document.getElementById('player1') as HTMLSelectElement | null;
-  const player2Select = document.getElementById('player2') as HTMLSelectElement | null;
-  const compareBtn = document.getElementById('compare-btn') as HTMLButtonElement | null;
-  const resultsSection = document.getElementById('results-section') as HTMLElement | null;
-  const loadingState = document.getElementById('loading-state') as HTMLElement | null;
-  const errorState = document.getElementById('error-state') as HTMLElement | null;
-  const errorMessage = document.getElementById('error-message') as HTMLElement | null;
-  const retryBtn = document.getElementById('retry-btn') as HTMLButtonElement | null;
+  const cache = new Map<string, { matches: Match[] }>();
+  interface Match { o: string; n: string; d: string; t: string; r: string; s: string; w: 0 | 1; c: string }
 
-  // Load players function
-  async function loadPlayers(tour: string, selectElement: HTMLSelectElement) {
-    const cacheKey = tour;
+  const label = (sel: HTMLSelectElement) =>
+    sel.options[sel.selectedIndex]?.label.split(" · ")[0] ?? "";
 
-    if (playersCache.has(cacheKey)) {
-      populatePlayerSelect(selectElement, playersCache.get(cacheKey));
+  const fmtDate = (d: string) =>
+    /^\d{8}$/.test(d)
+      ? new Date(`${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T00:00:00Z`)
+          .toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
+      : d;
+
+  async function load(id: string) {
+    const hit = cache.get(id);
+    if (hit) return hit;
+    const res = await fetch(`/api/h2h/${id}.json`);
+    if (!res.ok) throw new Error(`No record for ${id}`);
+    const data = await res.json();
+    cache.set(id, data);
+    return data;
+  }
+
+  async function compare() {
+    if (!p1 || !p2) return;
+    const a = p1.value, b = p2.value;
+    if (!a || !b) return;
+    if (a === b) {
+      result.classList.add("hidden");
+      status.textContent = "Choose two different players.";
       return;
     }
 
-    selectElement.innerHTML = '<option value="">Loading players...</option>';
-
+    status.textContent = "Loading…";
     try {
-      const response = await fetch(`/api/players?tour=${tour}&limit=50`);
-      const data = await response.json();
+      const { matches } = await load(a);
+      const meetings = (matches as Match[])
+        .filter((m) => m.o === b)
+        .sort((x, y) => y.d.localeCompare(x.d));
 
-      if (response.ok && data.players && Array.isArray(data.players)) {
-        playersCache.set(cacheKey, data.players);
-        populatePlayerSelect(selectElement, data.players);
-      } else {
-        throw new Error(data.message || data.error || 'Failed to load players');
+      const nameA = label(p1), nameB = label(p2);
+      rows.textContent = "";
+
+      if (meetings.length === 0) {
+        result.classList.add("hidden");
+        status.textContent = `${nameA} and ${nameB} never met in the archive.`;
+        return;
       }
-    } catch (error) {
-      console.error('Error loading players:', error);
-      selectElement.innerHTML = '<option value="">Failed to load players</option>';
-    }
-  }
 
-  function populatePlayerSelect(selectElement: HTMLSelectElement, players: any[]) {
-    selectElement.innerHTML = '<option value="">Select a player...</option>';
-    players.forEach((player: any) => {
-      if (player && player.id && player.name) {
-        const option = document.createElement('option');
-        option.value = player.id;
-        option.textContent = `${player.name} (#${player.ranking || 'NR'}) - ${player.country || 'Unknown'}`;
-        option.dataset.player = JSON.stringify(player);
-        selectElement.appendChild(option);
+      const wonA = meetings.filter((m) => m.w === 1).length;
+      heading.textContent = `${nameA} v ${nameB}`;
+      summary.textContent = `${wonA}–${meetings.length - wonA} in ${meetings.length} meeting${meetings.length === 1 ? "" : "s"}`;
+
+      for (const m of meetings) {
+        const tr = document.createElement("tr");
+        // Built with the DOM rather than interpolated markup, so a name
+        // containing an apostrophe or an ampersand cannot break the page.
+        const cells: [string, string][] = [
+          ["col-meta num", fmtDate(m.d)],
+          ["col-meta col-hide-sm", m.t],
+          ["col-meta col-hide-sm", m.r],
+          ["col-meta", m.s],
+          ["col-name", m.w === 1 ? nameA : nameB],
+          ["col-meta num", m.c],
+        ];
+        for (const [cls, text] of cells) {
+          const td = document.createElement("td");
+          td.className = cls;
+          td.textContent = text;
+          tr.append(td);
+        }
+        rows.append(tr);
       }
-    });
-  }
 
-  function updatePlayerDisplay(playerNum: number, player: any) {
-    const display = document.getElementById(`player${playerNum}-display`);
-    const flag = document.getElementById(`player${playerNum}-flag`);
-    const name = document.getElementById(`player${playerNum}-name`);
-    const info = document.getElementById(`player${playerNum}-info`);
-
-    if (player) {
-      if (flag) flag.innerHTML = `<img src="https://flagcdn.com/w20/${(player.country_code || 'xx').toLowerCase()}.png"
-                               alt="${player.country || 'Unknown'}"
-                               class="w-5 h-4 object-cover"
-                               onerror="this.style.display='none'">`;
-      if (name) name.textContent = player.name;
-      if (info) info.textContent = `#${player.ranking || 'NR'} • ${player.country || 'Unknown'}`;
-      if (display) display.classList.remove('hidden');
-    } else {
-      if (display) display.classList.add('hidden');
-    }
-
-    updateCompareButton();
-  }
-
-  function updateCompareButton() {
-    if (selectedPlayer1 && selectedPlayer2 && selectedPlayer1.id !== selectedPlayer2.id) {
-      if (compareBtn) compareBtn.disabled = false;
-    } else {
-      if (compareBtn) compareBtn.disabled = true;
-    }
-  }
-
-  // Simple utility function
-  function formatDate(dateString: string): string {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
+      status.textContent = "";
+      result.classList.remove("hidden");
     } catch {
-      return 'Unknown';
+      result.classList.add("hidden");
+      status.textContent = "That record could not be loaded.";
     }
   }
 
-  async function comparePlayersHeadToHead() {
-    if (!selectedPlayer1 || !selectedPlayer2) return;
-
-    // Hide previous results and errors
-    resultsSection?.classList.add('hidden');
-    errorState?.classList.add('hidden');
-    loadingState?.classList.remove('hidden');
-
-    try {
-      const response = await fetch(`/api/head-to-head?player1=${selectedPlayer1.id}&player2=${selectedPlayer2.id}`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      displayHeadToHeadResults(data);
-
-    } catch (error) {
-      const err = error as any;
-      console.error('Error fetching head-to-head data:', err);
-      if (errorMessage) errorMessage.textContent = err?.message || 'Failed to load head-to-head data';
-      errorState?.classList.remove('hidden');
-    } finally {
-      loadingState?.classList.add('hidden');
-    }
-  }
-
-  function displayHeadToHeadResults(data: any) {
-    const competitor1 = data.competitors?.find((c: any) => c.id === selectedPlayer1.id);
-    const competitor2 = data.competitors?.find((c: any) => c.id === selectedPlayer2.id);
-
-    if (!competitor1 || !competitor2) {
-      throw new Error('Invalid competitor data received');
-    }
-
-    // Calculate overall record
-    let player1Wins = 0;
-    let player2Wins = 0;
-
-    data.last_meetings?.forEach((match: any) => {
-      if (match.sport_event_status?.winner_id === selectedPlayer1.id) {
-        player1Wins++;
-      } else if (match.sport_event_status?.winner_id === selectedPlayer2.id) {
-        player2Wins++;
-      }
-    });
-
-    // Update comparison header
-    document.getElementById('comparison-player1')!.innerHTML = `
-      <img src="https://flagcdn.com/w40/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
-           alt="${selectedPlayer1.country || 'Unknown'}"
-           class="w-8 h-6 mx-auto mb-2"
-           onerror="this.style.display='none'">
-      <div class="text-xl font-bold text-ink">${selectedPlayer1.name}</div>
-      <div class="text-sm text-ink-2">#${selectedPlayer1.ranking || 'NR'}</div>
-    `;
-
-    document.getElementById('comparison-player2')!.innerHTML = `
-      <img src="https://flagcdn.com/w40/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
-           alt="${selectedPlayer2.country || 'Unknown'}"
-           class="w-8 h-6 mx-auto mb-2"
-           onerror="this.style.display='none'">
-      <div class="text-xl font-bold text-ink">${selectedPlayer2.name}</div>
-      <div class="text-sm text-ink-2">#${selectedPlayer2.ranking || 'NR'}</div>
-    `;
-
-    document.getElementById('overall-record')!.textContent = `${player1Wins} - ${player2Wins}`;
-
-    // Update simple statistics
-    document.getElementById('player1-wins')!.textContent = player1Wins.toString();
-    document.getElementById('player2-wins')!.textContent = player2Wins.toString();
-    document.getElementById('total-matches')!.textContent = (player1Wins + player2Wins).toString();
-    document.getElementById('player1-wins-label')!.textContent = selectedPlayer1.name.split(',')[0];
-    document.getElementById('player2-wins-label')!.textContent = selectedPlayer2.name.split(',')[0];
-
-    // Display match history with sets
-    displayMatchHistory(data.last_meetings || []);
-
-    resultsSection?.classList.remove('hidden');
-  }
-
-  function displayMatchHistory(matches: any[]) {
-    const matchesList = document.getElementById('matches-list')!;
-
-    if (matches.length > 0) {
-      matchesList.innerHTML = matches.map((match: any) => {
-        const winner = match.sport_event_status?.winner_id;
-        const isPlayer1Winner = winner === selectedPlayer1.id;
-        const isPlayer2Winner = winner === selectedPlayer2.id;
-
-        // Get competitors to determine score order
-        const competitors = match.sport_event?.competitors || [];
-        const player1Competitor = competitors.find((c: any) => c.id === selectedPlayer1.id);
-        const player2Competitor = competitors.find((c: any) => c.id === selectedPlayer2.id);
-
-        // Format match details
-        const tournament = match.sport_event?.sport_event_context?.competition?.name || 'Unknown Tournament';
-        const round = match.sport_event?.sport_event_context?.round?.name || '';
-        const date = formatDate(match.sport_event?.start_time);
-
-        // Format score with sets
-        let scoreDisplay = '';
-        if (match.sport_event_status?.period_scores && match.sport_event_status.period_scores.length > 0) {
-          const sets = match.sport_event_status.period_scores;
-          const setScores = sets.map((set: any) => {
-            // In our data: home = winner, away = loser
-            // We need to map this to player1 vs player2
-            const isPlayer1Winner = winner === selectedPlayer1.id;
-
-            let player1Score, player2Score, player1Tiebreak, player2Tiebreak;
-
-            if (isPlayer1Winner) {
-              // Player 1 won, so they get the winner (home) score
-              player1Score = set.home_score;
-              player2Score = set.away_score;
-              player1Tiebreak = set.home_tiebreak_score;
-              player2Tiebreak = set.away_tiebreak_score;
-            } else {
-              // Player 2 won, so they get the winner (home) score
-              player1Score = set.away_score;
-              player2Score = set.home_score;
-              player1Tiebreak = set.away_tiebreak_score;
-              player2Tiebreak = set.home_tiebreak_score;
-            }
-
-            let setScore = `${player1Score}-${player2Score}`;
-            if (player1Tiebreak !== undefined && player2Tiebreak !== undefined && (player1Tiebreak > 0 || player2Tiebreak > 0)) {
-              setScore += ` (${player1Tiebreak}-${player2Tiebreak})`;
-            }
-            return setScore;
-          });
-          scoreDisplay = setScores.join(' ');
-        }
-
-        return `
-          <div class="border border-grid p-4 bg-sheet/50">
-            <div class="flex items-center justify-between mb-3">
-              <div class="min-w-0 flex-1">
-                <div class="font-semibold text-ink text-sm">${tournament}</div>
-                <div class="text-xs text-ink-3">
-                  ${date}${round ? ` • ${round}` : ''}
-                </div>
-              </div>
-              ${isPlayer1Winner || isPlayer2Winner ?
-                `<div class="text-xs px-2 py-1 ${isPlayer1Winner ?'bg-sheet-2 text-ink-2' : 'bg-sheet-2 text-ink-2'}">
-                  ${isPlayer1Winner ? selectedPlayer1.name.split(',')[0] : selectedPlayer2.name.split(',')[0]} wins
-                </div>` : ''
-              }
-            </div>
-
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3 min-w-0 flex-1">
-                <img src="https://flagcdn.com/w20/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
-                     alt="${selectedPlayer1.country || 'Unknown'}"
-                     class="w-5 h-4 object-cover flex-shrink-0"
-                     onerror="this.style.display='none'">
-                <span class="${isPlayer1Winner ?'font-semibold text-ink-2' : 'text-ink-2'} text-sm">
-                  ${selectedPlayer1.name.split(',')[0]}
-                </span>
-              </div>
-
-              <div class="px-4 text-center">
-                ${scoreDisplay ? `
-                  <div class="font-mono text-sm font-medium text-ink bg-sheet-2 px-3 py-1">
-                    ${scoreDisplay}
-                  </div>
-                ` : `
-                  <div class="text-ink-3 text-xs">
-                    ${winner ? 'W/L' : 'No Score'}
-                  </div>
-                `}
-              </div>
-
-              <div class="flex items-center gap-3 min-w-0 flex-1 justify-end">
-                <span class="${isPlayer2Winner ?'font-semibold text-ink-2' : 'text-ink-2'} text-sm">
-                  ${selectedPlayer2.name.split(',')[0]}
-                </span>
-                <img src="https://flagcdn.com/w20/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
-                     alt="${selectedPlayer2.country || 'Unknown'}"
-                     class="w-5 h-4 object-cover flex-shrink-0"
-                     onerror="this.style.display='none'">
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    } else {
-      matchesList.innerHTML = `
-        <div class="text-center py-8 text-ink-3">
-          <div class="text-4xl mb-4"></div>
-          <p>No previous matches found between these players.</p>
-        </div>
-      `;
-    }
-  }
-
-
-  // Event listeners
-  tour1Select?.addEventListener('change', (e) => {
-    const sel = e.target as HTMLSelectElement;
-    if (player1Select) loadPlayers(sel.value, player1Select);
-    selectedPlayer1 = null;
-    updatePlayerDisplay(1, null);
-  });
-
-  tour2Select?.addEventListener('change', (e) => {
-    const sel = e.target as HTMLSelectElement;
-    if (player2Select) loadPlayers(sel.value, player2Select);
-    selectedPlayer2 = null;
-    updatePlayerDisplay(2, null);
-  });
-
-  player1Select?.addEventListener('change', (e) => {
-    const sel = e.target as HTMLSelectElement;
-    if (sel.value) {
-      selectedPlayer1 = JSON.parse(sel.selectedOptions[0].dataset.player as string);
-      updatePlayerDisplay(1, selectedPlayer1);
-    } else {
-      selectedPlayer1 = null;
-      updatePlayerDisplay(1, null);
-    }
-  });
-
-  player2Select?.addEventListener('change', (e) => {
-    const sel = e.target as HTMLSelectElement;
-    if (sel.value) {
-      selectedPlayer2 = JSON.parse(sel.selectedOptions[0].dataset.player as string);
-      updatePlayerDisplay(2, selectedPlayer2);
-    } else {
-      selectedPlayer2 = null;
-      updatePlayerDisplay(2, null);
-    }
-  });
-
-  compareBtn?.addEventListener('click', comparePlayersHeadToHead);
-  retryBtn?.addEventListener('click', comparePlayersHeadToHead);
-
-  // Featured matchup buttons
-  document.querySelectorAll('.featured-matchup').forEach(button => {
-    button.addEventListener('click', async () => {
-      const btn = button as HTMLElement;
-      const player1Id = (btn.dataset as any).player1 as string;
-      const player2Id = (btn.dataset as any).player2 as string;
-
-      console.log(`Featured matchup clicked: ${player1Id} vs ${player2Id}`);
-
-      // Reset selections and show loading
-      selectedPlayer1 = null;
-      selectedPlayer2 = null;
-      updatePlayerDisplay(1, null);
-      updatePlayerDisplay(2, null);
-      resultsSection?.classList.add('hidden');
-      errorState?.classList.add('hidden');
-      loadingState?.classList.remove('hidden');
-
-      try {
-        // Fetch the head-to-head data directly
-        const response = await fetch(`/api/head-to-head?player1=${player1Id}&player2=${player2Id}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        // Extract player information from the response
-        const competitor1 = data.competitors?.find((c: any) => c.id === player1Id);
-        const competitor2 = data.competitors?.find((c: any) => c.id === player2Id);
-
-        if (competitor1 && competitor2) {
-          // Set the selected players with the data from the API
-          selectedPlayer1 = {
-            id: competitor1.id,
-            name: competitor1.name,
-            country: competitor1.country,
-            country_code: competitor1.country_code,
-            ranking: competitor1.ranking || 'NR'
-          };
-
-          selectedPlayer2 = {
-            id: competitor2.id,
-            name: competitor2.name,
-            country: competitor2.country,
-            country_code: competitor2.country_code,
-            ranking: competitor2.ranking || 'NR'
-          };
-
-          // Update the player displays
-          updatePlayerDisplay(1, selectedPlayer1);
-          updatePlayerDisplay(2, selectedPlayer2);
-
-          // Display the results
-          displayHeadToHeadResults(data);
-
-          // Scroll to results
-          resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          throw new Error('Player data not found in response');
-        }
-
-      } catch (error) {
-        const err = error as any;
-        console.error('Error fetching featured matchup data:', err);
-        if (errorMessage) errorMessage.textContent = err?.message || 'Failed to load matchup data';
-        errorState?.classList.remove('hidden');
-      } finally {
-        loadingState?.classList.add('hidden');
-      }
-    });
-  });
-
-  // Initialize
-  if (tour1Select && tour2Select && player1Select && player2Select) {
-    loadPlayers(tour1Select.value, player1Select);
-    loadPlayers(tour2Select.value, player2Select);
-  }
+  p1?.addEventListener("change", compare);
+  p2?.addEventListener("change", compare);
 </script>

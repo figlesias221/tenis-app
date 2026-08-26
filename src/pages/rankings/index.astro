@@ -1,0 +1,18 @@
+---
+export const prerender = true;
+
+import Layout from "@/layouts/Layout.astro";
+import RankingsView from "@/components/RankingsView.astro";
+import { tennisApi } from "@/lib/api/tennisApi";
+import { RANKINGS_AS_OF_LABEL } from "@/lib/archive";
+
+const dates = await tennisApi.getAvailableRankingDates();
+const rankings = await tennisApi.getATPRankings();
+---
+
+<Layout
+  title="ATP Rankings — The Tennis Almanac"
+  description={`Every ranked ATP player as at the ${RANKINGS_AS_OF_LABEL}.`}
+>
+  <RankingsView rankings={rankings} dates={dates} selected={undefined} />
+</Layout>

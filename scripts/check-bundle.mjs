@@ -6,7 +6,7 @@
  * into _worker.js and eats the Workers size limit. That happened once; this
  * makes it loud rather than silent.
  */
-import { readdirSync, statSync, readFileSync } from "node:fs";
+import { readdirSync, statSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const WORKER = "dist/_worker.js";
@@ -21,6 +21,13 @@ function walk(dir) {
     else out.push(p);
   }
   return out;
+}
+
+if (!existsSync(WORKER)) {
+  // The site is fully static now; there is no SSR bundle to police. Kept so
+  // the check fails loudly again if a server route is ever reintroduced.
+  console.log("No _worker.js: site is fully static. Nothing to check.");
+  process.exit(0);
 }
 
 let bytes = 0;

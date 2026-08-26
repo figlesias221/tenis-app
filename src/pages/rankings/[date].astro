@@ -1,0 +1,31 @@
+---
+export const prerender = true;
+
+import Layout from "@/layouts/Layout.astro";
+import RankingsView from "@/components/RankingsView.astro";
+import { tennisApi, LocalDatasetProvider } from "@/lib/api/tennisApi";
+import { getAvailableRankingDates } from "@/lib/utils/csv-parser";
+
+/**
+ * One page per published ranking week. The dataset is frozen, so a week is a
+ * static document rather than a query parameter - which also makes each one
+ * linkable and indexable.
+ */
+export function getStaticPaths() {
+  const provider = new LocalDatasetProvider("./data");
+  return getAvailableRankingDates(provider.getRankingsData()).map((date) => ({
+    params: { date },
+  }));
+}
+
+const date = Astro.params.date!;
+const dates = await tennisApi.getAvailableRankingDates();
+const rankings = await tennisApi.getATPRankings(undefined, date);
+---
+
+<Layout
+  title={`ATP Rankings, week of ${date} — The Tennis Almanac`}
+  description={`The ATP ranking list as it stood in the week of ${date}.`}
+>
+  <RankingsView rankings={rankings} dates={dates} selected={date} />
+</Layout>

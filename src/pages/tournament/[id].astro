@@ -3,28 +3,33 @@ import Layout from "@/layouts/Layout.astro";
 import TournamentInfoCard from "@/components/TournamentInfoCard.astro";
 import type { CompetitionInfoResponse } from "@/lib/api/official-types";
 import { CompetitionFormatter } from "@/lib/utils/competition-formatter";
+import { buildTournament } from "@/lib/utils/tournament-detail";
+import { LocalDatasetProvider } from "@/lib/api/tennisApi";
 
-const { id } = Astro.params;
+export const prerender = true;
 
-if (!id) {
-  return Astro.redirect('/competitions');
+/** One page per tournament in the archive. */
+export async function getStaticPaths() {
+  const provider = new LocalDatasetProvider("./data");
+  const comps = await provider.getCompetitionsByCategory("ATP");
+  const ids = new Set<string>(
+    (comps?.competitions ?? []).map((c: { id: string }) => c.id),
+  );
+  return [...ids].map((id) => ({ params: { id } }));
 }
+
+const id = Astro.params.id!;
 
 let tournamentData: CompetitionInfoResponse | null = null;
 let error: string | null = null;
 
 try {
-  const apiUrl = `${Astro.url.origin}/api/tournament/${id}`;
-  const response = await fetch(apiUrl);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch tournament data: ${response.status}`);
-  }
-
-  tournamentData = await response.json();
+  // Built directly rather than fetched from this site's own API: a page
+  // cannot call its own origin once the site is static.
+  tournamentData = await buildTournament(id);
+  if (!tournamentData) error = "That tournament is not in the archive.";
 } catch (e) {
   error = e instanceof Error ? e.message : "Failed to load tournament information";
-  console.error("Tournament page error:", e);
 }
 
 const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(tournamentData) : null;

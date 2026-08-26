@@ -1,21 +1,20 @@
-import type { APIRoute } from 'astro';
+/**
+ * Builds a tournament's detail record from the match archive.
+ *
+ * Extracted from the old /api/tournament/[id] route so the prerendered page can
+ * call it directly instead of the page fetching its own origin over HTTP - a
+ * round trip that could not work once the site became static.
+ */
 import { LocalDatasetProvider } from '@/lib/api/providers/local-dataset';
+import type { CompetitionInfoResponse } from '@/lib/api/official-types';
 
-export const GET: APIRoute = async ({ params }) => {
-  const tournamentId = params.id as string;
 
+export async function buildTournament(tournamentId: string): Promise<CompetitionInfoResponse | null> {
   if (!tournamentId) {
-    return new Response(
-      JSON.stringify({ error: 'Tournament ID parameter is required' }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+    return null;
   }
 
   try {
-    console.log(`Fetching tournament details for ID: ${tournamentId}`);
 
     const provider = new LocalDatasetProvider('./data');
 
@@ -24,13 +23,7 @@ export const GET: APIRoute = async ({ params }) => {
     const tournament = competitions.competitions.find((comp: any) => comp.id === tournamentId);
 
     if (!tournament) {
-      return new Response(
-        JSON.stringify({ error: 'Tournament not found' }),
-        {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+      return null;
     }
 
     // Additional tournament details can be added here in the future
@@ -42,7 +35,7 @@ export const GET: APIRoute = async ({ params }) => {
       competition: {
         id: tournament.id,
         name: tournament.name,
-        parent_id: null,
+        parent_id: undefined,
         type: tournament.type,
         gender: tournament.gender,
         level: mapLevelToFormatterCode(tournament.level),
@@ -66,38 +59,12 @@ export const GET: APIRoute = async ({ params }) => {
       }
     };
 
-    return new Response(
-      JSON.stringify(tournamentDetail),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=3600, s-maxage=3600', // 1 hour cache
-          'CDN-Cache-Control': 'max-age=3600',
-          'Cloudflare-CDN-Cache-Control': 'max-age=3600',
-          'Vary': 'Accept-Encoding',
-          'ETag': `"tournament-${tournamentId}"`
-        }
-      }
-    );
+    return tournamentDetail;
 
-  } catch (error) {
-    console.error('Tournament details API error:', error);
-
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-
-    return new Response(
-      JSON.stringify({
-        error: 'Failed to fetch tournament details',
-        details: errorMessage
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+  } catch {
+    return null;
   }
-};
+}
 
 // Helper function to get estimated prize money based on tournament level
 function getPrizeMoney(level: string): number {

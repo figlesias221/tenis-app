@@ -7,7 +7,21 @@ import { tennisApi } from "@/lib/api/tennisApi";
 import { LocalDatasetProvider } from "@/lib/api/tennisApi";
 import type { CompetitorProfile } from "@/lib/api/types";
 
-export const prerender = false;
+const provider = new LocalDatasetProvider("./data");
+
+export const prerender = true;
+
+/**
+ * Every player with at least one match in the archive gets a page, so the
+ * opponent links in a match record never lead anywhere missing.
+ */
+export function getStaticPaths() {
+  // Astro hoists getStaticPaths, so it cannot see consts from the component
+  // script; the provider is created here.
+  return new LocalDatasetProvider("./data")
+    .getAllPlayerIds()
+    .map((id) => ({ params: { id } }));
+}
 
 interface PlayerData {
   id: string;
@@ -19,11 +33,7 @@ interface PlayerData {
 
 
 
-const { id } = Astro.params;
-
-if (!id) {
-  return Astro.redirect("/rankings");
-}
+const id = Astro.params.id!;
 
 let profile: CompetitorProfile | null = null;
 let error: string | null = null;
@@ -32,7 +42,7 @@ let record: ReturnType<LocalDatasetProvider["getPlayerRecord"]> = { seasons: [],
 
 try {
   profile = await tennisApi.getCompetitorProfile(id);
-  record = new LocalDatasetProvider("./data").getPlayerRecord(id);
+  record = provider.getPlayerRecord(id);
 } catch (e) {
   error = e instanceof Error ? e.message : "Failed to load player profile";
   console.error("Player profile error:", e);

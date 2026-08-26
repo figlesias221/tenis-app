@@ -5,11 +5,13 @@ import { tennisApi } from "@/lib/api/tennisApi";
 import { ARCHIVE_RANGE_LABEL } from "@/lib/archive";
 // import { CompetitionFormatter } from "@/lib/utils/competition-formatter";
 
-// Get filter parameters from URL
-// The dataset is ATP singles only, so there is no tour to choose.
+export const prerender = true;
+
+// The dataset is ATP singles only, and a prerendered page cannot read query
+// parameters, so every tournament is rendered and the chips filter in place.
 const tourType = 'ATP' as const;
-const typeFilter = Astro.url.searchParams.get('type') || 'all'; // all, singles, doubles
-const levelFilter = Astro.url.searchParams.get('level') || 'all'; // all, grand_slam, atp_1000, etc.
+const typeFilter: string = 'all';
+const levelFilter: string = 'all';
 
 let competitions;
 let filteredCompetitions;
@@ -84,21 +86,21 @@ const filterCounts = competitions ? {
               <div>
                 <label class="block text-sm font-medium text-ink-2 mb-2">Tournament Type</label>
                 <div class="flex flex-wrap gap-2">
-                  <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=all`}
+                  <a href="#" data-type-filter="all"
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='all'
                          ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
                     All ({filterCounts?.all || 0})
                   </a>
-                  <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=singles`}
+                  <a href="#" data-type-filter="singles"
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='singles'
                          ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
                     Singles ({filterCounts?.singles || 0})
                   </a>
-                  <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=doubles`}
+                  <a href="#" data-type-filter="doubles"
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='doubles'
                          ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
@@ -112,14 +114,14 @@ const filterCounts = competitions ? {
               <div>
                 <label class="block text-sm font-medium text-ink-2 mb-2">Tournament Level</label>
                 <div class="flex flex-wrap gap-2">
-                  <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=all`}
+                  <a href="#" data-level-filter="all"
                      class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='all'
                          ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
                     All
                   </a>
-                  <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=grand_slam`}
+                  <a href="#" data-level-filter="grand_slam"
                      class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='grand_slam'
                          ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
@@ -128,21 +130,21 @@ const filterCounts = competitions ? {
                   </a>
                   {tourType === 'ATP' && (
                     <>
-                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_1000`}
+                      <a href="#" data-level-filter="all"
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_1000'
                              ? 'bg-below dark:bg-below text-below dark:text-below border-below'
                              : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                          }`}>
                         Masters 1000
                       </a>
-                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_500`}
+                      <a href="#" data-level-filter="all"
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_500'
                              ? 'bg-ink text-sheet border-ink'
                              : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                          }`}>
                         ATP 500
                       </a>
-                      <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_250`}
+                      <a href="#" data-level-filter="all"
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_250'
                              ? 'bg-ink text-sheet border-ink'
                              : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
@@ -174,7 +176,7 @@ const filterCounts = competitions ? {
                       )}
                     </div>
                   </div>
-                  <a href={`/competitions?tour=${tourType}`}
+                  <a href="#" data-level-filter="all"
                      class="text-sm text-clay hover:text-clay font-medium">
                     Clear all filters
                   </a>
@@ -253,7 +255,7 @@ const filterCounts = competitions ? {
           <p class="text-ink-2 mb-4">
             No {tourType} competitions match your current filters.
           </p>
-          <a href={`/competitions?tour=${tourType}`}
+          <a href="#" data-level-filter="all"
              class="inline-flex items-center px-4 py-2 bg-clay hover:bg-clay text-sheet transition-colors">
             Clear all filters
           </a>
@@ -330,4 +332,22 @@ const filterCounts = competitions ? {
       </div>
     </div>
   </div>
+
+<script>
+  // The page is prerendered with every tournament present, so filtering is a
+  // matter of hiding rows rather than fetching a different page.
+  const groups = document.querySelectorAll<HTMLElement>("[data-level-group]");
+  const chips = document.querySelectorAll<HTMLElement>("[data-level-filter]");
+
+  for (const chip of chips) {
+    chip.addEventListener("click", (e) => {
+      e.preventDefault();
+      const want = chip.dataset.levelFilter!;
+      for (const c of chips) c.setAttribute("aria-current", String(c === chip));
+      for (const g of groups) {
+        g.hidden = want !== "all" && g.dataset.levelGroup !== want;
+      }
+    });
+  }
+</script>
 </Layout>

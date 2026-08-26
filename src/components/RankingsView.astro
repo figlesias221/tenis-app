@@ -1,0 +1,70 @@
+---
+import RankingsTable from "@/components/RankingsTable.astro";
+import Select from "@/components/Select.astro";
+import { formatDate } from "@/lib/utils/csv-parser";
+import { RANKINGS_AS_OF_LABEL } from "@/lib/archive";
+import type { Rankings } from "@/lib/api/types";
+
+interface Props {
+  rankings: Rankings | undefined;
+  dates: string[];
+  /** The week being shown, or undefined for the final published list. */
+  selected: string | undefined;
+}
+
+const { rankings, dates, selected } = Astro.props;
+
+/** The dataset stores ranking dates as YYYYMMDD, not ISO. */
+const formatWeek = (raw: string) => {
+  const d = new Date(`${formatDate(raw)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return raw;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+};
+
+const heading = selected
+  ? `ATP Rankings — week of ${formatWeek(selected)}`
+  : `ATP Rankings — ${RANKINGS_AS_OF_LABEL}`;
+---
+
+<div class="page py-10">
+  <p class="text-kicker">Rankings</p>
+  <h1 class="text-heading-1 mt-2 text-balance">{heading}</h1>
+  <p class="text-body-large measure mt-4">
+    Every ranked player in the list published that week. The archive holds
+    {dates.length} weeks; each one is its own page.
+  </p>
+
+  {
+    dates.length > 1 && (
+      <div class="mt-6">
+        <Select
+          id="ranking-week"
+          label="Ranking week"
+          class="min-w-[15rem]"
+          navigate
+          base="/rankings/"
+          options={dates.map((d) => ({
+            value: d,
+            label: formatWeek(d),
+            selected: d === (selected ?? dates[0]),
+          }))}
+        />
+      </div>
+    )
+  }
+
+  <section class="section">
+    {
+      rankings && rankings.rankings.length > 0 ? (
+        <RankingsTable rankings={rankings} />
+      ) : (
+        <p class="note">No ranking data for this week.</p>
+      )
+    }
+  </section>
+</div>

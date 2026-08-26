@@ -21,7 +21,7 @@ const buildPageUrl = (page: number) => {
 const total = rankings.rankings.length;
 const totalPages = Math.max(1, Math.ceil(total / pageSize));
 const start = (currentPage - 1) * pageSize;
-const rows = rankings.rankings.slice(start, start + pageSize);
+const rows = rankings.rankings;
 
 // A short window of pages around the current one.
 const window = 5;
@@ -75,30 +75,3 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
   </table>
 </div>
 
-{
-  totalPages > 1 && (
-    <nav class="mt-5 flex items-center justify-between gap-4" aria-label="Pagination">
-      {currentPage > 1 ? (
-        <a class="link text-sm" href={buildPageUrl(currentPage - 1)}>‹ Previous</a>
-      ) : (
-        <span class="text-note">‹ Previous</span>
-      )}
-
-      <div class="flex items-baseline gap-3">
-        {pages.map((p) =>
-          p === currentPage ? (
-            <span class="text-sm font-semibold text-ink num">{p}</span>
-          ) : (
-            <a class="link text-sm num" href={buildPageUrl(p)}>{p}</a>
-          ),
-        )}
-      </div>
-
-      {currentPage < totalPages ? (
-        <a class="link text-sm" href={buildPageUrl(currentPage + 1)}>Next ›</a>
-      ) : (
-        <span class="text-note">Next ›</span>
-      )}
-    </nav>
-  )
-}
