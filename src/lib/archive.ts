@@ -11,8 +11,12 @@
 /** Seasons for which match files are vendored in data/. */
 export const MATCH_SEASONS = { first: 1991, last: 2024 } as const;
 
-/** Full span the archive speaks about, including pre-1991 records. */
-export const ARCHIVE_RANGE = { first: 1968, last: 2024 } as const;
+/**
+ * The span the archive actually holds. Match files exist upstream back to
+ * 1968, but they carry no serve statistics before 1991 and are not vendored
+ * here, so the site must not claim them.
+ */
+export const ARCHIVE_RANGE = { first: 1991, last: 2024 } as const;
 
 /** The last ranking week present in atp_rankings_current.csv. */
 export const RANKINGS_AS_OF = "2024-12-30";

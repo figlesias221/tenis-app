@@ -2,193 +2,78 @@
 import Layout from "@/layouts/Layout.astro";
 import RankingsTable from "@/components/RankingsTable.astro";
 import { tennisApi } from "@/lib/api/tennisApi";
+import { RANKINGS_AS_OF_LABEL } from "@/lib/archive";
 
-// Get the ranking type from URL params, default to ATP
-const rankingType = (Astro.url.searchParams.get('type') || 'ATP').toUpperCase() as 'ATP' | 'WTA';
-
-// Get current page from URL params, default to 1
-const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
-
-// Get selected date from URL params
-const selectedDate = Astro.url.searchParams.get('date') || undefined;
+const currentPage = Math.max(1, Number(Astro.url.searchParams.get("page") ?? "1") || 1);
+const selectedDate = Astro.url.searchParams.get("date") ?? undefined;
 
 let rankings;
-let error;
+let error: string | undefined;
 let availableDates: string[] = [];
-let availableYears: number[] = [];
 
 try {
-  // Get available dates and years for selection
   availableDates = await tennisApi.getAvailableRankingDates();
-  availableYears = await tennisApi.getAvailableRankingYears();
-
-  if (rankingType === 'WTA') {
-    rankings = await tennisApi.getWTARankings(undefined, selectedDate);
-  } else {
-    rankings = await tennisApi.getATPRankings(undefined, selectedDate);
-  }
+  // The dataset is ATP singles only, so there is no tour toggle to offer.
+  rankings = await tennisApi.getATPRankings(undefined, selectedDate);
 } catch (e) {
   error = e instanceof Error ? e.message : "Failed to load rankings";
   console.error("Rankings page error:", e);
 }
+
+const formatWeek = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+
+const heading = selectedDate
+  ? `ATP Rankings — week of ${formatWeek(selectedDate)}`
+  : `ATP Rankings — ${RANKINGS_AS_OF_LABEL}`;
 ---
 
-<Layout title={`${rankingType} Rankings - Tennis Live`} description={`Live ${rankingType} Rankings - All Players`}>
+<Layout
+  title="ATP Rankings — The Tennis Almanac"
+  description={`Every ranked ATP player as at the ${RANKINGS_AS_OF_LABEL}.`}
+>
+  <div class="page py-10">
+    <p class="text-kicker">Rankings</p>
+    <h1 class="text-heading-1 mt-2 text-balance">{heading}</h1>
+    <p class="text-body-large measure mt-4">
+      Every ranked player in the final published list of 2024. Choose an earlier
+      week to see the table as it stood then.
+    </p>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Page Header -->
-    <div class="text-center mb-8">
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-        <div class="inline-flex items-center gap-3">
-          <span class="text-4xl" aria-hidden="true">📊</span>
-          <h1 class="text-heading-2">{rankingType} Rankings</h1>
-        </div>
+    {
+      availableDates.length > 1 && (
+        <form method="get" class="mt-6 flex flex-wrap items-end gap-3">
+          <label class="text-note">
+            <span class="text-kicker block mb-1">Ranking week</span>
+            <select name="date" class="select-field w-auto">
+              <option value="">Final week of 2024</option>
+              {availableDates.map((d) => (
+                <option value={d} selected={d === selectedDate}>
+                  {formatWeek(d)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" class="btn-outline">Show</button>
+        </form>
+      )
+    }
 
-        <!-- Tour Toggle -->
-        <div class="segbar">
-          <a
-            href="/rankings?type=ATP"
-            class={`seg ${ rankingType ==='ATP'
-                ? 'seg seg-on'
-                : 'seg'
-            }`}
-          >
-            ATP
-          </a>
-          <a
-            href="/rankings?type=WTA"
-            class={`seg ${ rankingType ==='WTA'
-                ? 'seg seg-on'
-                : 'seg'
-            }`}
-          >
-            WTA
-          </a>
-        </div>
-      </div>
-      <p class="text-body-large max-w-4xl mx-auto">
-        All ranked players worldwide - Live rankings updated regularly
-      </p>
-
-      <!-- Historical Rankings Selectors -->
-      <div class="mt-6 max-w-2xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-          <!-- Year Selector -->
-          {availableYears.length > 1 && (
-            <div>
-              <label for="ranking-year" class="block text-sm font-medium text-ink-2 mb-2">
-                Select Year
-              </label>
-              <select
-                id="ranking-year"
-                class="w-full px-4 py-2 bg-paper-2 border border-rule text-ink focus:outline-none focus:border-rule-strong focus:ring-2 focus:ring-rule transition-all duration-200"
-              >
-                {availableYears.map(year => (
-                  <option value={year} selected={selectedDate?.startsWith(year.toString())}>
-                    {year} {year === Math.max(...availableYears) ? '(Latest)' : ''}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <!-- Date Selector -->
-          {availableDates.length > 0 && (
-            <div>
-              <label for="ranking-date" class="block text-sm font-medium text-ink-2 mb-2">
-                Select Ranking Date
-              </label>
-              <select
-                id="ranking-date"
-                class="w-full px-4 py-2 bg-paper-2 border border-rule text-ink focus:outline-none focus:border-rule-strong focus:ring-2 focus:ring-rule transition-all duration-200"
-              >
-                <option value="">Latest Rankings</option>
-                {availableDates.map(date => (
-                  <option value={date} selected={date === selectedDate}>
-                    {new Date(date.slice(0,4) + '-' + date.slice(4,6) + '-' + date.slice(6,8)).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-        </div>
-
-        {availableYears.length > 1 && (
-          <p class="text-xs text-ink-3 mt-3 text-center">
-            Historical rankings available: {availableYears.join(', ')}
-          </p>
-        )}
-      </div>
-    </div>
-
-      {error ? (
-        <div class="panel bg-negative dark:bg-negative/20 border-red-200 dark:border-red-800 p-6 text-center max-w-md mx-auto">
-          <div class="text-4xl mb-4">⚠️</div>
-          <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Rankings</h3>
-          <p class="text-negative dark:text-negative mb-4">{error}</p>
-          <button
-            onclick="window.location.reload()"
-            class="btn-outline"
-          >
-            Try Again
-          </button>
-        </div>
-      ) : rankings ? (
-        <RankingsTable rankings={rankings} currentPage={currentPage} />
-      ) : (
-        <div class="text-center py-12">
-          <div class="inline-block h-8 w-8 animate-spin border-4 border-rule-strong border-r-transparent mb-4"></div>
-          <p class="text-body">Loading rankings...</p>
-        </div>
-      )}
-    </div>
-  </div>
-
-  <script>
-    // Handle date and year selection
-    const dateSelector = document.getElementById('ranking-date') as HTMLSelectElement;
-    const yearSelector = document.getElementById('ranking-year') as HTMLSelectElement;
-
-    function updateRankings() {
-      const url = new URL(window.location.href);
-
-      if (dateSelector) {
-        const selectedDate = dateSelector.value;
-        if (selectedDate) {
-          url.searchParams.set('date', selectedDate);
-        } else {
-          url.searchParams.delete('date');
-        }
+    <section class="section">
+      {
+        error ? (
+          <p class="note note--error">{error}</p>
+        ) : rankings && rankings.rankings.length > 0 ? (
+          <RankingsTable rankings={rankings} currentPage={currentPage} />
+        ) : (
+          <p class="note">No ranking data for this week.</p>
+        )
       }
-
-      // Reset to page 1 when changing date/year
-      url.searchParams.delete('page');
-
-      window.location.href = url.toString();
-    }
-
-    if (dateSelector) {
-      dateSelector.addEventListener('change', updateRankings);
-    }
-
-    if (yearSelector) {
-      yearSelector.addEventListener('change', async (e) => {
-        const selectedYear = (e.target as HTMLSelectElement).value;
-
-        // When year changes, we need to load new dates for that year
-        // For now, just clear the date and let the server handle it
-        if (dateSelector) {
-          dateSelector.value = '';
-        }
-
-        updateRankings();
-      });
-    }
-  </script>
+    </section>
+  </div>
 </Layout>
