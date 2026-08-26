@@ -12,7 +12,8 @@
     "lint": "@biomejs/biome check .",
     "extract-flags": "node scripts/extract-flags.js",
     "test:clutch": "tsx --test tests/*.test.ts",
-    "build:clutch": "tsx scripts/build-clutch-index.ts"
+    "build:clutch": "tsx scripts/build-clutch-index.ts",
+    "check:bundle": "node scripts/check-bundle.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

@@ -14,14 +14,14 @@ const surfaceKey = CompetitionFormatter.getSurfaceKey(tournament.surface || "Har
 const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currency === 'USD';
 ---
 
-<div class="bg-court border border-line p-6">
+<div class="bg-sheet border border-grid p-6">
   <!-- Header -->
   <div class="flex items-start justify-between mb-4">
     <div class="flex-1">
-      <h2 class="text-xl font-bold text-chalk mb-1">
+      <h2 class="text-xl font-bold text-ink mb-1">
         {tournament.name}
       </h2>
-      <div class="flex items-center gap-2 text-sm text-chalk-2">
+      <div class="flex items-center gap-2 text-sm text-ink-2">
         <span class={`font-medium ${levelColor}`}>
           {tournament.level}
         </span>
@@ -38,7 +38,7 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
       <div class={`px-2 py-1 text-xs font-medium ${ tournament.status ==='active' ? 'bg-above text-above' :
         tournament.status === 'delayed' ? 'bg-clay text-clay' :
         tournament.status === 'cancelled' ? 'bg-below dark:bg-below text-below dark:text-below' :
-        'bg-court-2 text-chalk'
+        'bg-sheet-2 text-ink'
       }`}>
         {tournament.status.charAt(0).toUpperCase() + tournament.status.slice(1)}
       </div>
@@ -52,8 +52,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
       <div class="flex items-center gap-2">
         <span class="text-xl"><span class={`swatch swatch--${surfaceKey}`}></span></span>
         <div>
-          <div class="text-xs text-chalk-3">Surface</div>
-          <div class="font-medium text-chalk">
+          <div class="text-xs text-ink-3">Surface</div>
+          <div class="font-medium text-ink">
             {tournament.surface || 'Hard'}
           </div>
         </div>
@@ -64,10 +64,10 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
         <div class="flex items-center gap-2">
           <span class="text-xl">💰</span>
           <div>
-            <div class="text-xs text-chalk-3">
+            <div class="text-xs text-ink-3">
               Prize {isEstimatedPrize ? '(Est.)' : ''}
             </div>
-            <div class="font-medium text-chalk">
+            <div class="font-medium text-ink">
               {CompetitionFormatter.formatPrizeMoney(tournament.prizeMoney, isEstimatedPrize)}
             </div>
           </div>
@@ -78,8 +78,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
       <div class="flex items-center gap-2">
         <span class="text-xl">🆔</span>
         <div>
-          <div class="text-xs text-chalk-3">ID</div>
-          <div class="font-mono text-xs text-chalk-2">
+          <div class="text-xs text-ink-3">ID</div>
+          <div class="font-mono text-xs text-ink-2">
             {tournament.id.replace('sr:competition:', '')}
           </div>
         </div>
@@ -90,8 +90,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
         <div class="flex items-center gap-2">
           <span class="text-xl">🏆</span>
           <div>
-            <div class="text-xs text-chalk-3">Tournament</div>
-            <div class="font-medium text-chalk">
+            <div class="text-xs text-ink-3">Tournament</div>
+            <div class="font-medium text-ink">
               {tournament.parentTournament.name}
             </div>
           </div>
@@ -101,22 +101,22 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
 
     <!-- Venue Information -->
     {tournament.venue && (
-      <div class="border-t border-line pt-4">
-        <h3 class="font-semibold text-chalk mb-2 flex items-center gap-2">
+      <div class="border-t border-grid pt-4">
+        <h3 class="font-semibold text-ink mb-2 flex items-center gap-2">
           <span class="text-lg">🏟️</span>
           Venue Information
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <span class="text-chalk-3">Complex:</span>
-            <span class="ml-2 font-medium text-chalk">
+            <span class="text-ink-3">Complex:</span>
+            <span class="ml-2 font-medium text-ink">
               {tournament.venue.complex}
             </span>
           </div>
           {tournament.venue.maxCapacity && (
             <div>
-              <span class="text-chalk-3">Capacity:</span>
-              <span class="ml-2 font-medium text-chalk">
+              <span class="text-ink-3">Capacity:</span>
+              <span class="ml-2 font-medium text-ink">
                 {tournament.venue.maxCapacity.toLocaleString()}
                 {tournament.venue.reducedCapacity && (
                   <span class="text-clay ml-1">(Reduced)</span>
@@ -129,8 +129,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
     )}
 
     <!-- Data Source -->
-    <div class="border-t border-line pt-3 mt-4">
-      <p class="text-xs text-chalk-3">
+    <div class="border-t border-grid pt-3 mt-4">
+      <p class="text-xs text-ink-3">
         Tournament data from Jeff Sackmann's ATP Tennis Database
         {isEstimatedPrize && tournament.prizeMoney && (
           <span class="ml-1">• Prize money estimated based on tournament level</span>

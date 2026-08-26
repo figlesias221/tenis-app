@@ -87,7 +87,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
       <div class="flex items-baseline gap-3">
         {pages.map((p) =>
           p === currentPage ? (
-            <span class="text-sm font-semibold text-chalk num">{p}</span>
+            <span class="text-sm font-semibold text-ink num">{p}</span>
           ) : (
             <a class="link text-sm num" href={buildPageUrl(p)}>{p}</a>
           ),

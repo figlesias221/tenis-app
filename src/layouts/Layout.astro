@@ -25,8 +25,8 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#0a2230" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e6e2d5" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <title>{title}</title>
@@ -36,7 +36,8 @@ const {
     <!-- Both faces preloaded: the type carries the design, so a swap would be
          visible. Archivo's width axis means the condensed display and the body
          text are one file. -->
-    <link rel="preload" href="/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- One face, 23 KB, carrying display, labels and every figure. Running
+         prose uses the system sans, which costs nothing. -->
     <link rel="preload" href="/fonts/martian-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content={articleDate ? "article" : "website"} />
@@ -51,11 +52,13 @@ const {
     <meta property="twitter:description" content={description} />
   </head>
 
-  <body class="flex min-h-screen flex-col">
-    <Header />
-    <main class="flex-1"><slot /></main>
+  <body class="flex min-h-screen flex-col pb-10">
+    <!-- Everything sits on one scoring sheet. -->
+    <div class="sheet flex min-h-[80vh] flex-1 flex-col">
+      <Header />
+      <main class="min-w-0 flex-1"><slot /></main>
 
-    <footer class="mt-20 border-t-2 border-chalk">
+    <footer class="mt-20 border-t-2 border-ink">
       <div class="page py-8">
         <div class="grid gap-8 md:grid-cols-3">
           <div>
@@ -76,7 +79,7 @@ const {
           <div>
             <p class="text-kicker">Sources &amp; method</p>
             <p class="text-note mt-3">
-              Match and ranking records compiled by <strong class="text-chalk-2">Jeff Sackmann</strong>,
+              Match and ranking records compiled by <strong class="text-ink-2">Jeff Sackmann</strong>,
               published as <em>tennis_atp</em> under
               <a class="link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>.
               This archive is non-commercial and shares alike.
@@ -87,10 +90,11 @@ const {
             </p>
           </div>
         </div>
-        <p class="text-note mt-7 border-t border-line pt-4">
+        <p class="text-note mt-6 border-t border-grid pt-3">
           © 2026 · Not affiliated with the ATP, WTA or ITF.
         </p>
       </div>
-    </footer>
+      </footer>
+    </div>
   </body>
 </html>

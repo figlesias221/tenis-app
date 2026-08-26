@@ -3,33 +3,17 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------------------
-   Night session.
+   The umpire's card.
 
-   The page is a floodlit court. Data lives in ruled cells, the way an umpire's
-   card rules the points, and the one number that matters is lit like a
-   scoreboard panel. Everything else stays quiet.
+   The page is a scoring sheet laid on ruled card. Data sits in printed cells,
+   labels are struck in mono, and red pencil marks only the exceptions - the
+   way a chair umpire annotates a card.
 
-   Two faces: Archivo carries display and body from a single variable file
-   (it has a width axis, so the condensed scoreboard caps and the body text are
-   the same download), and Martian Mono carries every figure.
+   One webfont: Martian Mono, 23 KB, carrying display, labels and every figure.
+   Running prose is set in the system sans, which costs nothing and is the
+   right register for it.
    --------------------------------------------------------------------------- */
 
-@font-face {
-  font-family: "Archivo Variable";
-  src: url("/fonts/archivo-latin-wdth-normal.woff2") format("woff2-variations");
-  font-weight: 100 900;
-  font-stretch: 62% 125%;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Archivo Fallback";
-  src: local("Helvetica Neue"), local("Arial");
-  ascent-override: 92%;
-  descent-override: 24%;
-  line-gap-override: 0%;
-  size-adjust: 101%;
-}
 @font-face {
   font-family: "Martian Mono Variable";
   src: url("/fonts/martian-mono-latin-wght-normal.woff2") format("woff2-variations");
@@ -45,333 +29,349 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
 
-    /* The court, under lights. */
-    --court: 10 34 48;
-    --court-2: 13 42 58;
-    --court-3: 18 54 72;
+    /* Card stock, and the sheet laid on it. */
+    --card: 230 226 213;
+    --sheet: 246 244 237;
+    --sheet-2: 239 236 226;
 
-    /* Chalk. */
-    --chalk: 233 241 243;
-    --chalk-2: 168 192 200;
-    --chalk-3: 122 150 160;
+    /* Printed rule. --grid is the faint ruling; --rule is a drawn line. */
+    --grid: 207 200 180;
+    --rule: 25 23 19;
 
-    /* Cell rules. --line is a hairline; anything bounding a control uses
-       --line-2. */
-    --line: 30 66 86;
-    --line-2: 56 100 122;
+    --ink: 25 23 19;
+    --ink-2: 106 99 85;
+    --ink-3: 141 133 117;
 
-    /* The ball. Reserved for the clutch rating and nothing else. */
-    --ball: 217 234 74;
+    /* The red pencil. The only accent on the page, and it marks exceptions
+       only: negatives, and the break-point column. Positives stay in ink, the
+       way a ledger sets them - which also means there is no red/green pair for
+       a colour-blind reader to disentangle. */
+    --pencil: 179 36 43;
 
-    /* Above and below the model. Stepped with the palette validator against
-       the court, and always paired with a + or - sign so the direction never
-       rests on colour alone. */
-    --above: 42 169 124;
-    --below: 224 101 74;
+    /* Court surfaces, for swatch fills only, never text.
+       Validated together: worst CVD pair clears deltaE 14.8. */
+    --clay: 206 123 44;
+    --grass: 41 99 40;
+    --hard: 17 96 168;
+    --carpet: 141 133 117;
 
-    /* Court surfaces. Validated together: worst CVD pair clears deltaE 12.3.
-       Used as swatch fills, never as text, so contrast is never the issue. */
-    --clay: 208 126 40;
-    --grass: 39 111 59;
-    --hard: 64 147 222;
-    --carpet: 122 150 160;
-
-    --font-ui: "Archivo Variable", "Archivo Fallback", system-ui, sans-serif;
-    --font-num: "Martian Mono Variable", "Martian Fallback", ui-monospace, monospace;
+    --font-mono: "Martian Mono Variable", "Martian Fallback", ui-monospace, monospace;
+    --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
-  html {
-    font-family: var(--font-ui);
-    -webkit-text-size-adjust: 100%;
-  }
+  html { font-family: var(--font-ui); -webkit-text-size-adjust: 100%; }
 
   body {
-    background: rgb(var(--court));
-    color: rgb(var(--chalk-2));
-    font-size: 16px;
+    background-color: rgb(var(--card));
+    /* The card's printed ruling. */
+    background-image:
+      linear-gradient(rgb(var(--grid)) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--grid)) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+    color: rgb(var(--ink-2));
+    font-size: 15px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4 { color: rgb(var(--chalk)); }
-
-  ::selection { background: rgb(var(--ball) / 0.28); color: rgb(var(--chalk)); }
-
-  :focus-visible {
-    outline: 2px solid rgb(var(--ball));
-    outline-offset: 2px;
-  }
+  h1, h2, h3, h4 { color: rgb(var(--ink)); }
+  ::selection { background: rgb(var(--pencil) / 0.18); }
+  :focus-visible { outline: 2px solid rgb(var(--pencil)); outline-offset: 2px; }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   }
 }
 
 @layer components {
-  /* --- Structure -------------------------------------------------------- */
+  /* --- The sheet -------------------------------------------------------- */
 
-  .page { @apply mx-auto w-full px-5 sm:px-7 lg:px-9; max-width: 1180px; }
+  .sheet {
+    /* Flex children default to min-width:auto, which lets a wide table push
+       the whole sheet past the viewport instead of scrolling inside its own
+       container. */
+    min-width: 0;
+    /* An auto cross-axis margin cancels flex stretch, so the sheet would size
+       to its widest child instead of the viewport. Width is set explicitly. */
+    width: 100%;
+    max-width: 1060px;
+    margin: 1.75rem auto 0;
+    background: rgb(var(--sheet) / 0.94);
+    border: 2px solid rgb(var(--rule));
+    box-shadow: 6px 6px 0 rgb(var(--ink) / 0.14);
+  }
+  .page { @apply px-5 sm:px-7 lg:px-8; min-width: 0; max-width: 100%; }
+
   .measure { max-width: 62ch; }
 
-  .section { margin-top: 3.25rem; }
+  .section { margin-top: 2.5rem; }
   .section-head {
     @apply flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1;
-    padding-bottom: 0.6rem;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid rgb(var(--chalk));
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.9rem;
+    border-bottom: 1.5px solid rgb(var(--rule));
   }
 
   /* --- Type ------------------------------------------------------------- */
 
-  /* The scoreboard voice: condensed, heavy, set in caps. Archivo's width axis
-     does the condensing, so this costs no extra download. */
   .text-display {
-    font-size: clamp(2.75rem, 1.6rem + 5.2vw, 6rem);
+    font-family: var(--font-mono);
+    font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3rem);
     font-weight: 800;
-    font-stretch: 88%;
-    line-height: 0.92;
-    letter-spacing: -0.025em;
-    text-transform: uppercase;
-    color: rgb(var(--chalk));
+    line-height: 1.1;
+    letter-spacing: -0.045em;
+    color: rgb(var(--ink));
   }
   .text-heading-1 {
-    font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+    font-family: var(--font-mono);
+    font-size: clamp(1.4rem, 1rem + 1.7vw, 2.1rem);
     font-weight: 800;
-    font-stretch: 90%;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    color: rgb(var(--chalk));
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: rgb(var(--ink));
   }
   .text-heading-2 {
-    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.012em;
-    color: rgb(var(--chalk));
+    font-family: var(--font-mono);
+    font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.3rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+    color: rgb(var(--ink));
   }
-  .text-heading-3 { @apply text-lg font-semibold; line-height: 1.25; color: rgb(var(--chalk)); }
-  .text-heading-4 { @apply text-[0.9375rem] font-semibold; color: rgb(var(--chalk)); }
+  .text-heading-3 { @apply text-base font-semibold; color: rgb(var(--ink)); }
+  .text-heading-4 { @apply text-sm font-semibold; color: rgb(var(--ink)); }
 
-  /* The label voice, borrowed from the card: mono, tracked, upper. */
+  /* The struck label: mono, tracked, upper - how a card is annotated. */
   .text-kicker {
-    font-family: var(--font-num);
-    font-size: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
     font-weight: 600;
     line-height: 1.1;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(var(--chalk-3));
+    color: rgb(var(--ink-2));
   }
 
-  .text-body-large { font-size: 1.0625rem; line-height: 1.65; color: rgb(var(--chalk-2)); }
-  .text-body { font-size: 1rem; line-height: 1.65; color: rgb(var(--chalk-2)); }
-  .text-body-small { font-size: 0.875rem; line-height: 1.55; color: rgb(var(--chalk-2)); }
+  .text-body-large { font-size: 1rem; line-height: 1.65; color: rgb(var(--ink-2)); }
+  .text-body { font-size: 0.9375rem; line-height: 1.65; color: rgb(var(--ink-2)); }
+  .text-body-small { font-size: 0.875rem; line-height: 1.55; color: rgb(var(--ink-2)); }
   .text-note {
-    font-family: var(--font-num);
-    font-size: 0.6875rem;
-    line-height: 1.5;
-    letter-spacing: 0.02em;
-    color: rgb(var(--chalk-3));
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1.55;
+    color: rgb(var(--ink-2));
   }
 
-  .num { font-family: var(--font-num); font-variant-numeric: tabular-nums lining-nums; }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums lining-nums; }
 
   /* --- Links and controls ----------------------------------------------- */
 
   .link {
-    color: rgb(var(--chalk));
+    color: rgb(var(--ink));
     text-decoration: underline;
-    text-underline-offset: 0.16em;
+    text-underline-offset: 0.15em;
     text-decoration-thickness: 1px;
-    text-decoration-color: rgb(var(--line-2));
-    transition: text-decoration-color 120ms ease, color 120ms ease;
+    text-decoration-color: rgb(var(--ink-3));
   }
-  .link:hover { text-decoration-color: rgb(var(--ball)); color: rgb(var(--chalk)); }
+  .link:hover { text-decoration-color: rgb(var(--pencil)); color: rgb(var(--pencil)); }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2;
-    font-family: var(--font-num);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    @apply inline-flex items-center justify-center px-3.5 py-2;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    background: rgb(var(--ball));
-    color: rgb(var(--court));
-    border: 1px solid rgb(var(--ball));
+    background: rgb(var(--ink));
+    color: rgb(var(--sheet));
+    border: 1.5px solid rgb(var(--ink));
   }
-  .btn-primary:hover { background: transparent; color: rgb(var(--ball)); }
+  .btn-primary:hover { background: rgb(var(--sheet)); color: rgb(var(--ink)); }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center px-4 py-2;
-    font-family: var(--font-num);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    @apply inline-flex items-center justify-center px-3.5 py-2;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(var(--chalk));
+    color: rgb(var(--ink));
     background: transparent;
-    border: 1px solid rgb(var(--line-2));
+    border: 1.5px solid rgb(var(--ink));
   }
-  .btn-outline:hover { border-color: rgb(var(--chalk)); }
+  .btn-outline:hover { background: rgb(var(--ink) / 0.06); }
 
-  .input-field,
-  .select-field {
-    @apply w-full px-3 py-2;
-    font-family: var(--font-num);
-    font-size: 0.8125rem;
-    color: rgb(var(--chalk));
-    background: rgb(var(--court-2));
-    border: 1px solid rgb(var(--line-2));
+  .input-field, .select-field {
+    @apply w-full px-2.5 py-1.5;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgb(var(--ink));
+    background: rgb(var(--sheet));
+    border: 1.5px solid rgb(var(--ink));
     border-radius: 0;
   }
 
-  /* Section tabs, underlined like the active scoreboard row. */
-  .segbar { @apply inline-flex flex-wrap items-stretch gap-x-6; }
+  .segbar { @apply inline-flex flex-wrap items-stretch gap-x-5; }
   .seg {
-    font-family: var(--font-num);
-    font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.16em;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgb(var(--chalk-3));
-    padding: 0.5rem 0;
+    color: rgb(var(--ink-2));
+    padding: 0.4rem 0;
     text-decoration: none;
     white-space: nowrap;
   }
-  .seg:hover { color: rgb(var(--chalk)); }
-  .seg-on { color: rgb(var(--ball)); box-shadow: inset 0 -2px 0 rgb(var(--ball)); }
+  .seg:hover { color: rgb(var(--ink)); }
+  .seg-on { color: rgb(var(--ink)); box-shadow: inset 0 -2px 0 rgb(var(--pencil)); }
 
-  /* --- The card: data lives in ruled cells ------------------------------ */
+  /* A rubber stamp, set at a slight angle. */
+  .stamp {
+    @apply inline-block px-2 py-1.5;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(var(--pencil));
+    border: 1.5px solid rgb(var(--pencil));
+    transform: rotate(-3deg);
+  }
+
+  /* --- Printed cells ---------------------------------------------------- */
 
   .cells {
     display: grid;
-    border: 1px solid rgb(var(--line-2));
-    background: rgb(var(--line));
+    border: 1.5px solid rgb(var(--rule));
+    background: rgb(var(--grid));
     gap: 1px;
   }
-  .cell { background: rgb(var(--court-2)); padding: 0.85rem 1rem; }
+  .cell { background: rgb(var(--sheet)); padding: 0.75rem 0.9rem; }
   .cell dt, .cell .k {
-    font-family: var(--font-num);
-    font-size: 0.5625rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(var(--chalk-3));
+    color: rgb(var(--ink-2));
   }
   .cell dd, .cell .v {
-    font-family: var(--font-num);
-    font-size: 1.375rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: rgb(var(--chalk));
-    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: rgb(var(--ink));
+    margin-top: 0.45rem;
     font-variant-numeric: tabular-nums lining-nums;
   }
-  .cell .v.nil { color: rgb(var(--below)); }
+  .cell .v.nil { color: rgb(var(--pencil)); }
 
-  /* One-line summary strip. */
-  .dl--inline { @apply flex flex-wrap items-baseline gap-x-7 gap-y-1; }
+  .dl--inline { @apply flex flex-wrap items-baseline gap-x-6 gap-y-1; }
   .dl-row { @apply flex items-baseline gap-2; }
-  .dl-term { font-family: var(--font-num); font-size: 0.625rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--chalk-3)); }
-  .dl-value { font-family: var(--font-num); font-size: 0.9375rem; font-weight: 700; color: rgb(var(--chalk)); font-variant-numeric: tabular-nums lining-nums; }
+  .dl-term { font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--ink-2)); }
+  .dl-value { font-family: var(--font-mono); font-size: 0.875rem; font-weight: 700; color: rgb(var(--ink)); font-variant-numeric: tabular-nums lining-nums; }
 
-  /* --- The table -------------------------------------------------------- */
+  /* --- The table: a ruled grid, like the card ---------------------------- */
 
   .table {
     @apply w-full;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 0.875rem;
+    border: 1.5px solid rgb(var(--rule));
+    font-size: 0.8125rem;
     line-height: 1.3;
+    background: rgb(var(--sheet));
   }
 
   .table thead th {
-    font-family: var(--font-num);
-    font-size: 0.5625rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(var(--chalk-3));
-    text-align: left;
+    color: rgb(var(--ink-2));
+    text-align: right;
     white-space: nowrap;
-    padding: 0.65rem 0.75rem;
-    background: rgb(var(--court));
-    border-bottom: 2px solid rgb(var(--chalk));
+    padding: 0.55rem 0.6rem;
+    background: rgb(var(--sheet-2));
+    border-bottom: 1.5px solid rgb(var(--rule));
+    border-right: 1px solid rgb(var(--grid));
   }
+  .table thead th:last-child { border-right: 0; }
+  .table thead th.col-name, .table thead th.col-meta, .table thead th:first-child { text-align: left; }
 
   .table tbody td {
-    padding: 0.7rem 0.75rem;
-    border-bottom: 1px solid rgb(var(--line));
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid rgb(var(--grid));
+    border-right: 1px solid rgb(var(--grid));
     vertical-align: middle;
+    text-align: right;
   }
-  .table tbody tr:hover td { background: rgb(var(--court-2)); }
+  .table tbody td:last-child { border-right: 0; }
   .table tbody tr:last-child td { border-bottom: 0; }
+  .table tbody tr:hover td { background: rgb(var(--ink) / 0.045); }
 
   .table tfoot td {
-    padding: 0.7rem 0.75rem;
-    border-top: 2px solid rgb(var(--chalk));
+    padding: 0.55rem 0.6rem;
+    border-top: 1.5px solid rgb(var(--rule));
+    border-right: 1px solid rgb(var(--grid));
     font-weight: 700;
-    color: rgb(var(--chalk));
+    color: rgb(var(--ink));
+    text-align: right;
+    background: rgb(var(--sheet-2));
   }
+  .table tfoot td:last-child { border-right: 0; }
 
-  .table caption { caption-side: top; text-align: left; padding-bottom: 0.6rem; }
-
-  .table--tight tbody td, .table--tight thead th { padding: 0.45rem 0.6rem; }
+  .table caption { caption-side: top; text-align: left; padding-bottom: 0.5rem; }
+  .table--tight tbody td, .table--tight thead th { padding: 0.4rem 0.5rem; }
   .table--sticky thead th { position: sticky; top: 0; z-index: 1; }
+  .table-scroll { @apply w-full overflow-x-auto; min-width: 0; max-width: 100%; scrollbar-width: thin; }
 
-  /* Vertical rules between numeric columns: the scoring card's grid. */
-  .table--ruled tbody td + td,
-  .table--ruled thead th + th { border-left: 1px solid rgb(var(--line)); }
-
-  .table-scroll { @apply w-full overflow-x-auto; scrollbar-width: thin; }
-
-  .col-rank { text-align: right; width: 3.5ch; font-family: var(--font-num); font-size: 0.6875rem; color: rgb(var(--chalk-3)); }
-  .col-name { text-align: left; color: rgb(var(--chalk)); font-weight: 600; white-space: nowrap; }
-  .col-num { text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums lining-nums; }
-  .col-meta { text-align: left; font-family: var(--font-num); font-size: 0.6875rem; color: rgb(var(--chalk-3)); }
+  .col-rank { text-align: center !important; width: 3.5ch; font-family: var(--font-mono); font-size: 0.625rem; color: rgb(var(--ink-2)); }
+  .col-name { text-align: left !important; color: rgb(var(--ink)); font-weight: 600; white-space: nowrap; }
+  .col-num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums lining-nums; }
+  .col-meta { text-align: left !important; font-family: var(--font-mono); font-size: 0.625rem; color: rgb(var(--ink-2)); }
   @media (max-width: 720px) { .col-hide-sm { display: none; } }
 
-  /* Sort indicator, drawn in CSS. */
   .table th[aria-sort] { cursor: pointer; user-select: none; }
-  .table th[aria-sort]:hover { color: rgb(var(--chalk)); }
+  .table th[aria-sort]:hover { color: rgb(var(--ink)); }
   .table th[aria-sort]::after {
-    content: ""; display: inline-block; margin-left: 0.4em;
-    border: 3px solid transparent; vertical-align: middle; opacity: 0.3;
+    content: ""; display: inline-block; margin-left: 0.35em;
+    border: 3px solid transparent; vertical-align: middle; opacity: 0.28;
   }
   .table th[aria-sort="none"]::after { border-top-color: currentColor; margin-bottom: -3px; }
-  .table th[aria-sort="descending"]::after { border-top-color: rgb(var(--ball)); opacity: 1; margin-bottom: -3px; }
-  .table th[aria-sort="ascending"]::after { border-bottom-color: rgb(var(--ball)); opacity: 1; margin-top: -3px; }
+  .table th[aria-sort="descending"]::after { border-top-color: rgb(var(--pencil)); opacity: 1; margin-bottom: -3px; }
+  .table th[aria-sort="ascending"]::after { border-bottom-color: rgb(var(--pencil)); opacity: 1; margin-top: -3px; }
 
-  /* --- The lit panel: the one number that matters ----------------------- */
-
-  .lit {
+  /* The scored figure, boxed like a total on a card. */
+  .scored {
     display: inline-block;
-    min-width: 4.25rem;
-    padding: 0.4rem 0.6rem;
-    background: rgb(var(--ball));
-    color: rgb(var(--court));
-    font-family: var(--font-num);
-    font-size: 1.0625rem;
-    font-weight: 700;
+    min-width: 3.9rem;
+    padding: 0.28rem 0.5rem;
+    background: rgb(var(--ink) / 0.07);
+    border: 1px solid rgb(var(--ink) / 0.35);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 800;
     line-height: 1;
+    letter-spacing: -0.03em;
     text-align: center;
+    color: rgb(var(--ink));
     font-variant-numeric: tabular-nums lining-nums;
   }
-  .lit--dim { background: rgb(var(--ball) / 0.16); color: rgb(var(--ball)); }
 
-  .above { color: rgb(var(--above)); }
-  .below { color: rgb(var(--below)); }
+  /* Positives stay in ink; only exceptions are pencilled. */
+  .above { color: rgb(var(--ink)); }
+  .below { color: rgb(var(--pencil)); }
 
-  /* --- Swatches and tags ------------------------------------------------ */
+  /* --- Swatches, tags, notes -------------------------------------------- */
 
-  .swatch { @apply inline-block align-middle; width: 9px; height: 9px; }
+  .swatch { @apply inline-block align-middle; width: 9px; height: 9px; border: 1px solid rgb(var(--ink) / 0.35); }
   .swatch--clay { background: rgb(var(--clay)); }
   .swatch--grass { background: rgb(var(--grass)); }
   .swatch--hard { background: rgb(var(--hard)); }
@@ -379,37 +379,35 @@
 
   .tag {
     @apply inline-flex items-center gap-1.5 px-1.5 py-0.5;
-    font-family: var(--font-num);
-    font-size: 0.5625rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(var(--chalk-2));
-    border: 1px solid rgb(var(--line-2));
+    color: rgb(var(--ink-2));
+    border: 1px solid rgb(var(--grid));
   }
 
-  .note { font-family: var(--font-num); font-size: 0.6875rem; line-height: 1.5; color: rgb(var(--chalk-3)); }
-  .note--error { border-left: 2px solid rgb(var(--below)); padding-left: 0.75rem; color: rgb(var(--chalk-2)); }
+  .note { font-family: var(--font-mono); font-size: 0.625rem; line-height: 1.55; color: rgb(var(--ink-2)); }
+  .note--error { border-left: 2px solid rgb(var(--pencil)); padding-left: 0.7rem; }
 
-  .panel { border: 1px solid rgb(var(--line-2)); background: rgb(var(--court-2)); padding: 1rem 1.15rem; }
+  .panel { border: 1.5px solid rgb(var(--rule)); background: rgb(var(--sheet)); padding: 0.9rem 1rem; }
 
   .methodology summary {
     @apply cursor-pointer py-2;
-    font-family: var(--font-num);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgb(var(--chalk));
+    color: rgb(var(--ink));
   }
 
-  /* --- Bars ------------------------------------------------------------- */
-
-  .statbar { @apply relative block w-full; height: var(--bar-h, 0.5rem); background: rgb(var(--line)); }
-  .statbar-fill { @apply absolute inset-y-0 left-0; background: rgb(var(--bar-tone, var(--chalk-3))); }
+  .statbar { @apply relative block w-full; height: var(--bar-h, 0.45rem); background: rgb(var(--grid)); border: 1px solid rgb(var(--ink) / 0.2); }
+  .statbar-fill { @apply absolute inset-y-0 left-0; background: rgb(var(--bar-tone, var(--ink-2))); }
 }
 
 @layer utilities {
-  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: rgb(var(--line-2)) transparent; }
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: rgb(var(--ink-3)) transparent; }
   .text-balance { text-wrap: balance; }
 }

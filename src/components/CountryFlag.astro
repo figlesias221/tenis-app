@@ -24,7 +24,6 @@ const hasFlag = hasFlagSupport(normalizedCode);
 
 // Debug logging for development
 if (import.meta.env.DEV) {
-  console.log(`CountryFlag Debug: countryCode="${countryCode}", normalizedCode="${normalizedCode}", hasFlag=${hasFlag}, flagPath="${flagPath}"`);
 }
 ---
 
@@ -33,9 +32,9 @@ if (import.meta.env.DEV) {
     src={flagPath}
     alt={altText}
     title={altText}
-    class={`${sizeClasses[size]} ${className} object-cover border border-line`}
+    class={`${sizeClasses[size]} ${className} object-cover border border-grid`}
     loading="lazy"
     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"
   />
 ) : null}
-<span class={`text-note ${hasFlag ? "hidden" : "inline-flex"} items-center justify-center ${sizeClasses[size]} border border-line text-chalk-3`} title={`No flag for ${normalizedCode}`}>{normalizedCode}</span>
+<span class={`text-note ${hasFlag ? "hidden" : "inline-flex"} items-center justify-center ${sizeClasses[size]} border border-grid text-ink-3`} title={`No flag for ${normalizedCode}`}>{normalizedCode}</span>

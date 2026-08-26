@@ -1,0 +1,55 @@
+---
+/**
+ * One game, as the chair records it.
+ *
+ * The card's whole logic in eight cells: the running score along the top, who
+ * won each point beneath, and the break point pencilled in red. That single
+ * shaded column is the only one this index counts.
+ */
+const points = [
+  { score: "15", who: "S", won: true },
+  { score: "30", who: "R", won: false },
+  { score: "40", who: "R", won: false },
+  { score: "40", who: "S", won: true, bp: true },
+  { score: "Deuce", who: "S", won: true },
+  { score: "Ad", who: "R", won: false },
+  { score: "Deuce", who: "S", won: true },
+  { score: "Game", who: "S", won: true },
+];
+---
+
+<figure class="mt-7">
+  <div class="table-scroll">
+    <div class="inline-grid min-w-[34rem] border-[1.5px] border-rule" style="grid-template-columns:repeat(8,1fr)">
+      {
+        points.map((p) => (
+          <div
+            class:list={[
+              "border-b border-r border-grid px-2 py-1.5 text-center font-mono text-[0.5rem] font-semibold uppercase tracking-[0.06em]",
+              p.bp ? "bg-pencil/12 text-pencil" : "bg-sheet-2 text-ink-2",
+            ]}
+          >
+            {p.score}
+          </div>
+        ))
+      }
+      {
+        points.map((p) => (
+          <div
+            class:list={[
+              "border-r border-grid px-2 py-2 text-center font-mono text-xs font-bold",
+              p.bp ? "bg-pencil/12 text-pencil" : p.won ? "text-ink" : "text-ink-3",
+            ]}
+          >
+            {p.who}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <figcaption class="text-note mt-2 max-w-[62ch]">
+    One game, as the chair records it. <strong class="text-ink">S</strong> is a
+    point to the server, <strong class="text-ink">R</strong> to the returner.
+    The pencilled column is the break point — the only column this index counts.
+  </figcaption>
+</figure>

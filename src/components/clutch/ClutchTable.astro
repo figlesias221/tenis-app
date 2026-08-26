@@ -29,7 +29,7 @@ const cols = [
         <th class="col-num" aria-sort="descending" data-sort-key="rating" scope="col">Clutch</th>
         {cols.map((c) => (
           <th class="col-num col-hide-sm" aria-sort="none" data-sort-key={c.key} scope="col">
-            {c.short}{weights[c.key] === 0 && <span class="text-chalk-3" title="Measured as pure chance; counts for nothing"> ·0</span>}
+            {c.short}{weights[c.key] === 0 && <span class="text-ink-3" title="Measured as pure chance; counts for nothing"> ·0</span>}
           </th>
         ))}
       </tr>
@@ -49,27 +49,27 @@ const cols = [
               <span class="inline-flex items-center gap-2">
                 <CountryFlag countryCode={p.cc} nationality={p.ioc} size="small" />
                 <span>{p.name}</span>
-                {p.trunc.start && <abbr title="Career began before 1991, when serve statistics start; his record here is truncated" class="text-chalk-3 no-underline">◂</abbr>}
-                {p.trunc.end && <abbr title="Still active at the 2024 cutoff" class="text-chalk-3 no-underline">▸</abbr>}
+                {p.trunc.start && <abbr title="Career began before 1991, when serve statistics start; his record here is truncated" class="text-ink-3 no-underline">◂</abbr>}
+                {p.trunc.end && <abbr title="Still active at the 2024 cutoff" class="text-ink-3 no-underline">▸</abbr>}
               </span>
             </td>
             <td class="col-meta col-hide-sm">{p.y0}–{p.y1}</td>
-            <td class="col-num col-hide-sm text-chalk-2">{p.m.toLocaleString("en-GB")}</td>
-            <td class="col-num"><span class="lit">{p.rating.toFixed(1)}</span></td>
+            <td class="col-num col-hide-sm text-ink-2">{p.m.toLocaleString("en-GB")}</td>
+            <td class="col-num"><span class="scored">{p.rating.toFixed(1)}</span></td>
             {cols.map((c) => (
               <td class="col-num col-hide-sm">
                 {p.c[c.key].n > 0 ? (
-                  <span class={weights[c.key] === 0 ? "text-chalk-3" : p.c[c.key].z >= 0 ? "above" : "below"}>
+                  <span class={weights[c.key] === 0 ? "text-ink-3" : p.c[c.key].z >= 0 ? "above" : "below"}>
                     {signedPoints(p.c[c.key].r - p.c[c.key].e)}
                   </span>
-                ) : <span class="text-chalk-3">—</span>}
+                ) : <span class="text-ink-3">—</span>}
               </td>
             ))}
           </tr>
 
           {expandable && (
             <tr class="clutch-detail hidden" data-detail-for={p.id}>
-              <td colspan="9" class="bg-court-2 !px-0 !py-0">
+              <td colspan="9" class="bg-sheet-2 !px-0 !py-0">
                 <div class="cells" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
                   {cols.map((c) => {
                     const d = p.c[c.key];
@@ -80,11 +80,11 @@ const cols = [
                         <div class="k">{COMPONENT_LABELS[c.key]}{weights[c.key] === 0 && " · counts 0"}</div>
                         {d.n > 0 ? (
                           <>
-                            <div class="v" style={weights[c.key] === 0 ? "color:rgb(var(--chalk-3))" : ""}>
+                            <div class="v" style={weights[c.key] === 0 ? "color:rgb(var(--ink-3))" : ""}>
                               {delta >= 0 ? "+" : ""}{delta.toFixed(1)}
                             </div>
-                            <div class="relative mt-2.5 h-1.5 bg-line">
-                              <span class="absolute inset-y-0 left-1/2 w-px bg-chalk-3"></span>
+                            <div class="relative mt-2.5 h-1.5 bg-grid">
+                              <span class="absolute inset-y-0 left-1/2 w-px bg-ink-3"></span>
                               <span class="absolute inset-y-0"
                                 style={`${d.z >= 0 ? "left:50%" : "right:50%"};width:${w}%;background:rgb(var(--${d.z >= 0 ? "above" : "below"}))`}></span>
                             </div>

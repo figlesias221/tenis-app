@@ -12,40 +12,45 @@ const isActive = (href: string) =>
   path === href || (href !== "/" && path.startsWith(`${href}/`));
 ---
 
-<header class="border-b border-line">
-  <div class="page">
-    <div class="flex items-center justify-between gap-4 py-3.5">
-      <a href="/" class="flex items-baseline gap-3 no-underline">
-        <!-- The court, from above: baseline, service line, net. -->
-        <svg width="22" height="15" viewBox="0 0 22 15" aria-hidden="true" class="shrink-0">
-          <rect x="0.5" y="0.5" width="21" height="14" fill="none" stroke="rgb(var(--chalk-3))"></rect>
-          <path d="M11 0v15M4 0v15M18 0v15M4 7.5h14" fill="none" stroke="rgb(var(--chalk-3))" stroke-width="0.75"></path>
-        </svg>
-        <span class="text-[0.9375rem] font-extrabold uppercase tracking-[0.02em] text-chalk" style="font-stretch:88%">
+<!-- The card's header block: who scored it, what it covers, and the stamp. -->
+<header class="border-b-2 border-rule">
+  <div class="page flex flex-wrap items-start justify-between gap-4 py-4">
+    <div>
+      <a href="/" class="no-underline">
+        <span class="font-mono text-[0.75rem] font-extrabold uppercase tracking-[-0.02em] text-ink">
           The Tennis Almanac
         </span>
       </a>
-      <p class="text-note hidden md:block">
-        ATP · {ARCHIVE_RANGE_LABEL} · Rankings to the {RANKINGS_AS_OF_LABEL}
-      </p>
+      <p class="text-note mt-1">Chair card · ATP singles</p>
     </div>
 
-    <nav aria-label="Sections" class="border-t border-line">
-      <ul class="segbar overflow-x-auto" style="scrollbar-width:none">
-        {
-          nav.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class:list={["seg block", isActive(item.href) && "seg-on"]}
-                aria-current={isActive(item.href) ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    <p class="stamp mt-0.5 shrink-0">Break point</p>
+
+    {/* The card's filing details. Deliberately does NOT import clutch data:
+        Header is inside Layout, so anything it imports is bundled into the SSR
+        worker for every route, prerendered or not. */}
+    <p class="text-note hidden shrink-0 text-right leading-relaxed lg:block">
+      Seasons {ARCHIVE_RANGE_LABEL}<br />
+      Rankings to the {RANKINGS_AS_OF_LABEL}
+    </p>
+    <p class="text-note shrink-0 text-right lg:hidden">{ARCHIVE_RANGE_LABEL}</p>
   </div>
+
+  <nav aria-label="Sections" class="page border-t border-grid">
+    <ul class="segbar overflow-x-auto" style="scrollbar-width:none">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={["seg block", isActive(item.href) && "seg-on"]}
+              aria-current={isActive(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
 </header>
