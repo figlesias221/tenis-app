@@ -1,7 +1,7 @@
 export const siteConfig = {
   author: "Tennis Pro",
-  title: "Tennis Live",
-  description: "Live ATP rankings and matches",
+  title: "The Tennis Almanac",
+  description: "An archive of professional tennis results, 1968-2024.",
   lang: "en-GB",
   ogLocale: "en_GB",
   shareMessage: "Share this post",

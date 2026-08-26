@@ -33,9 +33,9 @@ if (import.meta.env.DEV) {
     src={flagPath}
     alt={altText}
     title={altText}
-    class={`${sizeClasses[size]} ${className} rounded-sm shadow-sm object-cover border border-surface-200 dark:border-surface-600`}
+    class={`${sizeClasses[size]} ${className} object-cover border border-rule`}
     loading="lazy"
     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"
   />
 ) : null}
-<span class={`text-xs ${hasFlag ? 'hidden' : 'inline-flex'} items-center justify-center ${sizeClasses[size]} bg-red-100 dark:bg-red-900/50 rounded-sm border border-red-200 dark:border-red-600 text-red-600`} title={`Flag not found for ${normalizedCode}`}>🏳️</span>
+<span class={`text-xs ${hasFlag ?'hidden' : 'inline-flex'} items-center justify-center ${sizeClasses[size]} bg-red-100 dark:bg-red-900/50 rounded-sm border border-red-200 dark:border-red-600 text-red-600`} title={`Flag not found for ${normalizedCode}`}>🏳️</span>

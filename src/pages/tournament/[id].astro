@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
 import TournamentInfoCard from "@/components/TournamentInfoCard.astro";
 import type { CompetitionInfoResponse } from "@/lib/api/official-types";
 import { CompetitionFormatter } from "@/lib/utils/competition-formatter";
@@ -35,7 +34,6 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
   title={tournament ? `${tournament.name} - Tournament Info` : "Tournament Info"}
   description={tournament ? `Details about ${tournament.name} tournament including surface, prize money, and venue information.` : "Tournament information"}
 >
-  <Header />
 
   <div class="max-w-6xl mx-auto px-4 py-4">
       <!-- Back Navigation -->
@@ -45,19 +43,19 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
 
       <!-- Error State -->
       {error && (
-        <div class="card bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 p-4 text-center">
+        <div class="panel bg-negative dark:bg-negative/20 border-red-200 dark:border-red-800 p-4 text-center">
           <div class="text-2xl mb-2">⚠️</div>
-          <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Tournament</h3>
-          <p class="text-red-600 dark:text-red-300 mb-3">{error}</p>
+          <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Tournament</h3>
+          <p class="text-negative dark:text-negative mb-3">{error}</p>
           <button onclick="window.location.reload()" class="btn-outline">Try Again</button>
         </div>
       )}
 
       <!-- Loading State -->
       {!tournament && !error && (
-        <div class="card p-8 text-center">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-tennis-600"></div>
-          <p class="mt-2 text-surface-600 dark:text-surface-400">Loading tournament information...</p>
+        <div class="panel p-8 text-center">
+          <div class="inline-block animate-spin h-8 w-8 border-b-2 border-rule-strong"></div>
+          <p class="mt-2 text-ink-2">Loading tournament information...</p>
         </div>
       )}
 
@@ -69,7 +67,7 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
 
           <!-- Children Tournaments -->
           {tournamentData?.competition.children && tournamentData.competition.children.length > 0 && (
-            <div class="card p-4">
+            <div class="panel p-4">
               <h3 class="text-lg font-semibold mb-3">Tournament Events</h3>
               <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
                 {tournamentData.competition.children.map((child) => {
@@ -82,19 +80,19 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
                   return (
                     <a
                       href={`/tournament/${child.competition.id}`}
-                      class="block p-3 rounded-lg bg-surface-50 dark:bg-surface-800/50 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+                      class="block p-3 bg-paper hover:bg-paper-2 transition-colors"
                     >
-                      <div class="font-medium text-surface-900 dark:text-surface-100 mb-1 text-sm">
+                      <div class="font-medium text-ink mb-1 text-sm">
                         {childDisplay.name}
                       </div>
-                      <div class="text-xs text-surface-600 dark:text-surface-400 flex items-center gap-1">
+                      <div class="text-xs text-ink-2 flex items-center gap-1">
                         <span class={CompetitionFormatter.getLevelColor(childDisplay.level.toLowerCase().replace(/\s+/g, '_'))}>
                           {childDisplay.level}
                         </span>
                         <span>•</span>
                         <span>{childDisplay.gender} {childDisplay.type}</span>
                       </div>
-                      <div class="text-xs text-surface-500 dark:text-surface-500 mt-1">
+                      <div class="text-xs text-ink-3 mt-1">
                         {CompetitionFormatter.getSurfaceIcon(childDisplay.surface || 'Hard')} {childDisplay.surface || 'Hard'}
                       </div>
                     </a>
@@ -105,34 +103,34 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
           )}
 
           <!-- Tournament Quick Stats -->
-          <div class="card p-4">
+          <div class="panel p-4">
             <h3 class="text-lg font-semibold mb-3">Tournament Details</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
-                <h4 class="font-medium text-surface-900 dark:text-surface-100 mb-2 text-sm">Classification</h4>
+              <div class="bg-paper p-3">
+                <h4 class="font-medium text-ink mb-2 text-sm">Classification</h4>
                 <div class="space-y-1 text-xs">
                   <div class="flex justify-between">
-                    <span class="text-surface-600 dark:text-surface-400">Level:</span>
-                    <span class={`font-medium ${CompetitionFormatter.getLevelColor(tournament.level.toLowerCase().replace(/\s+/g, '_'))}`}>
+                    <span class="text-ink-2">Level:</span>
+                    <span class={`font-medium ${CompetitionFormatter.getLevelColor(tournament.level.toLowerCase().replace(/\s+/g,'_'))}`}>
                       {tournament.level}
                     </span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-surface-600 dark:text-surface-400">Category:</span>
+                    <span class="text-ink-2">Category:</span>
                     <span class="font-medium">{tournament.category}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-surface-600 dark:text-surface-400">Type:</span>
+                    <span class="text-ink-2">Type:</span>
                     <span class="font-medium">{tournament.gender} {tournament.type}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
-                <h4 class="font-medium text-surface-900 dark:text-surface-100 mb-2 text-sm">Playing Conditions</h4>
+              <div class="bg-paper p-3">
+                <h4 class="font-medium text-ink mb-2 text-sm">Playing Conditions</h4>
                 <div class="space-y-1 text-xs">
                   <div class="flex justify-between">
-                    <span class="text-surface-600 dark:text-surface-400">Surface:</span>
+                    <span class="text-ink-2">Surface:</span>
                     <span class="font-medium flex items-center gap-1">
                       {CompetitionFormatter.getSurfaceIcon(tournament.surface || 'Hard')}
                       {tournament.surface || 'Hard'}
@@ -140,25 +138,25 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
                   </div>
                   {tournament.venue && (
                     <div class="flex justify-between">
-                      <span class="text-surface-600 dark:text-surface-400">Venue:</span>
+                      <span class="text-ink-2">Venue:</span>
                       <span class="font-medium truncate">{tournament.venue.complex}</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
-                <h4 class="font-medium text-surface-900 dark:text-surface-100 mb-2 text-sm">Prize Information</h4>
+              <div class="bg-paper p-3">
+                <h4 class="font-medium text-ink mb-2 text-sm">Prize Information</h4>
                 <div class="text-xs">
                   {tournament.prizeMoney ? (
                     <div class="flex justify-between">
-                      <span class="text-surface-600 dark:text-surface-400">Prize Pool:</span>
+                      <span class="text-ink-2">Prize Pool:</span>
                       <span class="font-medium text-green-600 dark:text-green-400">
                         {CompetitionFormatter.formatPrizeMoney(tournament.prizeMoney, !tournament.prizeMoney || tournament.prizeMoney.currency === 'USD')}
                       </span>
                     </div>
                   ) : (
-                    <div class="text-surface-500 dark:text-surface-500">Not available</div>
+                    <div class="text-ink-3">Not available</div>
                   )}
                 </div>
               </div>
@@ -166,8 +164,8 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
           </div>
 
           <!-- API Information -->
-          <div class="bg-surface-50 dark:bg-surface-800/50 rounded-lg p-3">
-            <div class="text-xs text-surface-600 dark:text-surface-400 space-y-1">
+          <div class="bg-paper p-3">
+            <div class="text-xs text-ink-2 space-y-1">
               <p><strong>ID:</strong> {tournament.id}</p>
               <p><strong>Source:</strong> Jeff Sackmann's ATP Tennis Database</p>
               <p><strong>Updated:</strong> {tournamentData ? new Date(tournamentData.generated_at).toLocaleString() : 'Unknown'}</p>

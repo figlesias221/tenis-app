@@ -1,13 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
 ---
 
 <Layout
   title="Head to Head Comparison - Tennis Live"
   description="Compare any two tennis players head-to-head. View match history, statistics, and recent encounters between ATP and WTA players."
 >
-  <Header />
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
@@ -25,9 +23,9 @@ import Header from "@/components/Header.astro";
     <!-- Player Selection Cards -->
     <div class="grid lg:grid-cols-2 gap-8 mb-12">
       <!-- Player 1 Selection -->
-      <div class="card-elevated p-6">
+      <div class="panel p-6">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-electric-500 to-electric-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+          <div class="w-12 h-12 from-ink-3 to-ink-2 flex items-center justify-center text-paper text-xl font-bold">
             1
           </div>
           <h2 class="text-heading-3">Select First Player</h2>
@@ -36,7 +34,7 @@ import Header from "@/components/Header.astro";
         <div class="space-y-4">
           <!-- Tour Selection -->
           <div>
-            <label for="tour1" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+            <label for="tour1" class="block text-sm font-medium text-ink-2 mb-2">
               Tour
             </label>
             <select id="tour1" class="select-field">
@@ -47,7 +45,7 @@ import Header from "@/components/Header.astro";
 
           <!-- Player Selection -->
           <div>
-            <label for="player1" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+            <label for="player1" class="block text-sm font-medium text-ink-2 mb-2">
               Player
             </label>
             <select id="player1" class="select-field">
@@ -56,12 +54,12 @@ import Header from "@/components/Header.astro";
           </div>
 
           <!-- Selected Player Display -->
-          <div id="player1-display" class="hidden card p-4 bg-electric-50/50 dark:bg-electric-950/20 border-electric-200 dark:border-electric-800">
+          <div id="player1-display" class="hidden panel p-4 bg-paper/50 border-rule">
             <div class="flex items-center gap-3">
               <div id="player1-flag"></div>
               <div>
-                <div id="player1-name" class="font-semibold text-surface-900 dark:text-surface-100"></div>
-                <div id="player1-info" class="text-sm text-surface-600 dark:text-surface-400"></div>
+                <div id="player1-name" class="font-semibold text-ink"></div>
+                <div id="player1-info" class="text-sm text-ink-2"></div>
               </div>
             </div>
           </div>
@@ -69,9 +67,9 @@ import Header from "@/components/Header.astro";
       </div>
 
       <!-- Player 2 Selection -->
-      <div class="card-elevated p-6">
+      <div class="panel p-6">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-tennis-500 to-tennis-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+          <div class="w-12 h-12 from-ink-3 to-ink-2 flex items-center justify-center text-paper text-xl font-bold">
             2
           </div>
           <h2 class="text-heading-3">Select Second Player</h2>
@@ -80,7 +78,7 @@ import Header from "@/components/Header.astro";
         <div class="space-y-4">
           <!-- Tour Selection -->
           <div>
-            <label for="tour2" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+            <label for="tour2" class="block text-sm font-medium text-ink-2 mb-2">
               Tour
             </label>
             <select id="tour2" class="select-field">
@@ -91,7 +89,7 @@ import Header from "@/components/Header.astro";
 
           <!-- Player Selection -->
           <div>
-            <label for="player2" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+            <label for="player2" class="block text-sm font-medium text-ink-2 mb-2">
               Player
             </label>
             <select id="player2" class="select-field">
@@ -100,12 +98,12 @@ import Header from "@/components/Header.astro";
           </div>
 
           <!-- Selected Player Display -->
-          <div id="player2-display" class="hidden card p-4 bg-tennis-50/50 dark:bg-tennis-950/20 border-tennis-200 dark:border-tennis-800">
+          <div id="player2-display" class="hidden panel p-4 bg-paper/50 border-rule">
             <div class="flex items-center gap-3">
               <div id="player2-flag"></div>
               <div>
-                <div id="player2-name" class="font-semibold text-surface-900 dark:text-surface-100"></div>
-                <div id="player2-info" class="text-sm text-surface-600 dark:text-surface-400"></div>
+                <div id="player2-name" class="font-semibold text-ink"></div>
+                <div id="player2-info" class="text-sm text-ink-2"></div>
               </div>
             </div>
           </div>
@@ -126,7 +124,7 @@ import Header from "@/components/Header.astro";
     <!-- Results Section -->
     <div id="results-section" class="hidden">
       <!-- Comparison Header -->
-      <div id="comparison-header" class="card-elevated p-6 mb-8">
+      <div id="comparison-header" class="panel p-6 mb-8">
         <div class="grid md:grid-cols-3 gap-6 items-center">
           <!-- Player 1 -->
           <div id="comparison-player1" class="text-center">
@@ -135,11 +133,11 @@ import Header from "@/components/Header.astro";
 
           <!-- VS and Stats -->
           <div class="text-center">
-            <div class="text-4xl font-bold text-surface-400 dark:text-surface-600 mb-2">VS</div>
-            <div id="overall-record" class="text-2xl font-bold text-surface-900 dark:text-surface-100">
+            <div class="text-4xl font-bold text-ink-3 mb-2">VS</div>
+            <div id="overall-record" class="text-2xl font-bold text-ink">
               <!-- Will be populated by JavaScript -->
             </div>
-            <div class="text-sm text-surface-600 dark:text-surface-400">Overall Record</div>
+            <div class="text-sm text-ink-2">Overall Record</div>
           </div>
 
           <!-- Player 2 -->
@@ -150,26 +148,26 @@ import Header from "@/components/Header.astro";
       </div>
 
       <!-- Simple Statistics -->
-      <div class="card-elevated p-6 mb-8">
+      <div class="panel p-6 mb-8">
         <h3 class="text-lg font-semibold mb-4">Match Record</h3>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
           <div>
-            <div id="player1-wins" class="text-3xl font-bold text-tennis-600 dark:text-tennis-400">0</div>
-            <div id="player1-wins-label" class="text-sm text-surface-600 dark:text-surface-400">Player 1</div>
+            <div id="player1-wins" class="text-3xl font-bold text-ink-2">0</div>
+            <div id="player1-wins-label" class="text-sm text-ink-2">Player 1</div>
           </div>
           <div>
-            <div id="total-matches" class="text-3xl font-bold text-surface-900 dark:text-surface-100">0</div>
-            <div class="text-sm text-surface-600 dark:text-surface-400">Total Matches</div>
+            <div id="total-matches" class="text-3xl font-bold text-ink">0</div>
+            <div class="text-sm text-ink-2">Total Matches</div>
           </div>
           <div>
-            <div id="player2-wins" class="text-3xl font-bold text-electric-600 dark:text-electric-400">0</div>
-            <div id="player2-wins-label" class="text-sm text-surface-600 dark:text-surface-400">Player 2</div>
+            <div id="player2-wins" class="text-3xl font-bold text-ink-2">0</div>
+            <div id="player2-wins-label" class="text-sm text-ink-2">Player 2</div>
           </div>
         </div>
       </div>
 
       <!-- Match History -->
-      <div id="match-history" class="card-elevated p-6">
+      <div id="match-history" class="panel p-6">
         <h3 class="text-lg font-semibold mb-6">Match History</h3>
         <div id="matches-list" class="space-y-4">
           <!-- Will be populated by JavaScript -->
@@ -179,15 +177,15 @@ import Header from "@/components/Header.astro";
 
     <!-- Loading State -->
     <div id="loading-state" class="hidden text-center py-12">
-      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-tennis-400 border-r-transparent mb-4"></div>
+      <div class="inline-block h-8 w-8 animate-spin border-4 border-rule-strong border-r-transparent mb-4"></div>
       <p class="text-body">Loading head-to-head data...</p>
     </div>
 
     <!-- Error State -->
-    <div id="error-state" class="hidden card bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 p-6 text-center">
+    <div id="error-state" class="hidden panel bg-negative dark:bg-negative/20 border-red-200 dark:border-red-800 p-6 text-center">
       <div class="text-4xl mb-4">⚠️</div>
-      <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Data</h3>
-      <p id="error-message" class="text-red-600 dark:text-red-300 mb-4"></p>
+      <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Data</h3>
+      <p id="error-message" class="text-negative dark:text-negative mb-4"></p>
       <button id="retry-btn" class="btn-outline">
         Try Again
       </button>
@@ -198,41 +196,41 @@ import Header from "@/components/Header.astro";
       <h2 class="text-heading-3 text-center mb-8">Featured Rivalries</h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Current ATP Stars -->
-        <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
+        <button class="featured-matchup panel p-4 text-left transition-"
                 data-player1="206173" data-player2="207989">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">ATP Champions</span>
-            <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
+            <span class="text-sm font-medium text-ink-2">ATP Champions</span>
+            <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-2 py-1">
               Current
             </span>
           </div>
-          <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+          <div class="text-lg font-bold text-ink">
             Sinner vs Alcaraz
           </div>
         </button>
 
-        <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
+        <button class="featured-matchup panel p-4 text-left transition-"
                 data-player1="104925" data-player2="207989">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Legend vs Rising Star</span>
-            <span class="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-2 py-1 rounded-full">
+            <span class="text-sm font-medium text-ink-2">Legend vs Rising Star</span>
+            <span class="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-2 py-1">
               Classic
             </span>
           </div>
-          <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+          <div class="text-lg font-bold text-ink">
             Djokovic vs Alcaraz
           </div>
         </button>
 
-        <button class="featured-matchup card-elevated p-4 text-left hover:scale-105 transition-transform"
+        <button class="featured-matchup panel p-4 text-left transition-"
                 data-player1="100644" data-player2="126203">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Next Gen</span>
-            <span class="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">
+            <span class="text-sm font-medium text-ink-2">Next Gen</span>
+            <span class="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-2 py-1">
               Rising
             </span>
           </div>
-          <div class="text-lg font-bold text-surface-900 dark:text-surface-100">
+          <div class="text-lg font-bold text-ink">
             Zverev vs Fritz
           </div>
         </button>
@@ -307,7 +305,7 @@ import Header from "@/components/Header.astro";
     if (player) {
       if (flag) flag.innerHTML = `<img src="https://flagcdn.com/w20/${(player.country_code || 'xx').toLowerCase()}.png"
                                alt="${player.country || 'Unknown'}"
-                               class="w-5 h-4 rounded object-cover"
+                               class="w-5 h-4 object-cover"
                                onerror="this.style.display='none'">`;
       if (name) name.textContent = player.name;
       if (info) info.textContent = `#${player.ranking || 'NR'} • ${player.country || 'Unknown'}`;
@@ -393,19 +391,19 @@ import Header from "@/components/Header.astro";
     document.getElementById('comparison-player1')!.innerHTML = `
       <img src="https://flagcdn.com/w40/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
            alt="${selectedPlayer1.country || 'Unknown'}"
-           class="w-8 h-6 rounded mx-auto mb-2"
+           class="w-8 h-6 mx-auto mb-2"
            onerror="this.style.display='none'">
-      <div class="text-xl font-bold text-surface-900 dark:text-surface-100">${selectedPlayer1.name}</div>
-      <div class="text-sm text-surface-600 dark:text-surface-400">#${selectedPlayer1.ranking || 'NR'}</div>
+      <div class="text-xl font-bold text-ink">${selectedPlayer1.name}</div>
+      <div class="text-sm text-ink-2">#${selectedPlayer1.ranking || 'NR'}</div>
     `;
 
     document.getElementById('comparison-player2')!.innerHTML = `
       <img src="https://flagcdn.com/w40/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
            alt="${selectedPlayer2.country || 'Unknown'}"
-           class="w-8 h-6 rounded mx-auto mb-2"
+           class="w-8 h-6 mx-auto mb-2"
            onerror="this.style.display='none'">
-      <div class="text-xl font-bold text-surface-900 dark:text-surface-100">${selectedPlayer2.name}</div>
-      <div class="text-sm text-surface-600 dark:text-surface-400">#${selectedPlayer2.ranking || 'NR'}</div>
+      <div class="text-xl font-bold text-ink">${selectedPlayer2.name}</div>
+      <div class="text-sm text-ink-2">#${selectedPlayer2.ranking || 'NR'}</div>
     `;
 
     document.getElementById('overall-record')!.textContent = `${player1Wins} - ${player2Wins}`;
@@ -477,16 +475,16 @@ import Header from "@/components/Header.astro";
         }
 
         return `
-          <div class="border border-surface-200 dark:border-surface-700 rounded-xl p-4 bg-surface-50/50 dark:bg-surface-800/30">
+          <div class="border border-rule p-4 bg-paper/50">
             <div class="flex items-center justify-between mb-3">
               <div class="min-w-0 flex-1">
-                <div class="font-semibold text-surface-900 dark:text-surface-100 text-sm">${tournament}</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400">
+                <div class="font-semibold text-ink text-sm">${tournament}</div>
+                <div class="text-xs text-ink-3">
                   ${date}${round ? ` • ${round}` : ''}
                 </div>
               </div>
               ${isPlayer1Winner || isPlayer2Winner ?
-                `<div class="text-xs px-2 py-1 rounded-full ${isPlayer1Winner ? 'bg-tennis-100 dark:bg-tennis-900/30 text-tennis-700 dark:text-tennis-300' : 'bg-electric-100 dark:bg-electric-900/30 text-electric-700 dark:text-electric-300'}">
+                `<div class="text-xs px-2 py-1 ${isPlayer1Winner ?'bg-paper-2 text-ink-2' : 'bg-paper-2 text-ink-2'}">
                   ${isPlayer1Winner ? selectedPlayer1.name.split(',')[0] : selectedPlayer2.name.split(',')[0]} wins
                 </div>` : ''
               }
@@ -496,32 +494,32 @@ import Header from "@/components/Header.astro";
               <div class="flex items-center gap-3 min-w-0 flex-1">
                 <img src="https://flagcdn.com/w20/${(selectedPlayer1.country_code || 'xx').toLowerCase()}.png"
                      alt="${selectedPlayer1.country || 'Unknown'}"
-                     class="w-5 h-4 rounded object-cover flex-shrink-0"
+                     class="w-5 h-4 object-cover flex-shrink-0"
                      onerror="this.style.display='none'">
-                <span class="${isPlayer1Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm">
+                <span class="${isPlayer1Winner ?'font-semibold text-ink-2' : 'text-ink-2'} text-sm">
                   ${selectedPlayer1.name.split(',')[0]}
                 </span>
               </div>
 
               <div class="px-4 text-center">
                 ${scoreDisplay ? `
-                  <div class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100 bg-surface-100 dark:bg-surface-800 px-3 py-1 rounded-lg">
+                  <div class="font-mono text-sm font-medium text-ink bg-paper-2 px-3 py-1">
                     ${scoreDisplay}
                   </div>
                 ` : `
-                  <div class="text-surface-500 dark:text-surface-500 text-xs">
+                  <div class="text-ink-3 text-xs">
                     ${winner ? 'W/L' : 'No Score'}
                   </div>
                 `}
               </div>
 
               <div class="flex items-center gap-3 min-w-0 flex-1 justify-end">
-                <span class="${isPlayer2Winner ? 'font-semibold text-tennis-600 dark:text-tennis-400' : 'text-surface-700 dark:text-surface-300'} text-sm">
+                <span class="${isPlayer2Winner ?'font-semibold text-ink-2' : 'text-ink-2'} text-sm">
                   ${selectedPlayer2.name.split(',')[0]}
                 </span>
                 <img src="https://flagcdn.com/w20/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
                      alt="${selectedPlayer2.country || 'Unknown'}"
-                     class="w-5 h-4 rounded object-cover flex-shrink-0"
+                     class="w-5 h-4 object-cover flex-shrink-0"
                      onerror="this.style.display='none'">
               </div>
             </div>
@@ -530,7 +528,7 @@ import Header from "@/components/Header.astro";
       }).join('');
     } else {
       matchesList.innerHTML = `
-        <div class="text-center py-8 text-surface-500 dark:text-surface-500">
+        <div class="text-center py-8 text-ink-3">
           <div class="text-4xl mb-4">🎾</div>
           <p>No previous matches found between these players.</p>
         </div>

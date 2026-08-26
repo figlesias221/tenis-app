@@ -1,0 +1,113 @@
+---
+export const prerender = true;
+
+import Layout from "@/layouts/Layout.astro";
+import CountryFlag from "@/components/CountryFlag.astro";
+import { seasons, seasonRows, availableSeasons, meta } from "@/lib/clutch/data";
+import { shadeStyle, signedPoints } from "@/lib/clutch/format";
+import { COMPONENT_LABELS, COMPONENT_KEYS } from "@/lib/clutch/types";
+
+export function getStaticPaths() {
+  const years = [...new Set(seasons.map((r) => r.y))].sort((a, b) => a - b);
+  return years.map((season) => ({ params: { season: String(season) } }));
+}
+
+const year = Number(Astro.params.season);
+const rows = seasonRows(year);
+const all = availableSeasons();
+const idx = all.indexOf(year);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx < all.length - 1 ? all[idx + 1] : null;
+const fit = meta.fits.find((f) => f.y === year);
+const fmt = (n: number) => n.toLocaleString("en-GB");
+---
+
+<Layout
+  title={`Clutch Index ${year} — The Tennis Almanac`}
+  description={`Who won the moments that mattered in ${year}, ranked against that season's tour.`}
+>
+  <div class="page py-10">
+    <p class="text-kicker">Clutch Index</p>
+    <h1 class="text-heading-1 mt-2 num">{year}</h1>
+    <p class="text-body-large measure mt-4">
+      Ranked against the {year} tour only. A rating of 50 is that season's average,
+      and 10 points is one standard deviation among the men playing that year.
+    </p>
+
+    {
+      fit && (
+        <div class="dl--inline mt-6 border-y border-rule py-3">
+          <div class="dl-row"><dt class="dl-term">Matches</dt><dd class="dl-value">{fmt(fit.matches)}</dd></div>
+          <div class="dl-row"><dt class="dl-term">Qualifiers</dt><dd class="dl-value">{fit.qualifiers}</dd></div>
+          <div class="dl-row"><dt class="dl-term">Tour break points saved</dt><dd class="dl-value">{(fit.tour.bpSaved * 100).toFixed(1)}%</dd></div>
+          <div class="dl-row"><dt class="dl-term">Aces per match</dt><dd class="dl-value">{fit.tour.acesPerMatch.toFixed(1)}</dd></div>
+        </div>
+      )
+    }
+
+    <nav class="mt-6 flex items-center justify-between gap-4">
+      {prev ? <a class="link text-sm" href={`/clutch/${prev}`}>‹ {prev}</a> : <span></span>}
+      <label class="text-note flex items-center gap-2">
+        Season
+        <select class="select-field w-auto" onchange="location.href='/clutch/'+this.value">
+          {all.map((y) => <option value={y} selected={y === year}>{y}</option>)}
+        </select>
+      </label>
+      {next ? <a class="link text-sm" href={`/clutch/${next}`}>{next} ›</a> : <span></span>}
+    </nav>
+
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">{year} leaderboard</p>
+        <p class="text-note"><a class="link" href="/clutch">All-time index ›</a></p>
+      </div>
+
+      <div class="table-scroll">
+        <table class="table table--tight table--sticky">
+          <thead>
+            <tr>
+              <th class="col-rank" scope="col">#</th>
+              <th class="col-name" scope="col">Player</th>
+              <th class="col-num col-hide-sm" scope="col">Matches</th>
+              <th class="col-num col-hide-sm" scope="col">W–L</th>
+              <th class="col-num" scope="col">Clutch</th>
+              {COMPONENT_KEYS.map((k) => (
+                <th class="col-num" scope="col">
+                  {COMPONENT_LABELS[k]}
+                  {meta.weights[k] === 0 && <span class="text-ink-3"> ·0</span>}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              rows.map((r) => (
+                <tr>
+                  <td class="col-rank">{r.rank}</td>
+                  <td class="col-name">
+                    <span class="inline-flex items-baseline gap-1.5">
+                      <CountryFlag countryCode={r.cc} size="small" />
+                      {r.name}
+                    </span>
+                  </td>
+                  <td class="col-num col-hide-sm">{r.m}</td>
+                  <td class="col-num col-hide-sm">{r.w}–{r.m - r.w}</td>
+                  <td class="col-num shade font-semibold" style={shadeStyle(50 + (r.rating - 50) * 2, r.rating >= 50)}>
+                    {r.rating.toFixed(1)}
+                  </td>
+                  {COMPONENT_KEYS.map((k) => (
+                    <td class="col-num shade" style={meta.weights[k] === 0 ? "" : shadeStyle(r.c[k].p, r.c[k].z >= 0)}>
+                      <span class={meta.weights[k] === 0 ? "text-ink-3" : ""}>
+                        {r.c[k].z === 0 ? "—" : signedPoints(r.c[k].r - (r.c[k].r - r.c[k].z * 0.02))}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</Layout>

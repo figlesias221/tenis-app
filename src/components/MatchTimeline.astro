@@ -14,14 +14,14 @@ const { limit = 3 } = Astro.props;
 const matches: any[] = [];
 ---
 
-<div class="bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-4">
-  <h3 class="font-semibold text-surface-900 dark:text-surface-100 mb-4">Recent Matches</h3>
+<div class="bg-white border border-rule p-4">
+  <h3 class="font-semibold text-ink mb-4">Recent Matches</h3>
 
   {matches.length > 0 ? (
     <div class="space-y-3">
       {matches.map((match) => (
-        <div class="flex items-center gap-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg">
-          <div class="text-sm text-surface-600 dark:text-surface-400">
+        <div class="flex items-center gap-3 p-3 bg-paper">
+          <div class="text-sm text-ink-2">
             Match data would appear here
           </div>
         </div>
@@ -30,10 +30,10 @@ const matches: any[] = [];
   ) : (
     <div class="text-center py-8">
       <div class="text-3xl mb-2">🎾</div>
-      <p class="text-surface-600 dark:text-surface-400 text-sm mb-2">
+      <p class="text-ink-2 text-sm mb-2">
         Recent match data not available
       </p>
-      <p class="text-surface-500 dark:text-surface-400 text-xs">
+      <p class="text-ink-3 text-xs">
         Match history would be displayed here with real API data
       </p>
     </div>

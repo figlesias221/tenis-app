@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
 import PlayerHeroSection from "@/components/PlayerHeroSection.astro";
 import StatsVisualization from "@/components/StatsVisualization.astro";
 import MatchTimeline from "@/components/MatchTimeline.astro";
@@ -55,15 +54,14 @@ if (profile) {
 ---
 
 <Layout title={profile ? `${profile.name} - Player Profile` : "Player Profile"} description={profile ? `Detailed profile for tennis player ${profile.name}` : "Player profile information"}>
-  <Header />
 
   {error ? (
     <!-- Error State -->
     <div class="min-h-screen flex items-center justify-center px-4">
-      <div class="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center max-w-md mx-auto">
+      <div class="bg-negative dark:bg-negative/20 border border-red-200 dark:border-red-800 p-6 text-center max-w-md mx-auto">
         <div class="text-2xl mb-2">⚠️</div>
-        <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Profile</h3>
-        <p class="text-red-600 dark:text-red-300 mb-4 text-sm">{error}</p>
+        <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Profile</h3>
+        <p class="text-negative dark:text-negative mb-4 text-sm">{error}</p>
         <a href="/rankings" class="btn-outline text-sm">← Back to Rankings</a>
       </div>
     </div>
@@ -91,7 +89,7 @@ if (profile) {
         </div>
 
         <!-- Head-to-Head Search -->
-        <div class="bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-4">
+        <div class="bg-white border border-rule p-4">
           <HeadToHeadSearch playerId={profile.id} playerName={profile.name} />
         </div>
 
@@ -100,10 +98,10 @@ if (profile) {
   ) : (
     <!-- Loading State -->
     <div class="min-h-screen flex items-center justify-center">
-      <div class="text-center bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-8">
-        <div class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-tennis-400/30 dark:border-tennis-500/30 border-t-tennis-600 dark:border-t-tennis-400"></div>
-        <p class="text-surface-600 dark:text-surface-300 mb-1">Loading player profile...</p>
-        <p class="text-sm text-surface-500 dark:text-surface-400">Please wait while we fetch the latest data</p>
+      <div class="text-center bg-white border border-rule p-8">
+        <div class="mb-4 inline-block h-8 w-8 animate-spin border-4 border-rule-strong/30  "></div>
+        <p class="text-ink-2 mb-1">Loading player profile...</p>
+        <p class="text-sm text-ink-3">Please wait while we fetch the latest data</p>
       </div>
     </div>
   )}

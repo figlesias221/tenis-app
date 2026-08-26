@@ -1,0 +1,281 @@
+---
+export const prerender = true;
+
+import Layout from "@/layouts/Layout.astro";
+import ClutchTable from "@/components/clutch/ClutchTable.astro";
+import ClutchScatter from "@/components/clutch/ClutchScatter.astro";
+import CountryFlag from "@/components/CountryFlag.astro";
+import { career, highlights, meta, availableSeasons } from "@/lib/clutch/data";
+import { surfaceClass } from "@/lib/clutch/format";
+import { COMPONENT_LABELS, COMPONENT_BLURBS, COMPONENT_KEYS } from "@/lib/clutch/types";
+
+const TOP = 100;
+const top = career.slice(0, TOP);
+const fragile = career.slice(-15).reverse();
+
+// Label the extremes on the scatter, not everyone.
+const labelled = [...career.slice(0, 5), ...career.slice(-3)];
+
+const eras = ["all", ...[...new Set(career.map((p) => p.era))].sort()];
+const seasons = availableSeasons();
+
+const totalExcluded = Object.values(meta.excluded).reduce((a, b) => a + b, 0);
+const fmt = (n: number) => n.toLocaleString("en-GB");
+---
+
+<Layout
+  title="The Clutch Index — The Tennis Almanac"
+  description="Who actually wins the moments that matter, 1991–2024. Break-point percentages measured against what each player's ordinary play predicts."
+>
+  <div class="page py-10">
+    <!-- Hero -->
+    <p class="text-kicker">The Clutch Index · {meta.seasons[0]}–{meta.seasons[1]}</p>
+    <h1 class="text-display mt-2 text-balance">Who wins the moments that matter</h1>
+
+    <div class="measure mt-5">
+      <p class="text-body-large">
+        Break points saved is the number every tennis broadcast reaches for when it
+        wants to talk about nerve. Across {fmt(career.length)} careers it tracks a
+        player's ordinary service quality with an R² of <strong class="text-ink"
+          >{meta.premise.serveR2.toFixed(2)}</strong
+        > and a slope of {meta.premise.serveSlope.toFixed(2)}. It is, in other words,
+        mostly a measure of how well someone serves.
+      </p>
+      <p class="text-body mt-4">
+        This page removes that. For every season it predicts what each player
+        <em>should</em> have done under pressure given how he played on ordinary
+        points that year, and ranks him by the gap. Same treatment on return, in
+        tiebreaks, and in deciding sets. Every figure is measured against the men he
+        actually played, never across eras.
+      </p>
+    </div>
+
+    <div class="dl--inline mt-6 border-y border-rule py-3">
+      <div class="dl-row"><dt class="dl-term">Seasons</dt><dd class="dl-value">{meta.seasons[0]}–{meta.seasons[1]}</dd></div>
+      <div class="dl-row"><dt class="dl-term">Matches</dt><dd class="dl-value">{fmt(meta.matchesUsed)}</dd></div>
+      <div class="dl-row"><dt class="dl-term">Players ranked</dt><dd class="dl-value">{fmt(meta.careerQualifiers)}</dd></div>
+      <div class="dl-row"><dt class="dl-term">Scale</dt><dd class="dl-value">50 = average, 10 = one SD</dd></div>
+    </div>
+
+    <!-- The argument, drawn -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">The problem with the usual number</p>
+      </div>
+      <ClutchScatter
+        players={career}
+        labelled={labelled}
+        component="serve"
+        xLabel="Break points saved that ordinary serving predicts"
+        yLabel="Break points actually saved"
+      />
+    </section>
+
+    <!-- What is measured -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">What goes into the rating</p>
+      </div>
+      <div class="grid gap-x-8 gap-y-4 md:grid-cols-2">
+        {
+          COMPONENT_KEYS.map((k) => (
+            <div class="border-t border-rule pt-3">
+              <div class="flex items-baseline justify-between gap-3">
+                <h3 class="text-heading-4">{COMPONENT_LABELS[k]}</h3>
+                <span class="text-note num">
+                  weight {meta.weights[k] === 0 ? "0" : meta.weights[k].toFixed(3)}
+                </span>
+              </div>
+              <p class="text-note mt-1">{COMPONENT_BLURBS[k]}</p>
+              <p class="text-note mt-1">
+                Real signal: <strong class="text-ink-2">{(meta.signalShare[k] * 100).toFixed(1)}%</strong>
+                {meta.signalShare[k] === 0 && " — indistinguishable from chance"}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-body-small measure mt-5">
+        The weights are not chosen. Each component is weighted by how much of the
+        spread between players cannot be explained by sampling noise. Deciding-set
+        record turns out to contain <strong class="text-ink">none</strong>: players
+        are bunched more tightly than chance alone would produce. The most-cited
+        clutch statistic in tennis carries no measurable talent, so it earns a
+        weight of zero on its own.
+      </p>
+    </section>
+
+    <!-- Leaderboard -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">The leaderboard · top {TOP}</p>
+        <p class="text-note">Click any player for the breakdown</p>
+      </div>
+
+      <nav class="segbar mb-4" aria-label="Filter by era">
+        {
+          eras.map((era) => (
+            <a href="#" data-era-filter={era} class:list={["seg", era === "all" && "seg-on"]}>
+              {era === "all" ? "All eras" : era}
+            </a>
+          ))
+        }
+      </nav>
+      <p class="text-note mb-3">
+        Era filters hide rows. They never re-rank: a player's rating is his standing
+        against his own contemporaries either way.
+      </p>
+
+      <ClutchTable players={top} weights={meta.weights} />
+    </section>
+
+    <!-- Highlights -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">Single best performances</p>
+      </div>
+      <div class="table-scroll">
+        <table class="table table--tight">
+          <thead>
+            <tr>
+              <th class="col-name" scope="col">Player</th>
+              <th class="col-meta col-hide-sm" scope="col">Match</th>
+              <th class="col-meta" scope="col">Surface</th>
+              <th class="col-num" scope="col">Break points</th>
+              <th class="col-num" scope="col">Above expected</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              highlights.map((h) => (
+                <tr>
+                  <td class="col-name">
+                    <span class="inline-flex items-baseline gap-1.5">
+                      <CountryFlag countryCode={h.cc} size="small" />
+                      {h.name}
+                    </span>
+                  </td>
+                  <td class="col-meta col-hide-sm">
+                    v {h.oppName} · {h.tourney} {h.y} · {h.round} · {h.score}
+                  </td>
+                  <td class="col-meta">
+                    <span class:list={["tag", surfaceClass(h.surface)]}>{h.surface}</span>
+                  </td>
+                  <td class="col-num">
+                    saved {h.bpSaved}/{h.bpFaced}, won {h.bpWon}/{h.bpAgainst}
+                  </td>
+                  <td class="col-num font-semibold">+{h.above.toFixed(1)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Most fragile -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">The other end</p>
+      </div>
+      <p class="text-body-small measure mb-4">
+        These are tour regulars whose break-point and tiebreak results came in below
+        what their ordinary play predicts. Over a long career that gap is unlikely to
+        be pure noise — but a rating of 30 is two standard deviations from average,
+        not a character flaw. Several of these men are excellent players who happen
+        to convert less often than their baseline says they should.
+      </p>
+      <ClutchTable players={fragile} weights={meta.weights} expandable={false} />
+    </section>
+
+    <!-- Seasons -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">By season</p>
+      </div>
+      <div class="flex flex-wrap gap-x-3 gap-y-1">
+        {seasons.map((y) => <a class="link text-sm num" href={`/clutch/${y}`}>{y}</a>)}
+      </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="section">
+      <div class="section-head">
+        <p class="text-kicker">Method</p>
+      </div>
+
+      <div class="measure">
+        <p class="text-body">
+          For each season, each component is fitted as an ordinary least-squares
+          regression of the pressure rate on the corresponding ordinary rate, across
+          that season's qualifying players. A player's residual — how far above or
+          below the fitted line he came in — is the raw measurement.
+        </p>
+        <p class="text-body mt-3">
+          Residuals are then shrunk toward zero by empirical Bayes: each component's
+          spread is split into the part binomial sampling noise would produce and the
+          part it cannot, and a player keeps only his share of the second. Without
+          this the leaderboard fills with players who had one good year over a few
+          hundred break points. Career figures are opportunity-weighted across
+          seasons, restandardised across the pool, combined with the weights above,
+          and expressed as 50 + 10 standard deviations.
+        </p>
+        <p class="text-body mt-3">
+          Standardising <em>within</em> each season is what makes the eras
+          comparable. Between 1991 and 2024 the tour-wide break-point-save rate rose
+          from {(meta.fits[0].tour.bpSaved * 100).toFixed(1)}% to {(meta.fits[meta.fits.length - 1].tour.bpSaved * 100).toFixed(1)}%
+          and aces per match from {meta.fits[0].tour.acesPerMatch.toFixed(1)} to {meta.fits[meta.fits.length - 1].tour.acesPerMatch.toFixed(1)}.
+          A single pool across all 34 seasons would hand modern players an advantage
+          that has nothing to do with nerve.
+        </p>
+        <p class="text-body mt-3">
+          What this supports: <em>relative to the men he actually played, X performed
+          N standard deviations above the line.</em> What it does not support: that
+          one era's clutch equals another's in absolute terms.
+        </p>
+      </div>
+
+      <h3 class="text-heading-4 mt-6">Qualification</h3>
+      <div class="dl mt-2 max-w-md">
+        <div class="dl-row"><dt class="dl-term">Career</dt><dd class="dl-value">{meta.thresholds.careerMatches}+ matches, {meta.thresholds.careerBpFaced}+ break points faced, {meta.thresholds.careerSeasons}+ qualifying seasons</dd></div>
+        <div class="dl-row"><dt class="dl-term">Season</dt><dd class="dl-value">{meta.thresholds.seasonMatches}+ matches, {meta.thresholds.seasonBpFaced}+ break points faced</dd></div>
+      </div>
+
+      <h3 class="text-heading-4 mt-6">What is excluded, and why</h3>
+      <div class="table-scroll mt-2 max-w-lg">
+        <table class="table table--tight">
+          <tbody>
+            {
+              Object.entries(meta.excluded).map(([rule, n]) => (
+                <tr>
+                  <td class="col-name">{rule}</td>
+                  <td class="col-num">{fmt(n)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="col-name">Excluded of {fmt(meta.matchesSeen)} seen</td>
+              <td class="col-num">{fmt(totalExcluded)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="text-note measure mt-3">
+        Team events go because Davis Cup, the Laver Cup and the United Cup use
+        inconsistent formats and stat coverage, and the Next Gen Finals uses no-ad
+        scoring — which makes every deuce a break point and would poison both
+        break-point components outright. Retirements go entirely rather than
+        partially: their serve figures stop mid-set and their set count breaks
+        deciding-set detection.
+      </p>
+
+      <p class="text-note mt-6">
+        Match records compiled by <strong class="text-ink-2">Jeff Sackmann</strong>,
+        published as <em>tennis_atp</em> under CC BY-NC-SA 4.0. Computed
+        {meta.generatedAt}.
+      </p>
+    </section>
+  </div>
+</Layout>

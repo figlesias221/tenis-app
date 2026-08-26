@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
 import RankingsTable from "@/components/RankingsTable.astro";
 import { tennisApi } from "@/lib/api/tennisApi";
 
@@ -35,7 +34,6 @@ try {
 ---
 
 <Layout title={`${rankingType} Rankings - Tennis Live`} description={`Live ${rankingType} Rankings - All Players`}>
-  <Header />
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
@@ -47,23 +45,21 @@ try {
         </div>
 
         <!-- Tour Toggle -->
-        <div class="toggle-container">
+        <div class="segbar">
           <a
             href="/rankings?type=ATP"
-            class={`toggle-item ${
-              rankingType === 'ATP'
-                ? 'toggle-item-active-atp'
-                : 'toggle-item-inactive'
+            class={`seg ${ rankingType ==='ATP'
+                ? 'seg seg-on'
+                : 'seg'
             }`}
           >
             ATP
           </a>
           <a
             href="/rankings?type=WTA"
-            class={`toggle-item ${
-              rankingType === 'WTA'
-                ? 'toggle-item-active-wta'
-                : 'toggle-item-inactive'
+            class={`seg ${ rankingType ==='WTA'
+                ? 'seg seg-on'
+                : 'seg'
             }`}
           >
             WTA
@@ -81,12 +77,12 @@ try {
           <!-- Year Selector -->
           {availableYears.length > 1 && (
             <div>
-              <label for="ranking-year" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              <label for="ranking-year" class="block text-sm font-medium text-ink-2 mb-2">
                 Select Year
               </label>
               <select
                 id="ranking-year"
-                class="w-full px-4 py-2 bg-surface-100 dark:bg-surface-800 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 focus:outline-none focus:border-tennis-500 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200"
+                class="w-full px-4 py-2 bg-paper-2 border border-rule text-ink focus:outline-none focus:border-rule-strong focus:ring-2 focus:ring-rule transition-all duration-200"
               >
                 {availableYears.map(year => (
                   <option value={year} selected={selectedDate?.startsWith(year.toString())}>
@@ -100,12 +96,12 @@ try {
           <!-- Date Selector -->
           {availableDates.length > 0 && (
             <div>
-              <label for="ranking-date" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              <label for="ranking-date" class="block text-sm font-medium text-ink-2 mb-2">
                 Select Ranking Date
               </label>
               <select
                 id="ranking-date"
-                class="w-full px-4 py-2 bg-surface-100 dark:bg-surface-800 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 focus:outline-none focus:border-tennis-500 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200"
+                class="w-full px-4 py-2 bg-paper-2 border border-rule text-ink focus:outline-none focus:border-rule-strong focus:ring-2 focus:ring-rule transition-all duration-200"
               >
                 <option value="">Latest Rankings</option>
                 {availableDates.map(date => (
@@ -124,7 +120,7 @@ try {
         </div>
 
         {availableYears.length > 1 && (
-          <p class="text-xs text-surface-500 dark:text-surface-400 mt-3 text-center">
+          <p class="text-xs text-ink-3 mt-3 text-center">
             Historical rankings available: {availableYears.join(', ')}
           </p>
         )}
@@ -132,10 +128,10 @@ try {
     </div>
 
       {error ? (
-        <div class="card bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 p-6 text-center max-w-md mx-auto">
+        <div class="panel bg-negative dark:bg-negative/20 border-red-200 dark:border-red-800 p-6 text-center max-w-md mx-auto">
           <div class="text-4xl mb-4">⚠️</div>
-          <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Rankings</h3>
-          <p class="text-red-600 dark:text-red-300 mb-4">{error}</p>
+          <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Rankings</h3>
+          <p class="text-negative dark:text-negative mb-4">{error}</p>
           <button
             onclick="window.location.reload()"
             class="btn-outline"
@@ -147,7 +143,7 @@ try {
         <RankingsTable rankings={rankings} currentPage={currentPage} />
       ) : (
         <div class="text-center py-12">
-          <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-tennis-400 border-r-transparent mb-4"></div>
+          <div class="inline-block h-8 w-8 animate-spin border-4 border-rule-strong border-r-transparent mb-4"></div>
           <p class="text-body">Loading rankings...</p>
         </div>
       )}

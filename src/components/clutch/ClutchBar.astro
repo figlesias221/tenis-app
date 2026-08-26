@@ -1,0 +1,80 @@
+---
+/**
+ * A diverging bar: how far a player sat above or below what the era model
+ * expected of him. Zero is the centre, and the only two colours are the
+ * validated positive/negative pair.
+ *
+ * Server-rendered SVG. No library, no client JS.
+ */
+interface Props {
+  label: string;
+  observed: number;
+  expected: number;
+  z: number;
+  n: number;
+  unit: string;
+  /** Clamp point in z units. Anything beyond is drawn at full width. */
+  max?: number;
+}
+
+const { label, observed, expected, z, n, unit, max = 2.5 } = Astro.props;
+
+const W = 300;
+const H = 22;
+const MID = W / 2;
+const clamped = Math.max(-max, Math.min(max, z));
+const half = (Math.abs(clamped) / max) * (MID - 8);
+const positive = z >= 0;
+const delta = (observed - expected) * 100;
+
+const title =
+  n > 0
+    ? `${label}: ${(observed * 100).toFixed(1)}% against an expected ${(expected * 100).toFixed(1)}%, over ${n.toLocaleString("en-GB")} ${unit}`
+    : `${label}: no qualifying opportunities`;
+---
+
+<svg
+  viewBox={`0 0 ${W} ${H}`}
+  width="100%"
+  height={H}
+  role="img"
+  aria-label={title}
+  class="block overflow-visible"
+>
+  <title>{title}</title>
+
+  <!-- Track -->
+  <rect x="0" y={H / 2 - 5} width={W} height="10" fill="rgb(var(--paper-3))"></rect>
+
+  {
+    n > 0 && half > 0.5 && (
+      <rect
+        x={positive ? MID : MID - half}
+        y={H / 2 - 5}
+        width={half}
+        height="10"
+        fill={positive ? "rgb(var(--positive) / 0.85)" : "rgb(var(--negative) / 0.85)"}
+      />
+    )
+  }
+
+  <!-- Zero line, drawn over the fill so the centre always reads -->
+  <line
+    x1={MID}
+    x2={MID}
+    y1="1"
+    y2={H - 1}
+    stroke="rgb(var(--ink))"
+    stroke-width="1"
+  ></line>
+</svg>
+
+<span class="sr-only">{title}</span>
+{
+  n > 0 && (
+    <span class="text-note num tabular-nums">
+      {delta >= 0 ? "+" : ""}
+      {delta.toFixed(1)} pts
+    </span>
+  )
+}

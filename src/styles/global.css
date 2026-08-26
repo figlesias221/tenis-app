@@ -2,469 +2,523 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   Type
+   One webfont, self-hosted, ~50 KB. Display and prose are set in it; every
+   figure is set in the system sans stack instead, which guarantees tabular
+   alignment at no download cost and gives the almanac its ledger contrast
+   between running text and numbers.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Source Serif 4 Variable";
+  src: url("/fonts/source-serif-4-latin-wght-normal.woff2") format("woff2-variations");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched fallback so the swap costs no layout shift. */
+@font-face {
+  font-family: "Source Serif Fallback";
+  src: local("Georgia"), local("Times New Roman"), local("Times");
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+  size-adjust: 103%;
+}
+
 @layer base {
   :root {
     color-scheme: light;
-    /* Premium Light Theme */
-    --theme-bg: 250 250 250;
-    --theme-link: 14 165 233;
-    --theme-text: 15 15 15;
-    --theme-accent: 34 197 94;
-    --theme-accent-2: 14 165 233;
 
-    /* High-quality surfaces */
-    --surface-primary: 255 255 255;
-    --surface-secondary: 248 250 252;
-    --surface-tertiary: 241 245 249;
-    --border-primary: 226 232 240;
-    --border-secondary: 203 213 225;
+    /* Paper and ink. Warm off-white, warm near-black. */
+    --paper: 250 248 244;
+    --paper-2: 244 241 235;
+    --paper-3: 236 232 224;
+    --ink: 24 23 21;
+    --ink-2: 61 58 54;
+    --ink-3: 107 102 95;
 
-    /* Premium gradients */
-    --gradient-tennis: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    --gradient-electric: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-    --gradient-premium: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    --gradient-header: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%);
-    --gradient-mesh: radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.12) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
-    --gradient-text-primary: linear-gradient(135deg, #0f172a 0%, #334155 100%);
-    --gradient-text-accent: linear-gradient(135deg, #22c55e 0%, #0ea5e9 100%);
+    /* Rules. --rule is a hairline and is decorative only; anything that is
+       the sole boundary of an interactive control must use --rule-strong. */
+    --rule: 214 209 199;
+    --rule-strong: 142 135 121;
+
+    /* Court surfaces. The only chromatic accents on the site, and they are
+       only ever used to mean the surface they name.
+       Stepped with the palette validator, not by eye: these three clear a
+       CVD deltaE of 14.8 against each other (protanopia, worst pair) on this
+       ground. Carpet is deliberately NOT a fourth hue - four mutually
+       distinguishable hues will not fit the lightness band, and carpet has
+       not been used on tour since 2009, so it takes the neutral. */
+    --clay: 206 123 44;
+    --grass: 41 99 40;
+    --hard: 17 96 168;
+    --carpet: 107 102 95;
+
+    --positive: 41 99 40;
+    --negative: 206 123 44;
+    --focus: 28 90 140;
+
+    --font-display: "Source Serif 4 Variable", "Source Serif Fallback", Georgia,
+      "Times New Roman", serif;
+    --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+      Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
 
   :root.dark {
     color-scheme: dark;
-    /* Premium Dark Theme */
-    --theme-bg: 15 15 15;
-    --theme-link: 56 189 248;
-    --theme-text: 248 250 252;
-    --theme-accent: 74 222 128;
-    --theme-accent-2: 56 189 248;
 
-    /* High-quality dark surfaces */
-    --surface-primary: 24 24 27;
-    --surface-secondary: 39 39 42;
-    --surface-tertiary: 63 63 70;
-    --border-primary: 63 63 70;
-    --border-secondary: 82 82 91;
+    /* Ink on slate, not inverted paper. Cool ground, warm bone text. */
+    --paper: 22 24 27;
+    --paper-2: 29 32 36;
+    --paper-3: 38 42 47;
+    --ink: 232 229 221;
+    --ink-2: 190 186 177;
+    --ink-3: 143 140 133;
 
-    /* Premium dark gradients */
-    --gradient-tennis: linear-gradient(135deg, #22c55e 0%, #34d399 100%);
-    --gradient-electric: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
-    --gradient-premium: linear-gradient(135deg, #18181b 0%, #27272a 100%);
-    --gradient-header: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(39, 39, 42, 0.95) 100%);
-    --gradient-mesh: radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
-    --gradient-text-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    --gradient-text-accent: linear-gradient(135deg, #34d399 0%, #38bdf8 100%);
+    --rule: 55 60 66;
+    --rule-strong: 103 110 119;
+
+    /* Re-stepped for this ground rather than lightened from the light set:
+       CVD deltaE 11.2 on the worst pair. */
+    --clay: 211 121 44;
+    --grass: 43 111 62;
+    --hard: 78 152 224;
+    --carpet: 143 140 133;
+
+    --positive: 43 111 62;
+    --negative: 211 121 44;
+    --focus: 121 180 224;
   }
 
   html {
-    @apply h-full scroll-smooth;
+    font-family: var(--font-display);
+    /* Tabular lining figures everywhere by default. This is a stats site;
+       prose opts out with .measure, not the other way round. */
+    font-variant-numeric: tabular-nums lining-nums;
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Keep base body simple; page layouts manage width/padding */
-  html body {
-    @apply min-h-screen font-sans antialiased;
+  body {
+    background-color: rgb(var(--paper));
+    color: rgb(var(--ink-2));
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    color: rgb(var(--ink));
+    font-weight: 600;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--focus));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: rgb(var(--ink) / 0.12);
   }
 }
 
 @layer components {
-  .cactus-link {
-    @apply break-words hover:text-link;
+  /* --- Structure ------------------------------------------------------- */
+
+  .page {
+    @apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+    max-width: 72rem;
+  }
+  .page--narrow { max-width: 60rem; }
+
+  /* Prose measure. Also the one place proportional figures are wanted. */
+  .measure {
+    max-width: 66ch;
+    font-variant-numeric: normal;
   }
 
-  .title {
-    @apply text-2xl font-semibold text-accent;
+  .rule { border-top: 1px solid rgb(var(--rule)); }
+  .rule-heavy { border-top: 2px solid rgb(var(--ink)); }
+
+  /* The almanac section: a heavy rule, a kicker, then content. */
+  .section {
+    border-top: 2px solid rgb(var(--ink));
+    padding-top: 0.75rem;
+    margin-top: 2.5rem;
   }
 
-  /* Premium Button Components */
+  .section-head {
+    @apply flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1;
+    margin-bottom: 1rem;
+  }
+
+  /* A panel is a ruled block, never a floating card. */
+  .panel {
+    border: 1px solid rgb(var(--rule));
+    background: rgb(var(--paper-2));
+    padding: 1rem 1.125rem;
+  }
+
+  /* --- Type scale ------------------------------------------------------ */
+
+  .text-display {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    color: rgb(var(--ink));
+  }
+  .text-heading-1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.125rem, 1.6rem + 2.2vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1.06;
+    letter-spacing: -0.018em;
+    color: rgb(var(--ink));
+  }
+  .text-heading-2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.625rem, 1.3rem + 1.3vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.014em;
+    color: rgb(var(--ink));
+  }
+  .text-heading-3 {
+    font-family: var(--font-display);
+    @apply text-xl md:text-[1.375rem];
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: rgb(var(--ink));
+  }
+  .text-heading-4 {
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: rgb(var(--ink));
+  }
+
+  /* The small-caps label that opens every section. */
+  .text-kicker {
+    font-family: var(--font-ui);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(var(--ink-3));
+  }
+
+  /* The standfirst under a headline. Serif, deliberately. */
+  .text-body-large {
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    color: rgb(var(--ink-2));
+  }
+  .text-body {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgb(var(--ink-2));
+  }
+  .text-body-small {
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: rgb(var(--ink-2));
+  }
+  .text-note {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: rgb(var(--ink-3));
+  }
+
+  .text-figure {
+    font-family: var(--font-ui);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: rgb(var(--ink));
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .text-figure-sm {
+    font-family: var(--font-ui);
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1;
+    color: rgb(var(--ink));
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* --- Links and controls ---------------------------------------------- */
+
+  .link {
+    color: rgb(var(--ink));
+    text-decoration: underline;
+    text-underline-offset: 0.14em;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgb(var(--rule-strong));
+    transition: text-decoration-color 120ms ease;
+  }
+  .link:hover { text-decoration-color: rgb(var(--ink)); }
+
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-tennis-500 to-tennis-600 hover:from-tennis-600 hover:to-tennis-700 text-white font-semibold rounded-xl shadow-tennis transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95;
+    @apply inline-flex items-center justify-center px-4 py-2;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: rgb(var(--ink));
+    color: rgb(var(--paper));
+    border: 1px solid rgb(var(--ink));
   }
-
-  .btn-secondary {
-    @apply inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-electric-500 to-electric-600 hover:from-electric-600 hover:to-electric-700 text-white font-semibold rounded-xl shadow-electric transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95;
-  }
+  .btn-primary:hover { background: rgb(var(--ink-2)); border-color: rgb(var(--ink-2)); }
 
   .btn-outline {
-    @apply inline-flex items-center gap-2 px-6 py-3 border-2 border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-900 dark:text-surface-100 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-premium active:scale-95;
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center gap-2 px-4 py-2 hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-700 dark:text-surface-300 font-medium rounded-lg transition-all duration-200 hover:scale-105 active:scale-95;
-  }
-
-  /* Premium Card Components */
-  .card {
-    @apply bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-2xl shadow-premium hover:shadow-lg transition-all duration-300 overflow-hidden;
-  }
-
-  .card-elevated {
-    @apply bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden;
-  }
-
-  .card-glass {
-    @apply bg-surface-50/80 dark:bg-surface-900/80 backdrop-blur-lg border border-surface-200/50 dark:border-surface-700/50 rounded-2xl shadow-glass transition-all duration-300 overflow-hidden;
-  }
-
-  /* Header Glass - Consistent Clean Design */
-  .header-glass {
-    background: rgb(248, 250, 252);
-    border-bottom: 1px solid rgb(226, 232, 240);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  :root.dark .header-glass {
-    background: rgb(24, 24, 27);
-    border-bottom: 1px solid rgb(63, 63, 70);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Premium Navigation Styles */
-  .nav-link-premium {
-    @apply relative inline-flex items-center gap-2 px-4 py-2.5 text-surface-700 dark:text-surface-300 font-medium rounded-xl transition-all duration-300 hover:text-surface-900 dark:hover:text-surface-100;
-    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
-    border: 1px solid transparent;
-  }
-
-  .nav-link-premium:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-link-premium.active {
-    background: var(--gradient-text-accent);
-    color: white;
+    @apply inline-flex items-center justify-center px-4 py-2;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
     font-weight: 600;
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+    color: rgb(var(--ink));
+    background: transparent;
+    border: 1px solid rgb(var(--rule-strong));
   }
+  .btn-outline:hover { border-color: rgb(var(--ink)); }
 
-  .nav-link-premium::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--gradient-text-accent);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-  }
-
-  .nav-link-premium:hover::after {
-    width: 80%;
-  }
-
-  .nav-link-premium.active::after {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  /* Premium Toggle Component */
-  .toggle-container {
-    @apply inline-flex bg-surface-100/50 dark:bg-surface-800/50 backdrop-blur-sm border border-surface-200/50 dark:border-surface-700/50 rounded-xl p-1 shadow-sm;
-  }
-
-  .toggle-item {
-    @apply px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer relative overflow-hidden;
-  }
-
-  .toggle-item-inactive {
-    @apply text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100 hover:bg-surface-50/50 dark:hover:bg-surface-700/50;
-  }
-
-  .toggle-item-active-atp {
-    @apply bg-gradient-to-r from-tennis-500 to-tennis-600 text-white shadow-sm font-semibold;
-  }
-
-  .toggle-item-active-wta {
-    @apply bg-gradient-to-r from-electric-500 to-electric-600 text-white shadow-sm font-semibold;
-  }
-
-  /* Status Indicators */
-  .status-live {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-full font-semibold text-sm;
-  }
-
-  .status-scheduled {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-full font-semibold text-sm;
-  }
-
-  .status-completed {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-950/50 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 rounded-full font-semibold text-sm;
-  }
-
-  /* Tournament Category Badges */
-  .badge-atp {
-    @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-xs rounded-full shadow-sm;
-  }
-
-  .badge-wta {
-    @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-600 text-white font-bold text-xs rounded-full shadow-sm;
-  }
-
-  .badge-challenger {
-    @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-orange-500 to-amber-600 text-white font-bold text-xs rounded-full shadow-sm;
-  }
-
-  .badge-doubles {
-    @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-purple-500 to-violet-600 text-white font-bold text-xs rounded-full shadow-sm;
-  }
-
-  /* Navigation - Minimal Clean Design */
-  .nav-link {
-    @apply inline-flex items-center gap-2 px-3 lg:px-4 py-2 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100 font-medium rounded-lg transition-all duration-200 hover:bg-surface-100/60 dark:hover:bg-surface-800/40 relative;
-  }
-
-  .nav-link.active {
-    @apply text-tennis-600 dark:text-tennis-400 bg-surface-100/70 dark:bg-surface-800/50 font-semibold;
-  }
-
-  /* Premium Input Components */
-  .input-field {
-    @apply w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-500 focus:outline-none focus:border-tennis-500 dark:focus:border-tennis-400 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200;
-  }
-
+  .input-field,
   .select-field {
-    @apply w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-600 rounded-xl text-surface-900 dark:text-surface-100 focus:outline-none focus:border-tennis-500 dark:focus:border-tennis-400 focus:ring-2 focus:ring-tennis-200 dark:focus:ring-tennis-800 transition-all duration-200 appearance-none cursor-pointer;
+    @apply w-full px-3 py-2;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    color: rgb(var(--ink));
+    background: rgb(var(--paper));
+    border: 1px solid rgb(var(--rule-strong));
+    border-radius: 0;
   }
 
-  /* Live Animation Effects */
-  .pulse-live {
-    @apply animate-pulse-fast;
+  /* Segmented control: an underline, not a pill. */
+  .segbar {
+    @apply inline-flex flex-wrap items-stretch gap-x-5;
+    border-bottom: 1px solid rgb(var(--rule));
+  }
+  .seg {
+    font-family: var(--font-ui);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(var(--ink-3));
+    padding: 0.375rem 0;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .seg:hover { color: rgb(var(--ink)); }
+  .seg-on {
+    color: rgb(var(--ink));
+    box-shadow: inset 0 -2px 0 rgb(var(--ink));
   }
 
-  .glow-live {
-    @apply animate-glow;
+  /* --- Definition list: replaces every stat card on the site ----------- */
+
+  .dl { display: grid; }
+  .dl-row {
+    @apply flex items-baseline justify-between gap-4 py-2;
+    border-bottom: 1px solid rgb(var(--rule));
+  }
+  .dl-row:last-child { border-bottom: 0; }
+  .dl-term {
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    color: rgb(var(--ink-3));
+  }
+  .dl-value {
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: rgb(var(--ink));
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: right;
+  }
+  /* One-line variant for scope summaries. */
+  .dl--inline {
+    @apply flex flex-wrap items-baseline gap-x-6 gap-y-1;
+  }
+  .dl--inline .dl-row {
+    @apply gap-2 border-0 py-0;
   }
 
-  .bounce-score {
-    @apply animate-bounce-subtle;
+  /* --- Tags, swatches, notes ------------------------------------------- */
+
+  .tag {
+    @apply inline-flex items-center px-1.5 py-0.5;
+    font-family: var(--font-ui);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--ink-3));
+    border: 1px solid rgb(var(--rule));
+  }
+  .tag--clay { color: rgb(var(--clay)); border-color: rgb(var(--clay) / 0.5); }
+  .tag--grass { color: rgb(var(--grass)); border-color: rgb(var(--grass) / 0.5); }
+  .tag--hard { color: rgb(var(--hard)); border-color: rgb(var(--hard) / 0.5); }
+  .tag--carpet { color: rgb(var(--carpet)); border-color: rgb(var(--carpet) / 0.5); }
+
+  .swatch {
+    @apply inline-block align-middle;
+    width: 10px;
+    height: 10px;
+    border: 1px solid rgb(var(--rule));
+  }
+  .swatch--clay { background: rgb(var(--clay) / 0.9); }
+  .swatch--grass { background: rgb(var(--grass) / 0.9); }
+  .swatch--hard { background: rgb(var(--hard) / 0.9); }
+  .swatch--carpet { background: rgb(var(--carpet) / 0.9); }
+
+  .note {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: rgb(var(--ink-3));
+  }
+  .note--error {
+    border-left: 2px solid rgb(var(--negative));
+    padding-left: 0.75rem;
+    color: rgb(var(--ink-2));
   }
 
-  /* Responsive Typography */
-  .text-heading-1 {
-    @apply text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-surface-900 dark:text-surface-50;
+  .methodology summary {
+    @apply cursor-pointer py-2;
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgb(var(--ink));
   }
 
-  .text-heading-2 {
-    @apply text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50;
+  /* --- The table. The most important component on the site. ------------ */
+
+  .table {
+    @apply w-full;
+    border-collapse: collapse;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.35;
+    font-variant-numeric: tabular-nums lining-nums;
   }
 
-  .text-heading-3 {
-    @apply text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-surface-900 dark:text-surface-50;
+  .table thead th {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--ink-3));
+    padding: 0 0.625rem 0.5rem;
+    vertical-align: bottom;
+    white-space: nowrap;
+    text-align: left;
+    /* Not border-bottom: an inset shadow survives position: sticky. */
+    box-shadow: inset 0 -1.5px 0 rgb(var(--ink));
   }
 
-  .text-body-large {
-    @apply text-lg text-surface-700 dark:text-surface-300 leading-relaxed;
+  .table tbody td {
+    padding: 0.5rem 0.625rem;
+    border-bottom: 1px solid rgb(var(--rule));
+    vertical-align: baseline;
+  }
+  .table tbody tr:last-child td { border-bottom: 0; }
+  .table tbody tr:hover td { background: rgb(var(--paper-2)); }
+
+  .table tfoot td {
+    border-top: 1.5px solid rgb(var(--ink));
+    font-weight: 600;
+    padding: 0.5rem 0.625rem;
   }
 
-  .text-body {
-    @apply text-base text-surface-600 dark:text-surface-400 leading-relaxed;
+  .table caption {
+    caption-side: top;
+    text-align: left;
+    padding-bottom: 0.5rem;
   }
 
-  .text-body-small {
-    @apply text-sm text-surface-500 dark:text-surface-500 leading-relaxed;
+  .table--tight tbody td { padding: 0.3125rem 0.5rem; }
+  .table--tight { font-size: 0.8125rem; }
+
+  .table--sticky thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: rgb(var(--paper));
   }
 
+  .table-scroll {
+    @apply w-full overflow-x-auto;
+    scrollbar-width: thin;
+  }
+
+  /* Column roles, applied to both th and td. */
+  .col-rank { text-align: right; width: 3.5ch; color: rgb(var(--ink-3)); }
+  /* Names do not wrap: the table scrolls horizontally instead, which keeps
+     row heights even and the figures aligned across the row. */
+  .col-name { text-align: left; font-weight: 500; color: rgb(var(--ink)); white-space: nowrap; }
+  .col-num { text-align: right; font-variant-numeric: tabular-nums lining-nums; }
+  .col-meta { text-align: left; color: rgb(var(--ink-3)); font-size: 0.75rem; }
+  @media (max-width: 640px) {
+    .col-hide-sm { display: none; }
+  }
+
+  /* Sort indicator, drawn in CSS rather than shipped as an icon. */
+  .table th[aria-sort] { cursor: pointer; user-select: none; }
+  .table th[aria-sort]:hover { color: rgb(var(--ink)); }
+  .table th[aria-sort]::after {
+    content: "";
+    display: inline-block;
+    margin-left: 0.35em;
+    border: 3px solid transparent;
+    vertical-align: middle;
+    opacity: 0.25;
+  }
+  .table th[aria-sort="none"]::after { border-top-color: currentColor; margin-bottom: -3px; }
+  .table th[aria-sort="descending"]::after { border-top-color: currentColor; opacity: 1; margin-bottom: -3px; }
+  .table th[aria-sort="ascending"]::after { border-bottom-color: currentColor; opacity: 1; margin-top: -3px; }
+
+  /* --- Stat bars and percentile shading -------------------------------- */
+
+  .statbar {
+    @apply relative block w-full;
+    height: var(--bar-h, 0.625rem);
+    background: rgb(var(--paper-3));
+  }
+  .statbar-fill {
+    @apply absolute inset-y-0 left-0;
+    background: rgb(var(--bar-tone, var(--ink)) / 0.85);
+  }
+
+  /* Percentile shading. Ramp tops out at 0.30 so ink over it stays >= 10:1. */
+  .shade {
+    background: rgb(var(--shade-tone, var(--hard)) / var(--shade, 0));
+  }
 }
 
-/* Custom Scrollbar */
 @layer utilities {
+  .num { font-variant-numeric: tabular-nums lining-nums; }
+  .font-ui { font-family: var(--font-ui); }
+  .font-display { font-family: var(--font-display); }
+
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgb(156 163 175) transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgb(156 163 175);
-    border-radius: 3px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(107 114 128);
-  }
-
-  /* High-performance animations */
-  .transform-gpu {
-    transform: translate3d(0, 0, 0);
-  }
-
-  .will-change-transform {
-    will-change: transform;
-  }
-
-  /* Premium Animations */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-2px); }
-  }
-
-  @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 30px rgba(34, 197, 94, 0.4); }
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-
-  @keyframes slide-in-bottom {
-    0% { transform: translateY(20px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-  }
-
-  @keyframes fade-in-scale {
-    0% { transform: scale(0.95); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  @keyframes breathing {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-    20%, 40%, 60%, 80% { transform: translateX(2px); }
-  }
-
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-glow-pulse {
-    animation: glow-pulse 2s ease-in-out infinite;
-  }
-
-  .animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
-  }
-
-  .animate-slide-in-bottom {
-    animation: slide-in-bottom 0.5s ease-out;
-  }
-
-  .animate-fade-in-scale {
-    animation: fade-in-scale 0.3s ease-out;
-  }
-
-  .animate-breathing {
-    animation: breathing 3s ease-in-out infinite;
-  }
-
-  .animate-shake {
-    animation: shake 0.5s ease-in-out;
-  }
-
-  /* Enhanced animations for player page redesign */
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  @keyframes slide-up {
-    0% { transform: translateY(20px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-  }
-
-  @keyframes scale-in {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  @keyframes progress-fill {
-    0% { width: 0%; }
-    100% { width: var(--target-width); }
-  }
-
-  .animate-pulse-slow {
-    animation: pulse-slow 3s ease-in-out infinite;
-  }
-
-  .animate-slide-up {
-    animation: slide-up 0.6s ease-out;
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.4s ease-out;
-  }
-
-  .animate-gradient-shift {
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
-  }
-
-  .animate-progress-fill {
-    animation: progress-fill 1.5s ease-out forwards;
-  }
-
-  /* Glass morphism effects */
-  .glass-effect {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .glass-effect-dark {
-    background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* Premium shadow effects */
-  .shadow-tennis {
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2), 0 2px 8px rgba(34, 197, 94, 0.1);
-  }
-
-  .shadow-electric {
-    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2), 0 2px 8px rgba(14, 165, 233, 0.1);
-  }
-
-  .shadow-premium {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05);
-  }
-
-  .shadow-glass {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  }
-
-  /* Hover effects */
-  .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Interactive elements */
-  .interactive-scale {
-    transition: transform 0.2s ease;
-  }
-
-  .interactive-scale:hover {
-    transform: scale(1.05);
-  }
-
-  .interactive-scale:active {
-    transform: scale(0.98);
+    scrollbar-color: rgb(var(--rule-strong)) transparent;
   }
 }
