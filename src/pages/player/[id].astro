@@ -2,9 +2,9 @@
 import Layout from "@/layouts/Layout.astro";
 import PlayerHeroSection from "@/components/PlayerHeroSection.astro";
 import StatsVisualization from "@/components/StatsVisualization.astro";
-import MatchTimeline from "@/components/MatchTimeline.astro";
-import HeadToHeadSearch from "@/components/HeadToHeadSearch.astro";
+import PlayerMatchRecord from "@/components/PlayerMatchRecord.astro";
 import { tennisApi } from "@/lib/api/tennisApi";
+import { LocalDatasetProvider } from "@/lib/api/tennisApi";
 import type { CompetitorProfile } from "@/lib/api/types";
 
 export const prerender = false;
@@ -28,8 +28,11 @@ if (!id) {
 let profile: CompetitorProfile | null = null;
 let error: string | null = null;
 
+let record: ReturnType<LocalDatasetProvider["getPlayerRecord"]> = { seasons: [], recent: [] };
+
 try {
   profile = await tennisApi.getCompetitorProfile(id);
+  record = new LocalDatasetProvider("./data").getPlayerRecord(id);
 } catch (e) {
   error = e instanceof Error ? e.message : "Failed to load player profile";
   console.error("Player profile error:", e);
@@ -58,8 +61,7 @@ if (profile) {
   {error ? (
     <!-- Error State -->
     <div class="min-h-screen flex items-center justify-center px-4">
-      <div class="bg-negative dark:bg-negative/20 border border-red-200 dark:border-red-800 p-6 text-center max-w-md mx-auto">
-        <div class="text-2xl mb-2">⚠️</div>
+      <div class="bg-negative dark:bg-negative/20 border border-negative p-6 text-center max-w-md mx-auto">
         <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Profile</h3>
         <p class="text-negative dark:text-negative mb-4 text-sm">{error}</p>
         <a href="/rankings" class="btn-outline text-sm">← Back to Rankings</a>
@@ -76,30 +78,25 @@ if (profile) {
         currentRank={currentRank}
       />
 
-      <!-- Content Grid -->
-      <div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      <div class="page pb-12">
+        <StatsVisualization profile={profile} />
+        <PlayerMatchRecord seasons={record.seasons} recent={record.recent} />
 
-        <!-- Stats and Matches Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Stats -->
-          <StatsVisualization profile={profile} tourType={tourType} />
-
-          <!-- Recent Matches -->
-          <MatchTimeline playerId={profile.id} playerName={profile.name} />
-        </div>
-
-        <!-- Head-to-Head Search -->
-        <div class="bg-white border border-rule p-4">
-          <HeadToHeadSearch playerId={profile.id} playerName={profile.name} />
-        </div>
-
+        <section class="section">
+          <div class="section-head"><p class="text-kicker">Compare</p></div>
+          <p class="text-body-small">
+            <a class="link" href={`/head-to-head?p1=${profile.id}`}>
+              Head-to-head record against another player &rsaquo;
+            </a>
+          </p>
+        </section>
       </div>
     </div>
   ) : (
     <!-- Loading State -->
     <div class="min-h-screen flex items-center justify-center">
-      <div class="text-center bg-white border border-rule p-8">
-        <div class="mb-4 inline-block h-8 w-8 animate-spin border-4 border-rule-strong/30  "></div>
+      <div class="text-center bg-paper border border-rule p-8">
+        <div class="mb-4 inline-block h-8 w-8 animate-spin border-4 border-rule-strong/30"></div>
         <p class="text-ink-2 mb-1">Loading player profile...</p>
         <p class="text-sm text-ink-3">Please wait while we fetch the latest data</p>
       </div>

@@ -38,4 +38,4 @@ if (import.meta.env.DEV) {
     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"
   />
 ) : null}
-<span class={`text-xs ${hasFlag ?'hidden' : 'inline-flex'} items-center justify-center ${sizeClasses[size]} bg-red-100 dark:bg-red-900/50 rounded-sm border border-red-200 dark:border-red-600 text-red-600`} title={`Flag not found for ${normalizedCode}`}>🏳️</span>
+<span class={`text-note ${hasFlag ? "hidden" : "inline-flex"} items-center justify-center ${sizeClasses[size]} border border-rule text-ink-3`} title={`No flag for ${normalizedCode}`}>{normalizedCode}</span>

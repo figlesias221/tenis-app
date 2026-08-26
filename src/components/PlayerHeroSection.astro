@@ -43,7 +43,7 @@ const totalTitles = currentSeasonStats.reduce((acc, surface) => acc + surface.st
 const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles');
 ---
 
-<div class="bg-white border-b border-rule">
+<div class="bg-paper border-b border-rule">
   <div class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex items-start gap-6">
 
@@ -58,7 +58,7 @@ const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles
           tourType={tourType}
         />
         {primaryRanking && (
-          <div class={`absolute -top-2 -right-2 ${ tourType ==='ATP' ? 'bg-blue-600' : 'bg-pink-600'
+          <div class={`absolute -top-2 -right-2 ${ tourType ==='ATP' ? 'bg-hard' : 'bg-carpet'
           } text-white px-2 py-1 rounded-full shadow text-sm font-bold`}>
             #{primaryRanking.rank}
           </div>
@@ -75,8 +75,8 @@ const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles
               </h1>
               {profile.abbreviation && (
                 <span class={`px-2 py-1 text-xs font-bold ${ tourType ==='ATP'
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                    : 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300'
+                    ? 'bg-hard text-hard'
+                    : 'bg-carpet text-carpet'
                 }`}>
                   {profile.abbreviation}
                 </span>
@@ -113,7 +113,7 @@ const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles
               <div class="text-xs text-ink-2">Record</div>
             </div>
             <div>
-              <div class={`text-lg font-bold ${ winPercentage >= 70 ?'text-green-600' :
+              <div class={`text-lg font-bold ${ winPercentage >= 70 ?'text-positive' :
                 winPercentage >= 50 ? 'text-ink-2' : 'text-negative'
               }`}>
                 {winPercentage}%
@@ -122,7 +122,7 @@ const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles
             </div>
             {totalTitles > 0 && (
               <div>
-                <div class="text-lg font-bold text-yellow-600">{totalTitles}</div>
+                <div class="text-lg font-bold text-clay">{totalTitles}</div>
                 <div class="text-xs text-ink-2">Titles</div>
               </div>
             )}

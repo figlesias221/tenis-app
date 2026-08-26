@@ -10,18 +10,18 @@ interface Props {
 const { tournament, showDetails = true } = Astro.props;
 
 const levelColor = CompetitionFormatter.getLevelColor(tournament.level.toLowerCase().replace(/\s+/g, '_'));
-const surfaceIcon = CompetitionFormatter.getSurfaceIcon(tournament.surface || 'Hard');
+const surfaceKey = CompetitionFormatter.getSurfaceKey(tournament.surface || "Hard");
 const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currency === 'USD';
 ---
 
-<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
+<div class="bg-paper border border-rule p-6">
   <!-- Header -->
   <div class="flex items-start justify-between mb-4">
     <div class="flex-1">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+      <h2 class="text-xl font-bold text-ink mb-1">
         {tournament.name}
       </h2>
-      <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <div class="flex items-center gap-2 text-sm text-ink-2">
         <span class={`font-medium ${levelColor}`}>
           {tournament.level}
         </span>
@@ -35,10 +35,10 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
 
     <!-- Status Badge -->
     {tournament.status && (
-      <div class={`px-2 py-1 text-xs font-medium ${ tournament.status ==='active' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
-        tournament.status === 'delayed' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' :
+      <div class={`px-2 py-1 text-xs font-medium ${ tournament.status ==='active' ? 'bg-positive text-positive' :
+        tournament.status === 'delayed' ? 'bg-clay text-clay' :
         tournament.status === 'cancelled' ? 'bg-negative dark:bg-negative text-negative dark:text-negative' :
-        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+        'bg-paper-2 text-ink'
       }`}>
         {tournament.status.charAt(0).toUpperCase() + tournament.status.slice(1)}
       </div>
@@ -50,10 +50,10 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
       <!-- Surface -->
       <div class="flex items-center gap-2">
-        <span class="text-xl">{surfaceIcon}</span>
+        <span class="text-xl"><span class={`swatch swatch--${surfaceKey}`}></span></span>
         <div>
-          <div class="text-xs text-gray-500 dark:text-gray-400">Surface</div>
-          <div class="font-medium text-gray-900 dark:text-gray-100">
+          <div class="text-xs text-ink-3">Surface</div>
+          <div class="font-medium text-ink">
             {tournament.surface || 'Hard'}
           </div>
         </div>
@@ -64,10 +64,10 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
         <div class="flex items-center gap-2">
           <span class="text-xl">💰</span>
           <div>
-            <div class="text-xs text-gray-500 dark:text-gray-400">
+            <div class="text-xs text-ink-3">
               Prize {isEstimatedPrize ? '(Est.)' : ''}
             </div>
-            <div class="font-medium text-gray-900 dark:text-gray-100">
+            <div class="font-medium text-ink">
               {CompetitionFormatter.formatPrizeMoney(tournament.prizeMoney, isEstimatedPrize)}
             </div>
           </div>
@@ -78,8 +78,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
       <div class="flex items-center gap-2">
         <span class="text-xl">🆔</span>
         <div>
-          <div class="text-xs text-gray-500 dark:text-gray-400">ID</div>
-          <div class="font-mono text-xs text-gray-600 dark:text-gray-400">
+          <div class="text-xs text-ink-3">ID</div>
+          <div class="font-mono text-xs text-ink-2">
             {tournament.id.replace('sr:competition:', '')}
           </div>
         </div>
@@ -90,8 +90,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
         <div class="flex items-center gap-2">
           <span class="text-xl">🏆</span>
           <div>
-            <div class="text-xs text-gray-500 dark:text-gray-400">Tournament</div>
-            <div class="font-medium text-gray-900 dark:text-gray-100">
+            <div class="text-xs text-ink-3">Tournament</div>
+            <div class="font-medium text-ink">
               {tournament.parentTournament.name}
             </div>
           </div>
@@ -101,25 +101,25 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
 
     <!-- Venue Information -->
     {tournament.venue && (
-      <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
-        <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+      <div class="border-t border-rule pt-4">
+        <h3 class="font-semibold text-ink mb-2 flex items-center gap-2">
           <span class="text-lg">🏟️</span>
           Venue Information
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <span class="text-gray-500 dark:text-gray-400">Complex:</span>
-            <span class="ml-2 font-medium text-gray-900 dark:text-gray-100">
+            <span class="text-ink-3">Complex:</span>
+            <span class="ml-2 font-medium text-ink">
               {tournament.venue.complex}
             </span>
           </div>
           {tournament.venue.maxCapacity && (
             <div>
-              <span class="text-gray-500 dark:text-gray-400">Capacity:</span>
-              <span class="ml-2 font-medium text-gray-900 dark:text-gray-100">
+              <span class="text-ink-3">Capacity:</span>
+              <span class="ml-2 font-medium text-ink">
                 {tournament.venue.maxCapacity.toLocaleString()}
                 {tournament.venue.reducedCapacity && (
-                  <span class="text-yellow-600 dark:text-yellow-400 ml-1">(Reduced)</span>
+                  <span class="text-clay ml-1">(Reduced)</span>
                 )}
               </span>
             </div>
@@ -129,8 +129,8 @@ const isEstimatedPrize = !tournament.prizeMoney || tournament.prizeMoney.currenc
     )}
 
     <!-- Data Source -->
-    <div class="border-t border-gray-200 dark:border-gray-600 pt-3 mt-4">
-      <p class="text-xs text-gray-500 dark:text-gray-400">
+    <div class="border-t border-rule pt-3 mt-4">
+      <p class="text-xs text-ink-3">
         Tournament data from Jeff Sackmann's ATP Tennis Database
         {isEstimatedPrize && tournament.prizeMoney && (
           <span class="ml-1">• Prize money estimated based on tournament level</span>

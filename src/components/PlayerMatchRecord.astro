@@ -1,0 +1,133 @@
+---
+/**
+ * A player's real record from the archive, replacing the two empty boxes the
+ * page used to show ("Recent match data not available" and a component that
+ * had been removed entirely).
+ */
+import { surfaceClass } from "@/lib/clutch/format";
+
+interface Season { year: number; played: number; won: number; lost: number }
+interface Match {
+  year: number; date: string; tourney: string; round: string;
+  surface: string; opponent: string; opponentId: string;
+  won: boolean; score: string;
+}
+
+interface Props {
+  seasons: Season[];
+  recent: Match[];
+}
+
+const { seasons, recent } = Astro.props;
+
+const total = seasons.reduce(
+  (a, s) => ({ played: a.played + s.played, won: a.won + s.won }),
+  { played: 0, won: 0 },
+);
+
+const fmtDate = (yyyymmdd: string) => {
+  if (!/^\d{8}$/.test(yyyymmdd)) return yyyymmdd;
+  const d = new Date(
+    `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}T00:00:00Z`,
+  );
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+};
+---
+
+{
+  seasons.length > 0 && (
+    <>
+      <section class="section">
+        <div class="section-head">
+          <p class="text-kicker">Match record by season</p>
+          <p class="text-note num">
+            {total.won}–{total.played - total.won} overall
+          </p>
+        </div>
+        <div class="table-scroll">
+          <table class="table table--tight">
+            <thead>
+              <tr>
+                <th class="col-name" scope="col">Season</th>
+                <th class="col-num" scope="col">Played</th>
+                <th class="col-num" scope="col">W–L</th>
+                <th class="col-num" scope="col">Win %</th>
+                <th scope="col" class="w-40">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              {seasons.map((s) => {
+                const pct = s.played > 0 ? (s.won / s.played) * 100 : 0;
+                return (
+                  <tr>
+                    <td class="col-name num">{s.year}</td>
+                    <td class="col-num">{s.played}</td>
+                    <td class="col-num">{s.won}–{s.lost}</td>
+                    <td class="col-num">{pct.toFixed(1)}%</td>
+                    <td>
+                      <span class="statbar">
+                        <span class="statbar-fill" style={`width:${pct.toFixed(1)}%`} />
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="col-name">Career</td>
+                <td class="col-num">{total.played}</td>
+                <td class="col-num">{total.won}–{total.played - total.won}</td>
+                <td class="col-num">
+                  {total.played > 0 ? ((total.won / total.played) * 100).toFixed(1) : "0.0"}%
+                </td>
+                <td />
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <p class="text-kicker">Last {recent.length} matches in the archive</p>
+        </div>
+        <div class="table-scroll">
+          <table class="table table--tight">
+            <thead>
+              <tr>
+                <th class="col-meta" scope="col">Date</th>
+                <th class="col-meta col-hide-sm" scope="col">Tournament</th>
+                <th class="col-meta col-hide-sm" scope="col">Round</th>
+                <th class="col-name" scope="col">Opponent</th>
+                <th class="col-meta" scope="col">Result</th>
+                <th class="col-meta" scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recent.map((m) => (
+                <tr>
+                  <td class="col-meta num">{fmtDate(m.date)}</td>
+                  <td class="col-meta col-hide-sm">
+                    <span class="inline-flex items-baseline gap-1.5">
+                      <span class={`swatch swatch--${surfaceClass(m.surface).replace("tag--", "")}`} />
+                      {m.tourney}
+                    </span>
+                  </td>
+                  <td class="col-meta col-hide-sm">{m.round}</td>
+                  <td class="col-name">
+                    <a class="link" href={`/player/${m.opponentId}`}>{m.opponent}</a>
+                  </td>
+                  <td class={`col-meta font-semibold ${m.won ? "text-positive" : "text-ink-3"}`}>
+                    {m.won ? "Won" : "Lost"}
+                  </td>
+                  <td class="col-meta num">{m.score}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </>
+  )
+}

@@ -101,14 +101,14 @@ export class CompetitionFormatter {
 
   private static formatLevel(level: string): string {
     const levelMap: Record<string, string> = {
-      'grand_slam': 'Grand Slam',
-      'atp_1000': 'ATP Masters 1000',
-      'atp_500': 'ATP 500',
-      'atp_250': 'ATP 250',
-      'wta_1000': 'WTA 1000',
-      'wta_500': 'WTA 500',
-      'wta_250': 'WTA 250',
-      'wta_125': 'WTA 125',
+      'grand_slam': 'text-ink font-semibold',
+      'atp_1000': 'text-ink',
+      'atp_500': 'text-ink-2',
+      'atp_250': 'text-ink-3',
+      'wta_1000': 'text-ink',
+      'wta_500': 'text-ink-2',
+      'wta_250': 'text-ink-3',
+      'wta_125': 'text-ink-3',
       'wta_premier': 'WTA Premier',
       'wta_international': 'WTA International',
       'atp_world_tour_finals': 'ATP Finals',
@@ -164,30 +164,31 @@ export class CompetitionFormatter {
     return `${prefix}${currency} ${formattedAmount}`;
   }
 
-  static getSurfaceIcon(surface: string): string {
-    const surfaceIcons: Record<string, string> = {
-      'Hard': '🏟️',
-      'Clay': '🟤',
-      'Grass': '🌿',
-      'Hard (Indoor)': '🏢',
-      'Carpet': '🧶'
-    };
-
-    return surfaceIcons[surface] || '🎾';
+  /**
+   * A semantic surface key, for rendering as a `.swatch` square. Returns a
+   * key rather than an emoji so the surface reads in the site's own colours
+   * and stays legible at small sizes and in forced-colors mode.
+   */
+  static getSurfaceKey(surface: string): "clay" | "grass" | "hard" | "carpet" {
+    const s = (surface || "").toLowerCase();
+    if (s.includes("clay")) return "clay";
+    if (s.includes("grass")) return "grass";
+    if (s.includes("carpet")) return "carpet";
+    return "hard";
   }
 
   static getLevelColor(level: string): string {
     const colorMap: Record<string, string> = {
-      'grand_slam': 'text-yellow-600 dark:text-yellow-400',
-      'atp_1000': 'text-red-600 dark:text-red-400',
-      'wta_1000': 'text-red-600 dark:text-red-400',
-      'atp_500': 'text-blue-600 dark:text-blue-400',
-      'wta_500': 'text-blue-600 dark:text-blue-400',
-      'atp_250': 'text-green-600 dark:text-green-400',
-      'wta_250': 'text-green-600 dark:text-green-400',
-      'wta_125': 'text-gray-600 dark:text-gray-400'
+      'grand_slam': 'text-ink font-semibold',
+      'atp_1000': 'text-ink',
+      'wta_1000': 'text-ink',
+      'atp_500': 'text-ink-2',
+      'wta_500': 'text-ink-2',
+      'atp_250': 'text-ink-3',
+      'wta_250': 'text-ink-3',
+      'wta_125': 'text-ink-3'
     };
 
-    return colorMap[level] || 'text-gray-600 dark:text-gray-400';
+    return colorMap[level] || 'text-ink-3';
   }
 }

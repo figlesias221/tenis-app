@@ -95,7 +95,7 @@ const initials = player.name.split(' ').map(n => n[0]).join('').substring(0, 2);
 
 <div class={`relative group ${config.containerClasses} ${className}`}>
   <!-- Glow effect background -->
-  <div class={`absolute inset-0 ${config.imageClasses} bg-gradient-to-br ${colors.backgroundColor ==='#3B82F6' ? 'from-blue-400/20 to-teal-500/20' : 'from-pink-400/20 to-purple-500/20'} rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-60`}></div>
+  <div class={`absolute inset-0 ${config.imageClasses} bg-gradient-to-br ${colors.backgroundColor ==='#3B82F6' ? 'from-hard/20 to-positive/20' : 'from-carpet/20 to-carpet/20'} rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-60`}></div>
 
   <div class="relative">
     <img
@@ -116,12 +116,12 @@ const initials = player.name.split(' ').map(n => n[0]).join('').substring(0, 2);
     </div>
 
     <!-- Subtle shine effect -->
-    <div class={`absolute inset-0 ${config.imageClasses} bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
+    <div class={`absolute inset-0 ${config.imageClasses} bg-gradient-to-br from-paper/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
   </div>
 
   <!-- Country flag overlay -->
   {showFlag && (
-    <div class={`absolute ${config.flagPosition} bg-white p-1`}>
+    <div class={`absolute ${config.flagPosition} bg-paper p-1`}>
       <CountryFlag
         countryCode={player.countryCode}
         nationality={player.nationality}
@@ -132,7 +132,7 @@ const initials = player.name.split(' ').map(n => n[0]).join('').substring(0, 2);
 
   <!-- Enhanced Ranking badge for top players -->
   {showRankingBadge && ranking && ranking <= 10 && (
-    <div class="absolute -top-2 -left-2 from-yellow-400 via-yellow-500 to-amber-500 text-yellow-900 text-xs font-bold px-3 py-1.5 border-2 border-yellow-200/50 animate-pulse-slow group- transition- duration-300">
+    <div class="absolute -top-2 -left-2 from-clay via-clay to-clay text-clay text-xs font-bold px-3 py-1.5 border-2 border-clay/50 animate-pulse-slow group- transition- duration-300">
       <div class="flex items-center gap-1">
         <span class="text-xs">👑</span>
         <span>#{ranking}</span>
@@ -142,7 +142,7 @@ const initials = player.name.split(' ').map(n => n[0]).join('').substring(0, 2);
 
   <!-- Wikipedia attribution (small badge) -->
   {isWikipediaImage && size !== 'small' && (
-    <div class="absolute top-1 left-1 bg-black/70 text-paper text-xs px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+    <div class="absolute top-1 left-1 bg-ink/70 text-paper text-xs px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
       📷 Wiki
     </div>
   )}

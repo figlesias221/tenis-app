@@ -33,6 +33,7 @@ import {
   type AtpMatch
 } from "../../utils/csv-parser";
 import { toPeriodScores, type PeriodScore } from "@/lib/utils/score-parser";
+import { MATCH_SEASONS, matchYears } from "@/lib/archive";
 
 export class LocalDatasetProvider implements TennisApiProvider {
   private playersCache: AtpPlayer[] | null = null;
@@ -85,6 +86,57 @@ export class LocalDatasetProvider implements TennisApiProvider {
    */
   private parseMatchScore(scoreString: string): PeriodScore[] {
     return toPeriodScores(scoreString);
+  }
+
+  /**
+   * A player's real match record from the archive: per-season totals and his
+   * most recent matches. The filtering already existed inside
+   * getCompetitorProfile; this exposes it so the player page can show a record
+   * instead of an empty "data not available" box.
+   */
+  getPlayerRecord(playerId: string, recentLimit = 20): {
+    seasons: Array<{ year: number; played: number; won: number; lost: number }>;
+    recent: Array<{
+      year: number; date: string; tourney: string; round: string;
+      surface: string; opponent: string; opponentId: string;
+      won: boolean; score: string;
+    }>;
+  } {
+    const seasons: Array<{ year: number; played: number; won: number; lost: number }> = [];
+    const recent: Array<{
+      year: number; date: string; tourney: string; round: string;
+      surface: string; opponent: string; opponentId: string;
+      won: boolean; score: string;
+    }> = [];
+
+    for (const year of matchYears()) {
+      const matches = this.getMatches(year).filter(
+        (m) => m.winner_id === playerId || m.loser_id === playerId,
+      );
+      if (matches.length === 0) continue;
+
+      let won = 0;
+      for (const m of matches) {
+        const isWinner = m.winner_id === playerId;
+        if (isWinner) won++;
+        recent.push({
+          year,
+          date: m.tourney_date,
+          tourney: m.tourney_name,
+          round: m.round,
+          surface: m.surface,
+          opponent: isWinner ? m.loser_name : m.winner_name,
+          opponentId: isWinner ? m.loser_id : m.winner_id,
+          won: isWinner,
+          score: m.score,
+        });
+      }
+      seasons.push({ year, played: matches.length, won, lost: matches.length - won });
+    }
+
+    recent.sort((a, b) => b.date.localeCompare(a.date));
+    seasons.sort((a, b) => b.year - a.year);
+    return { seasons, recent: recent.slice(0, recentLimit) };
   }
 
   private findPlayerById(playerId: string): AtpPlayer | undefined {
@@ -209,7 +261,7 @@ export class LocalDatasetProvider implements TennisApiProvider {
         rankings: [],
         lastUpdated: new Date().toISOString(),
         week: undefined,
-        year: new Date().getFullYear()
+        year: MATCH_SEASONS.last
       };
     }
 
@@ -241,7 +293,7 @@ export class LocalDatasetProvider implements TennisApiProvider {
 
     // Get the latest ranking date for metadata
     const latestDate = targetRankings.length > 0 ? targetRankings[0].ranking_date : '';
-    const year = latestDate ? parseInt(latestDate.slice(0, 4)) : new Date().getFullYear();
+    const year = latestDate ? parseInt(latestDate.slice(0, 4)) : MATCH_SEASONS.last;
 
     return {
       type: "ATP",
@@ -292,8 +344,7 @@ export class LocalDatasetProvider implements TennisApiProvider {
     const currentRanking = rankings.find(r => r.player === competitorId);
 
     // Get player's match history for statistical analysis
-    const currentYear = new Date().getFullYear();
-    const years = [currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4];
+    const years = matchYears().slice().reverse();
 
     const allMatches: AtpMatch[] = [];
     for (const year of years) {
@@ -346,7 +397,9 @@ export class LocalDatasetProvider implements TennisApiProvider {
 
     // Create periods data with surface statistics
     const periods = Object.entries(surfacePerformance).map(([surfaceType, stats]) => ({
-      year: currentYear, // Simplified - could be more detailed
+      // These statistics are pooled across the player's whole record in the
+      // archive, so the label is the last season covered, not a single year.
+      year: MATCH_SEASONS.last,
       surfaces: [{
         type: surfaceType.toLowerCase() as any,
         statistics: {
@@ -413,8 +466,7 @@ export class LocalDatasetProvider implements TennisApiProvider {
     }
 
     // Search for matches between these players in recent years
-    const currentYear = new Date().getFullYear();
-    const years = [currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4];
+    const years = matchYears().slice().reverse();
 
     const allMatches: AtpMatch[] = [];
     for (const year of years) {
@@ -512,9 +564,9 @@ export class LocalDatasetProvider implements TennisApiProvider {
 
   async getCompetitionsByCategory(categoryId: string): Promise<any> {
     // For ATP data, we'll extract unique tournaments from our match data
-    const currentYear = new Date().getFullYear();
-    const matches2024 = this.getMatches(currentYear);
-    const matches2023 = this.getMatches(currentYear - 1);
+    const latest = MATCH_SEASONS.last;
+    const matches2024 = this.getMatches(latest);
+    const matches2023 = this.getMatches(latest - 1);
 
     // Combine recent matches to get tournament list
     const allMatches = [...matches2024, ...matches2023];

@@ -1,96 +1,118 @@
 ---
 import type { CompetitorProfile } from "@/lib/api/types";
+import { MATCH_SEASONS_LABEL } from "@/lib/archive";
 
 export interface Props {
   profile: CompetitorProfile;
-  tourType: 'ATP' | 'WTA';
+  tourType?: "ATP" | "WTA";
 }
 
-const { profile, tourType } = Astro.props;
+const { profile } = Astro.props;
 
-const SURFACE_NAMES: Record<string, string> = {
-  'hard_court': 'Hard',
-  'grass': 'Grass',
-  'red_clay': 'Clay',
-  'green_clay': 'Clay',
-  'hardcourt_outdoor': 'Hard',
-  'carpet_indoor': 'Carpet',
-  'synthetic_indoor': 'Synthetic',
-  'synthetic_outdoor': 'Synthetic',
-  'hardcourt_indoor': 'Hard',
-  'red_clay_indoor': 'Clay',
-  'unknown': 'Unknown',
-  'synthetic_grass': 'Grass'
+function surfaceKey(t: string): "clay" | "grass" | "hard" | "carpet" {
+  const s = (t || "").toLowerCase();
+  if (s.includes("clay")) return "clay";
+  if (s.includes("grass")) return "grass";
+  if (s.includes("carpet") || s.includes("synthetic")) return "carpet";
+  return "hard";
+}
+
+const LABELS: Record<string, string> = {
+  clay: "Clay",
+  grass: "Grass",
+  hard: "Hard",
+  carpet: "Carpet",
 };
 
-function getSurfaceName(surfaceType: string): string {
-  return SURFACE_NAMES[surfaceType] || surfaceType;
+/**
+ * getCompetitorProfile emits ONE PERIOD PER SURFACE, so reading
+ * periods[0].surfaces showed a single surface and hid the rest. Flatten every
+ * period, then merge by surface so the table is one row per court type.
+ */
+const merged = new Map<string, { played: number; won: number; titles: number }>();
+for (const period of profile.periods ?? []) {
+  for (const surface of period.surfaces ?? []) {
+    const key = surfaceKey(surface.type);
+    const s = surface.statistics;
+    const cur = merged.get(key) ?? { played: 0, won: 0, titles: 0 };
+    cur.played += s.matches_played ?? 0;
+    cur.won += s.matches_won ?? 0;
+    cur.titles += s.competitions_won ?? 0;
+    merged.set(key, cur);
+  }
 }
 
-function getSurfaceIcon(surfaceType: string): string {
-  if (surfaceType.includes('hard')) return '🟦';
-  if (surfaceType.includes('grass')) return '🟩';
-  if (surfaceType.includes('clay')) return '🟫';
-  return '⚪';
-}
+const rows = [...merged.entries()]
+  .map(([key, v]) => ({
+    key,
+    label: LABELS[key] ?? key,
+    ...v,
+    lost: v.played - v.won,
+    pct: v.played > 0 ? v.won / v.played : 0,
+  }))
+  .filter((r) => r.played > 0)
+  .sort((a, b) => b.played - a.played);
+
+const total = rows.reduce(
+  (acc, r) => ({ played: acc.played + r.played, won: acc.won + r.won }),
+  { played: 0, won: 0 },
+);
 ---
 
-<div class="bg-white border border-rule p-4">
-  <h3 class="font-semibold text-ink mb-3">
-    {profile.periods[0]?.year || 'Current'} Season Stats
-  </h3>
+<section>
+  <div class="section-head">
+    <p class="text-kicker">Record by surface</p>
+    <p class="text-note">{MATCH_SEASONS_LABEL}</p>
+  </div>
 
-  {profile.periods[0]?.surfaces.length > 0 ? (
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      {profile.periods[0].surfaces.map((surface) => {
-        const { matches_played, matches_won, competitions_won } = surface.statistics;
-        const winPercentage = matches_played > 0 ? Math.round((matches_won / matches_played) * 100) : 0;
-        const losses = matches_played - matches_won;
-
-        return (
-          <div class="bg-paper p-3 hover:bg-paper-2 transition-colors">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="text-lg">{getSurfaceIcon(surface.type)}</span>
-                <span class="font-medium text-sm text-ink">
-                  {getSurfaceName(surface.type)}
-                </span>
-              </div>
-              {competitions_won > 0 && (
-                <div class="flex items-center gap-1">
-                  <span class="text-xs font-semibold text-yellow-600">{competitions_won}</span>
-                  <span class="text-sm">🏆</span>
-                </div>
-              )}
-            </div>
-
-            <div class="flex items-center justify-between text-sm">
-              <span class="font-semibold text-ink">
-                {matches_won}-{losses}
-              </span>
-              <span class={`font-bold ${ winPercentage >= 70 ?'text-green-600' :
-                winPercentage >= 50 ? 'text-ink-2' : 'text-negative'
-              }`}>
-                {winPercentage}%
-              </span>
-            </div>
-
-            {/* Progress bar */}
-            <div class="mt-2 w-full bg-paper-3 h-1">
-              <div
-                class={`h-1 ${ winPercentage >= 70 ?'bg-green-500' :
-                  winPercentage >= 50 ? 'bg-ink-3' : 'bg-negative'
-                }`}
-                style={`width: ${winPercentage}%`}
-              ></div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  ) : (
-    <p class="text-ink-3 text-sm text-center py-4">
-      No statistics available
-    </p>
-  )}
-</div>
+  {
+    rows.length > 0 ? (
+      <div class="table-scroll">
+        <table class="table table--tight">
+          <thead>
+            <tr>
+              <th class="col-name" scope="col">Surface</th>
+              <th class="col-num" scope="col">Played</th>
+              <th class="col-num" scope="col">W–L</th>
+              <th class="col-num" scope="col">Win %</th>
+              <th scope="col" class="w-40">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <td class="col-name">
+                  <span class="inline-flex items-baseline gap-2">
+                    <span class={`swatch swatch--${r.key}`} />
+                    {r.label}
+                  </span>
+                </td>
+                <td class="col-num">{r.played}</td>
+                <td class="col-num">{r.won}–{r.lost}</td>
+                <td class="col-num">{(r.pct * 100).toFixed(1)}%</td>
+                <td>
+                  <span class="statbar" style={`--bar-tone: var(--${r.key})`}>
+                    <span class="statbar-fill" style={`width:${(r.pct * 100).toFixed(1)}%`} />
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="col-name">All surfaces</td>
+              <td class="col-num">{total.played}</td>
+              <td class="col-num">{total.won}–{total.played - total.won}</td>
+              <td class="col-num">
+                {total.played > 0 ? ((total.won / total.played) * 100).toFixed(1) : "0.0"}%
+              </td>
+              <td />
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    ) : (
+      <p class="note">No surface record in the archive for this player.</p>
+    )
+  }
+</section>
