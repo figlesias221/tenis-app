@@ -95,3 +95,5 @@ Thumbs.db
 
 # Wrangler
 .wrangler/
+# logs
+*.log

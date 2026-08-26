@@ -32,6 +32,7 @@ import {
   type AtpRanking,
   type AtpMatch
 } from "../../utils/csv-parser";
+import { toPeriodScores, type PeriodScore } from "@/lib/utils/score-parser";
 
 export class LocalDatasetProvider implements TennisApiProvider {
   private playersCache: AtpPlayer[] | null = null;
@@ -78,59 +79,12 @@ export class LocalDatasetProvider implements TennisApiProvider {
     return loadAtpRankingsForYear(year, this.dataPath);
   }
 
-  // Parse tennis score string into period_scores format
-  private parseMatchScore(scoreString: string): any[] {
-    if (!scoreString || scoreString.trim() === '') {
-      return [];
-    }
-
-    // Split score by spaces to get individual sets
-    // Examples: "7-6(5) 6-4", "6-4 7-6(0)", "6-3 7-5"
-    const sets = scoreString.trim().split(' ').filter(set => set.length > 0);
-
-    return sets.map((set, index) => {
-      // Parse individual set score like "7-6(5)" or "6-4"
-      const tiebreakMatch = set.match(/(\d+)-(\d+)\((\d+)\)/);
-      const regularMatch = set.match(/(\d+)-(\d+)/);
-
-      if (tiebreakMatch) {
-        const [, score1, score2, tiebreak1] = tiebreakMatch;
-        const winnerScore = parseInt(score1);
-        const loserScore = parseInt(score2);
-        const winnerTiebreak = parseInt(tiebreak1);
-
-        // Determine loser's tiebreak score
-        let loserTiebreak = 0;
-        if (winnerTiebreak >= 7) {
-          // Standard tiebreak win (7-0 to 7-6, or higher like 10-8)
-          loserTiebreak = winnerTiebreak < 10 ? Math.max(0, winnerTiebreak - 2) : winnerTiebreak - 2;
-        }
-
-        return {
-          number: index + 1,
-          home_score: winnerScore, // Winner is always home in our structure
-          away_score: loserScore,  // Loser is always away
-          home_tiebreak_score: winnerTiebreak,
-          away_tiebreak_score: loserTiebreak
-        };
-      } else if (regularMatch) {
-        const [, score1, score2] = regularMatch;
-        const winnerScore = parseInt(score1);
-        const loserScore = parseInt(score2);
-
-        return {
-          number: index + 1,
-          home_score: winnerScore, // Winner is always home
-          away_score: loserScore   // Loser is always away
-        };
-      }
-
-      return {
-        number: index + 1,
-        home_score: 0,
-        away_score: 0
-      };
-    });
+  /**
+   * Parse a score string into `period_scores`, where `home` is the match winner.
+   * Delegates to the canonical parser so the tiebreak grammar lives in one place.
+   */
+  private parseMatchScore(scoreString: string): PeriodScore[] {
+    return toPeriodScores(scoreString);
   }
 
   private findPlayerById(playerId: string): AtpPlayer | undefined {

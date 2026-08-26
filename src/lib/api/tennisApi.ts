@@ -1,6 +1,4 @@
 import type { TennisApiProvider } from "./types";
-import { SportRadarProvider } from "./providers/sportradar";
-import { OfficialSportRadarProvider } from "./providers/official-sportradar";
 import { LocalDatasetProvider } from "./providers/local-dataset";
 
 class TennisApi {
@@ -83,4 +81,4 @@ function createTennisApi() {
 }
 
 export const tennisApi = createTennisApi();
-export { TennisApi, SportRadarProvider, OfficialSportRadarProvider, LocalDatasetProvider };
+export { TennisApi, LocalDatasetProvider };
