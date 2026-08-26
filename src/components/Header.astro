@@ -1,45 +1,43 @@
 ---
-import ThemeToggle from "@/components/ThemeToggle.astro";
 import { ARCHIVE_RANGE_LABEL, RANKINGS_AS_OF_LABEL } from "@/lib/archive";
 
 const path = Astro.url.pathname;
-
 const nav = [
+  { href: "/clutch", label: "Clutch Index" },
   { href: "/rankings", label: "Rankings" },
   { href: "/competitions", label: "Tournaments" },
   { href: "/head-to-head", label: "Head to Head" },
-  { href: "/clutch", label: "Clutch Index" },
 ];
-
 const isActive = (href: string) =>
   path === href || (href !== "/" && path.startsWith(`${href}/`));
 ---
 
-<header>
+<header class="border-b border-line">
   <div class="page">
-    <!-- Masthead -->
-    <div class="flex items-baseline justify-between gap-4 py-4">
-      <div class="flex items-baseline gap-4">
-        <a href="/" class="font-display text-[1.375rem] font-semibold tracking-[-0.02em] text-ink no-underline">
+    <div class="flex items-center justify-between gap-4 py-3.5">
+      <a href="/" class="flex items-baseline gap-3 no-underline">
+        <!-- The court, from above: baseline, service line, net. -->
+        <svg width="22" height="15" viewBox="0 0 22 15" aria-hidden="true" class="shrink-0">
+          <rect x="0.5" y="0.5" width="21" height="14" fill="none" stroke="rgb(var(--chalk-3))"></rect>
+          <path d="M11 0v15M4 0v15M18 0v15M4 7.5h14" fill="none" stroke="rgb(var(--chalk-3))" stroke-width="0.75"></path>
+        </svg>
+        <span class="text-[0.9375rem] font-extrabold uppercase tracking-[0.02em] text-chalk" style="font-stretch:88%">
           The Tennis Almanac
-        </a>
-        <span class="hidden h-4 w-px bg-rule sm:inline-block" aria-hidden="true"></span>
-        <p class="text-kicker hidden sm:block">
-          ATP · {ARCHIVE_RANGE_LABEL} · Rankings to the {RANKINGS_AS_OF_LABEL}
-        </p>
-      </div>
-      <ThemeToggle />
+        </span>
+      </a>
+      <p class="text-note hidden md:block">
+        ATP · {ARCHIVE_RANGE_LABEL} · Rankings to the {RANKINGS_AS_OF_LABEL}
+      </p>
     </div>
 
-    <!-- Sections -->
-    <nav aria-label="Sections" class="border-y-[1px] border-b-rule border-t-ink border-t-2">
-      <ul class="segbar -mb-px flex gap-x-6 overflow-x-auto border-b-0 py-0.5" style="scrollbar-width:none">
+    <nav aria-label="Sections" class="border-t border-line">
+      <ul class="segbar overflow-x-auto" style="scrollbar-width:none">
         {
           nav.map((item) => (
             <li>
               <a
                 href={item.href}
-                class:list={["seg block py-2", isActive(item.href) && "seg-on"]}
+                class:list={["seg block", isActive(item.href) && "seg-on"]}
                 aria-current={isActive(item.href) ? "page" : undefined}
               >
                 {item.label}

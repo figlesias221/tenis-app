@@ -1,7 +1,7 @@
 ---
-import PlayerImage from "./PlayerImage.astro";
-import Icons from "./Icons.astro";
+import CountryFlag from "./CountryFlag.astro";
 import type { CompetitorProfile } from "@/lib/api/types";
+import { MATCH_SEASONS_LABEL } from "@/lib/archive";
 
 export interface Props {
   profile: CompetitorProfile;
@@ -12,131 +12,64 @@ export interface Props {
     countryCode: string;
     abbreviation?: string;
   };
-  tourType: 'ATP' | 'WTA';
+  tourType?: "ATP" | "WTA";
   currentRank?: number;
 }
 
-const { profile, player, tourType, currentRank } = Astro.props;
+const { profile, player, currentRank } = Astro.props;
 
-function calculateAge(birthDate?: string): string {
-  if (!birthDate) return 'Unknown';
-  try {
-    const birth = new Date(birthDate);
-    const today = new Date();
-    const age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      return `${age - 1}`;
-    }
-    return `${age}`;
-  } catch {
-    return 'Unknown';
-  }
+/**
+ * Born-on date, not age. This is an archive: an age computed from today's
+ * clock would keep ticking upward for players who stopped playing years ago.
+ */
+function born(dob?: string): string | null {
+  if (!dob) return null;
+  const d = new Date(dob);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 }
 
-// Calculate actual stats from profile data
-const currentSeasonStats = profile.periods[0]?.surfaces || [];
-const totalWins = currentSeasonStats.reduce((acc, surface) => acc + surface.statistics.matches_won, 0);
-const totalMatches = currentSeasonStats.reduce((acc, surface) => acc + surface.statistics.matches_played, 0);
-const winPercentage = totalMatches > 0 ? Math.round((totalWins / totalMatches) * 100) : 0;
-const totalTitles = currentSeasonStats.reduce((acc, surface) => acc + surface.statistics.competitions_won, 0);
-const primaryRanking = profile.competitor_rankings.find(r => r.type === 'singles');
+const info = profile.info ?? {};
+const dob = born(info.date_of_birth);
+const hand = info.handedness
+  ? `${info.handedness.toLowerCase().startsWith("l") ? "Left" : "Right"}-handed`
+  : null;
+const height = info.height ? `${info.height} cm` : null;
+const best = info.highest_singles_ranking;
+
+const facts = [
+  currentRank ? { k: "Rank at cutoff", v: `#${currentRank}` } : null,
+  dob ? { k: "Born", v: dob } : null,
+  hand ? { k: "Plays", v: hand } : null,
+  height ? { k: "Height", v: height } : null,
+  best ? { k: "Career high", v: `#${best}` } : null,
+].filter(Boolean) as { k: string; v: string }[];
 ---
 
-<div class="bg-paper border-b border-rule">
-  <div class="max-w-6xl mx-auto px-4 py-6">
-    <div class="flex items-start gap-6">
+<section class="border-b border-line">
+  <div class="page py-9">
+    <p class="text-kicker">Player · {MATCH_SEASONS_LABEL}</p>
 
-      <!-- Player Image -->
-      <div class="relative flex-shrink-0">
-        <PlayerImage
-          player={player}
-          size="large"
-          showFlag={true}
-          showRankingBadge={false}
-          ranking={currentRank}
-          tourType={tourType}
-        />
-        {primaryRanking && (
-          <div class={`absolute -top-2 -right-2 ${ tourType ==='ATP' ? 'bg-hard' : 'bg-carpet'
-          } text-white px-2 py-1 rounded-full shadow text-sm font-bold`}>
-            #{primaryRanking.rank}
-          </div>
-        )}
-      </div>
+    <h1 class="text-heading-1 mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <CountryFlag
+        countryCode={player.countryCode}
+        nationality={player.nationality}
+        size="large"
+      />
+      <span>{player.name}</span>
+    </h1>
 
-      <!-- Player Info -->
-      <div class="flex-1 min-w-0">
-        <div class="flex items-start justify-between mb-3">
-          <div>
-            <div class="flex items-center gap-3 mb-2">
-              <h1 class="text-2xl lg:text-3xl font-bold text-ink">
-                {profile.name}
-              </h1>
-              {profile.abbreviation && (
-                <span class={`px-2 py-1 text-xs font-bold ${ tourType ==='ATP'
-                    ? 'bg-hard text-hard'
-                    : 'bg-carpet text-carpet'
-                }`}>
-                  {profile.abbreviation}
-                </span>
-              )}
+    {
+      facts.length > 0 && (
+        <dl class="cells mt-6" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+          {facts.map((f) => (
+            <div class="cell">
+              <dt>{f.k}</dt>
+              <dd>{f.v}</dd>
             </div>
-
-            <div class="flex flex-wrap items-center gap-4 text-sm text-ink-2 mb-3">
-              <span class="flex items-center gap-1">
-                <Icons name="globe" class="w-3 h-3" />
-                {profile.country}
-              </span>
-              {profile.info.date_of_birth && (
-                <span>{calculateAge(profile.info.date_of_birth)} years old</span>
-              )}
-              {profile.info.handedness && (
-                <span>Plays {profile.info.handedness}</span>
-              )}
-            </div>
-
-            {/* Physical stats inline */}
-            <div class="flex flex-wrap items-center gap-4 text-xs text-ink-3">
-              {profile.info.height && <span>{profile.info.height}cm</span>}
-              {profile.info.weight && <span>{profile.info.weight}kg</span>}
-              {profile.info.pro_year && <span>Pro since {profile.info.pro_year}</span>}
-            </div>
-          </div>
-
-          <!-- Current season stats -->
-          <div class="flex gap-6 text-center">
-            <div>
-              <div class="text-lg font-bold text-ink">
-                {totalWins}-{totalMatches - totalWins}
-              </div>
-              <div class="text-xs text-ink-2">Record</div>
-            </div>
-            <div>
-              <div class={`text-lg font-bold ${ winPercentage >= 70 ?'text-positive' :
-                winPercentage >= 50 ? 'text-ink-2' : 'text-negative'
-              }`}>
-                {winPercentage}%
-              </div>
-              <div class="text-xs text-ink-2">Win Rate</div>
-            </div>
-            {totalTitles > 0 && (
-              <div>
-                <div class="text-lg font-bold text-clay">{totalTitles}</div>
-                <div class="text-xs text-ink-2">Titles</div>
-              </div>
-            )}
-            {primaryRanking && (
-              <div>
-                <div class="text-lg font-bold text-ink-2">
-                  {primaryRanking.points.toLocaleString()}
-                </div>
-                <div class="text-xs text-ink-2">Points</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+          ))}
+        </dl>
+      )
+    }
   </div>
-</div>
+</section>

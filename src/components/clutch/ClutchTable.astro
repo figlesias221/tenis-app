@@ -1,29 +1,25 @@
 ---
 import CountryFlag from "@/components/CountryFlag.astro";
-import ClutchBar from "@/components/clutch/ClutchBar.astro";
-import { shadeStyle, signedPoints } from "@/lib/clutch/format";
+import { signedPoints } from "@/lib/clutch/format";
 import { COMPONENT_LABELS, type ClutchPlayer } from "@/lib/clutch/types";
 
 interface Props {
   players: ClutchPlayer[];
-  /** Components with a weight of zero are shown but marked as counting nothing. */
   weights: Record<string, number>;
-  startRank?: number;
   expandable?: boolean;
 }
-
 const { players, weights, expandable = true } = Astro.props;
 
 const cols = [
-  { key: "serve", unit: "break points faced" },
-  { key: "return", unit: "break points against" },
-  { key: "tiebreak", unit: "tiebreaks" },
-  { key: "decider", unit: "deciding sets" },
+  { key: "serve", unit: "break points faced", short: "Serve" },
+  { key: "return", unit: "break points against", short: "Return" },
+  { key: "tiebreak", unit: "tiebreaks", short: "TB" },
+  { key: "decider", unit: "deciding sets", short: "Dec" },
 ] as const;
 ---
 
 <div class="table-scroll">
-  <table class="table table--tight table--sticky" id="clutch-table">
+  <table class="table table--tight table--ruled table--sticky" id="clutch-table">
     <thead>
       <tr>
         <th class="col-rank" aria-sort="none" data-sort-key="rank" scope="col">#</th>
@@ -31,116 +27,102 @@ const cols = [
         <th class="col-meta col-hide-sm" scope="col">Career</th>
         <th class="col-num col-hide-sm" aria-sort="none" data-sort-key="matches" scope="col">Matches</th>
         <th class="col-num" aria-sort="descending" data-sort-key="rating" scope="col">Clutch</th>
-        {
-          cols.map((c) => (
-            <th class="col-num" aria-sort="none" data-sort-key={c.key} scope="col">
-              {COMPONENT_LABELS[c.key]}
-              {weights[c.key] === 0 && <span class="text-ink-3" title="Measured to be pure chance, so it counts for nothing"> ·0</span>}
-            </th>
-          ))
-        }
+        {cols.map((c) => (
+          <th class="col-num col-hide-sm" aria-sort="none" data-sort-key={c.key} scope="col">
+            {c.short}{weights[c.key] === 0 && <span class="text-chalk-3" title="Measured as pure chance; counts for nothing"> ·0</span>}
+          </th>
+        ))}
       </tr>
     </thead>
     <tbody>
-      {
-        players.map((p) => (
-          <>
-            <tr
-              data-rank={p.rank}
-              data-name={p.name.toLowerCase()}
-              data-matches={p.m}
-              data-rating={p.rating}
-              data-serve={p.c.serve.z}
-              data-return={p.c.return.z}
-              data-tiebreak={p.c.tiebreak.z}
-              data-decider={p.c.decider.z}
-              data-era={p.era}
-              data-id={p.id}
-              class={expandable ? "cursor-pointer" : undefined}
-            >
-              <td class="col-rank">{p.rank}</td>
-              <td class="col-name">
-                <span class="inline-flex items-baseline gap-1.5">
-                  <CountryFlag countryCode={p.cc} nationality={p.ioc} size="small" />
-                  <span>{p.name}</span>
-                  {p.trunc.start && (
-                    <abbr title="Career began before 1991, when serve statistics start. His record here is truncated." class="text-ink-3 no-underline">◂</abbr>
-                  )}
-                  {p.trunc.end && (
-                    <abbr title="Still active at the 2024 cutoff." class="text-ink-3 no-underline">▸</abbr>
-                  )}
-                </span>
-              </td>
-              <td class="col-meta col-hide-sm">{p.y0}–{p.y1}</td>
-              <td class="col-num col-hide-sm">{p.m.toLocaleString("en-GB")}</td>
-              <td class="col-num shade font-semibold" style={shadeStyle(p.pct, p.rating >= 50)}>
-                {p.rating.toFixed(1)}
-              </td>
-              {cols.map((c) => (
-                <td class="col-num shade" style={weights[c.key] === 0 ? "" : shadeStyle(p.c[c.key].p, p.c[c.key].z >= 0)}>
-                  <span class={weights[c.key] === 0 ? "text-ink-3" : ""}>
-                    {p.c[c.key].n > 0 ? signedPoints(p.c[c.key].r - p.c[c.key].e) : "—"}
+      {players.map((p) => (
+        <>
+          <tr
+            data-rank={p.rank} data-name={p.name.toLowerCase()} data-matches={p.m}
+            data-rating={p.rating} data-serve={p.c.serve.z} data-return={p.c.return.z}
+            data-tiebreak={p.c.tiebreak.z} data-decider={p.c.decider.z}
+            data-era={p.era} data-id={p.id}
+            class={expandable ? "cursor-pointer" : undefined}
+          >
+            <td class="col-rank">{String(p.rank).padStart(2, "0")}</td>
+            <td class="col-name">
+              <span class="inline-flex items-center gap-2">
+                <CountryFlag countryCode={p.cc} nationality={p.ioc} size="small" />
+                <span>{p.name}</span>
+                {p.trunc.start && <abbr title="Career began before 1991, when serve statistics start; his record here is truncated" class="text-chalk-3 no-underline">◂</abbr>}
+                {p.trunc.end && <abbr title="Still active at the 2024 cutoff" class="text-chalk-3 no-underline">▸</abbr>}
+              </span>
+            </td>
+            <td class="col-meta col-hide-sm">{p.y0}–{p.y1}</td>
+            <td class="col-num col-hide-sm text-chalk-2">{p.m.toLocaleString("en-GB")}</td>
+            <td class="col-num"><span class="lit">{p.rating.toFixed(1)}</span></td>
+            {cols.map((c) => (
+              <td class="col-num col-hide-sm">
+                {p.c[c.key].n > 0 ? (
+                  <span class={weights[c.key] === 0 ? "text-chalk-3" : p.c[c.key].z >= 0 ? "above" : "below"}>
+                    {signedPoints(p.c[c.key].r - p.c[c.key].e)}
                   </span>
-                </td>
-              ))}
-            </tr>
+                ) : <span class="text-chalk-3">—</span>}
+              </td>
+            ))}
+          </tr>
 
-            {expandable && (
-              <tr class="clutch-detail hidden" data-detail-for={p.id}>
-                <td colspan="9" class="bg-paper-2">
-                  <div class="grid gap-x-8 gap-y-3 py-2 md:grid-cols-2">
-                    {cols.map((c) => (
-                      <div>
-                        <div class="flex items-baseline justify-between gap-3">
-                          <span class="text-kicker">{COMPONENT_LABELS[c.key]}</span>
-                          <span class="text-note num">
-                            {p.c[c.key].n > 0
-                              ? `${(p.c[c.key].r * 100).toFixed(1)}% v ${(p.c[c.key].e * 100).toFixed(1)}% expected`
-                              : "no qualifying opportunities"}
-                          </span>
-                        </div>
-                        <ClutchBar
-                          label={COMPONENT_LABELS[c.key]}
-                          observed={p.c[c.key].r}
-                          expected={p.c[c.key].e}
-                          z={p.c[c.key].z}
-                          n={p.c[c.key].n}
-                          unit={c.unit}
-                        />
+          {expandable && (
+            <tr class="clutch-detail hidden" data-detail-for={p.id}>
+              <td colspan="9" class="bg-court-2 !px-0 !py-0">
+                <div class="cells" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+                  {cols.map((c) => {
+                    const d = p.c[c.key];
+                    const delta = (d.r - d.e) * 100;
+                    const w = Math.min(100, Math.abs(d.z) / 2.5 * 50);
+                    return (
+                      <div class="cell">
+                        <div class="k">{COMPONENT_LABELS[c.key]}{weights[c.key] === 0 && " · counts 0"}</div>
+                        {d.n > 0 ? (
+                          <>
+                            <div class="v" style={weights[c.key] === 0 ? "color:rgb(var(--chalk-3))" : ""}>
+                              {delta >= 0 ? "+" : ""}{delta.toFixed(1)}
+                            </div>
+                            <div class="relative mt-2.5 h-1.5 bg-line">
+                              <span class="absolute inset-y-0 left-1/2 w-px bg-chalk-3"></span>
+                              <span class="absolute inset-y-0"
+                                style={`${d.z >= 0 ? "left:50%" : "right:50%"};width:${w}%;background:rgb(var(--${d.z >= 0 ? "above" : "below"}))`}></span>
+                            </div>
+                            <p class="text-note mt-2">
+                              {(d.r * 100).toFixed(1)}% v {(d.e * 100).toFixed(1)}% expected<br />
+                              over {d.n.toLocaleString("en-GB")} {c.unit}
+                            </p>
+                          </>
+                        ) : <p class="text-note mt-3">No qualifying opportunities</p>}
                       </div>
-                    ))}
+                    );
+                  })}
+                  <div class="cell">
+                    <div class="k">Career</div>
+                    <div class="v">{p.w}–{p.m - p.w}</div>
+                    <p class="text-note mt-2">
+                      Best rank {p.bestRank ?? "—"}<br />
+                      {p.peak ? <a class="link" href={`/clutch/${p.peak.y}`}>Best season {p.peak.y} · {p.peak.rating.toFixed(1)}</a> : "No qualifying season"}
+                    </p>
+                    <p class="text-note mt-2 flex flex-wrap items-center gap-x-3">
+                      <span><span class="swatch swatch--hard mr-1.5"></span>{p.surf.hard}</span>
+                      <span><span class="swatch swatch--clay mr-1.5"></span>{p.surf.clay}</span>
+                      <span><span class="swatch swatch--grass mr-1.5"></span>{p.surf.grass}</span>
+                    </p>
                   </div>
-                  <div class="dl--inline border-t border-rule py-2">
-                    <div class="dl-row"><dt class="dl-term">Best rank</dt><dd class="dl-value">{p.bestRank ?? "—"}</dd></div>
-                    <div class="dl-row"><dt class="dl-term">Record</dt><dd class="dl-value">{p.w}–{p.m - p.w}</dd></div>
-                    {p.peak && (
-                      <div class="dl-row">
-                        <dt class="dl-term">Best season</dt>
-                        <dd class="dl-value"><a class="link" href={`/clutch/${p.peak.y}`}>{p.peak.y} · {p.peak.rating.toFixed(1)}</a></dd>
-                      </div>
-                    )}
-                    <div class="dl-row">
-                      <dt class="dl-term">Surfaces</dt>
-                      <dd class="dl-value font-normal">
-                        <span class="swatch swatch--hard"></span> {p.surf.hard}
-                        <span class="swatch swatch--clay ml-2"></span> {p.surf.clay}
-                        <span class="swatch swatch--grass ml-2"></span> {p.surf.grass}
-                      </dd>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </>
-        ))
-      }
+                </div>
+              </td>
+            </tr>
+          )}
+        </>
+      ))}
     </tbody>
   </table>
 </div>
 
 <script>
-  // Progressive enhancement only: the table ships fully sorted by rating and
-  // is complete without any of this.
+  // Progressive enhancement only. The table ships sorted by rating and is
+  // complete with JavaScript switched off.
   const table = document.getElementById("clutch-table");
   if (table) {
     const tbody = table.querySelector("tbody")!;
@@ -151,39 +133,28 @@ const cols = [
         const key = th.dataset.sortKey!;
         const wasDesc = th.getAttribute("aria-sort") === "descending";
         const dir = wasDesc ? 1 : -1;
-
         table.querySelectorAll("th[data-sort-key]").forEach((o) => o.setAttribute("aria-sort", "none"));
         th.setAttribute("aria-sort", wasDesc ? "ascending" : "descending");
 
-        const sorted = rows().sort((a, b) => {
-          const av = a.dataset[key] ?? "";
-          const bv = b.dataset[key] ?? "";
-          const an = Number(av);
-          const bn = Number(bv);
-          if (Number.isFinite(an) && Number.isFinite(bn) && av !== "" && bv !== "") {
-            return (an - bn) * dir;
-          }
+        for (const row of rows().sort((a, b) => {
+          const av = a.dataset[key] ?? "", bv = b.dataset[key] ?? "";
+          const an = Number(av), bn = Number(bv);
+          if (av !== "" && bv !== "" && Number.isFinite(an) && Number.isFinite(bn)) return (an - bn) * dir;
           return av.localeCompare(bv) * -dir;
-        });
-
-        for (const row of sorted) {
+        })) {
           tbody.append(row);
-          // Keep each detail row immediately beneath its parent.
           const detail = tbody.querySelector(`tr[data-detail-for="${row.dataset.id}"]`);
           if (detail) tbody.append(detail);
         }
       });
     });
 
-    // Expand a player's breakdown.
     tbody.addEventListener("click", (e) => {
       const row = (e.target as HTMLElement).closest<HTMLTableRowElement>("tr[data-rating]");
       if (!row) return;
-      const detail = tbody.querySelector(`tr[data-detail-for="${row.dataset.id}"]`);
-      detail?.classList.toggle("hidden");
+      tbody.querySelector(`tr[data-detail-for="${row.dataset.id}"]`)?.classList.toggle("hidden");
     });
 
-    // Era filter. Hides rows; it never re-ranks.
     document.querySelectorAll<HTMLElement>("[data-era-filter]").forEach((chip) => {
       chip.addEventListener("click", (e) => {
         e.preventDefault();
@@ -193,8 +164,7 @@ const cols = [
         for (const row of rows()) {
           const show = era === "all" || row.dataset.era === era;
           row.classList.toggle("hidden", !show);
-          const detail = tbody.querySelector(`tr[data-detail-for="${row.dataset.id}"]`);
-          if (detail && !show) detail.classList.add("hidden");
+          if (!show) tbody.querySelector(`tr[data-detail-for="${row.dataset.id}"]`)?.classList.add("hidden");
         }
       });
     });

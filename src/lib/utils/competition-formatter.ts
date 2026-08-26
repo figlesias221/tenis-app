@@ -101,14 +101,14 @@ export class CompetitionFormatter {
 
   private static formatLevel(level: string): string {
     const levelMap: Record<string, string> = {
-      'grand_slam': 'text-ink font-semibold',
-      'atp_1000': 'text-ink',
-      'atp_500': 'text-ink-2',
-      'atp_250': 'text-ink-3',
-      'wta_1000': 'text-ink',
-      'wta_500': 'text-ink-2',
-      'wta_250': 'text-ink-3',
-      'wta_125': 'text-ink-3',
+      'grand_slam': 'text-chalk font-semibold',
+      'atp_1000': 'text-chalk',
+      'atp_500': 'text-chalk-2',
+      'atp_250': 'text-chalk-3',
+      'wta_1000': 'text-chalk',
+      'wta_500': 'text-chalk-2',
+      'wta_250': 'text-chalk-3',
+      'wta_125': 'text-chalk-3',
       'wta_premier': 'WTA Premier',
       'wta_international': 'WTA International',
       'atp_world_tour_finals': 'ATP Finals',
@@ -179,16 +179,16 @@ export class CompetitionFormatter {
 
   static getLevelColor(level: string): string {
     const colorMap: Record<string, string> = {
-      'grand_slam': 'text-ink font-semibold',
-      'atp_1000': 'text-ink',
-      'wta_1000': 'text-ink',
-      'atp_500': 'text-ink-2',
-      'wta_500': 'text-ink-2',
-      'atp_250': 'text-ink-3',
-      'wta_250': 'text-ink-3',
-      'wta_125': 'text-ink-3'
+      'grand_slam': 'text-chalk font-semibold',
+      'atp_1000': 'text-chalk',
+      'wta_1000': 'text-chalk',
+      'atp_500': 'text-chalk-2',
+      'wta_500': 'text-chalk-2',
+      'atp_250': 'text-chalk-3',
+      'wta_250': 'text-chalk-3',
+      'wta_125': 'text-chalk-3'
     };
 
-    return colorMap[level] || 'text-ink-3';
+    return colorMap[level] || 'text-chalk-3';
   }
 }

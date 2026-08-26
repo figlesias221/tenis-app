@@ -36,7 +36,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
 
     {
       fit && (
-        <div class="dl--inline mt-6 border-y border-rule py-3">
+        <div class="dl--inline mt-6 border-y border-line py-3">
           <div class="dl-row"><dt class="dl-term">Matches</dt><dd class="dl-value">{fmt(fit.matches)}</dd></div>
           <div class="dl-row"><dt class="dl-term">Qualifiers</dt><dd class="dl-value">{fit.qualifiers}</dd></div>
           <div class="dl-row"><dt class="dl-term">Tour break points saved</dt><dd class="dl-value">{(fit.tour.bpSaved * 100).toFixed(1)}%</dd></div>
@@ -74,7 +74,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
               {COMPONENT_KEYS.map((k) => (
                 <th class="col-num" scope="col">
                   {COMPONENT_LABELS[k]}
-                  {meta.weights[k] === 0 && <span class="text-ink-3"> ·0</span>}
+                  {meta.weights[k] === 0 && <span class="text-chalk-3"> ·0</span>}
                 </th>
               ))}
             </tr>
@@ -97,7 +97,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
                   </td>
                   {COMPONENT_KEYS.map((k) => (
                     <td class="col-num shade" style={meta.weights[k] === 0 ? "" : shadeStyle(r.c[k].p, r.c[k].z >= 0)}>
-                      <span class={meta.weights[k] === 0 ? "text-ink-3" : ""}>
+                      <span class={meta.weights[k] === 0 ? "text-chalk-3" : ""}>
                         {r.c[k].z === 0 ? "—" : signedPoints(r.c[k].r - (r.c[k].r - r.c[k].z * 0.02))}
                       </span>
                     </td>

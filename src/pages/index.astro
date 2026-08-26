@@ -49,7 +49,7 @@ const contents = [
       dataset and kept here because the original disappeared.
     </p>
 
-    <div class="dl--inline mt-8 border-y border-rule py-3">
+    <div class="dl--inline mt-8 border-y border-line py-3">
       <div class="dl-row"><dt class="dl-term">Seasons</dt><dd class="dl-value">{meta.seasons[1] - meta.seasons[0] + 1}</dd></div>
       <div class="dl-row"><dt class="dl-term">Matches</dt><dd class="dl-value">{fmt(meta.matchesSeen)}</dd></div>
       <div class="dl-row"><dt class="dl-term">With full statistics</dt><dd class="dl-value">{fmt(meta.matchesUsed)}</dd></div>
@@ -59,17 +59,17 @@ const contents = [
     <!-- Contents -->
     <section class="section">
       <div class="section-head"><p class="text-kicker">Contents</p></div>
-      <dl class="dl">
+      <dl class="cells" style="grid-template-columns:1fr">
         {
           contents.map((c) => (
-            <div class="dl-row items-start py-4">
+            <div class="cell flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
               <div>
                 <a href={c.href} class="text-heading-3 link no-underline hover:underline">
                   {c.title}
                 </a>
                 <p class="text-body-small measure mt-1">{c.blurb}</p>
               </div>
-              <div class="text-note shrink-0 text-right">{c.meta}</div>
+              <span class="text-note shrink-0">{c.meta}</span>
             </div>
           ))
         }
@@ -118,14 +118,14 @@ const contents = [
       <div class="section-head"><p class="text-kicker">Sources &amp; limits</p></div>
       <div class="measure">
         <p class="text-body">
-          <strong class="text-ink">Sources.</strong> All match records come from Jeff
+          <strong class="text-chalk">Sources.</strong> All match records come from Jeff
           Sackmann's <em>tennis_atp</em> dataset, released under Creative Commons
           Attribution-NonCommercial-ShareAlike 4.0. This archive is non-commercial
           and is shared under the same licence. The upstream repository has since
           been removed from GitHub; what is held here is a preserved mirror.
         </p>
         <p class="text-body mt-4">
-          <strong class="text-ink">Limits.</strong> Serve statistics begin in 1991,
+          <strong class="text-chalk">Limits.</strong> Serve statistics begin in 1991,
           so earlier seasons are not held here. Rankings stop at the week of 30
           December 2024. There are no live scores on this site and there will not
           be. Doubles, qualifying and the women's tour are outside the dataset.

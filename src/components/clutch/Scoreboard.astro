@@ -1,0 +1,41 @@
+---
+/**
+ * The page's thesis, as the only object in tennis that states it: a game
+ * scoreboard frozen at 30-40. Every number this index computes comes from a
+ * moment that looked exactly like this one.
+ */
+interface Props {
+  serverSets?: number[];
+  returnerSets?: number[];
+}
+const {
+  serverSets = [6, 4, 5],
+  returnerSets = [7, 6, 5],
+} = Astro.props;
+---
+
+<figure class="mt-9">
+  <div class="inline-grid border border-chalk bg-court-2" style={`grid-template-columns:minmax(9rem,1fr) repeat(${serverSets.length + 1},2.75rem)`}>
+    <div class="flex items-center gap-2.5 border-b border-line px-3.5 py-2.5">
+      <span class="h-1.5 w-1.5 shrink-0 bg-ball" aria-hidden="true"></span>
+      <span class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-chalk">Server</span>
+    </div>
+    {serverSets.map((s) => (
+      <div class="num border-b border-l border-line py-2.5 text-center text-[0.9375rem] font-bold text-chalk-2">{s}</div>
+    ))}
+    <div class="num border-b border-l border-line bg-ball py-2.5 text-center text-[0.9375rem] font-bold text-court">30</div>
+
+    <div class="flex items-center gap-2.5 px-3.5 py-2.5">
+      <span class="h-1.5 w-1.5 shrink-0" aria-hidden="true"></span>
+      <span class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-chalk">Returner</span>
+    </div>
+    {returnerSets.map((s) => (
+      <div class="num border-l border-line py-2.5 text-center text-[0.9375rem] font-bold text-chalk-2">{s}</div>
+    ))}
+    <div class="num border-l border-line bg-ball py-2.5 text-center text-[0.9375rem] font-bold text-court">40</div>
+  </div>
+  <figcaption class="text-note mt-3">
+    Break point, ad court. Every figure on this page is drawn from a moment that
+    looked like this one — and from what each player did next.
+  </figcaption>
+</figure>

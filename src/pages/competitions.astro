@@ -61,7 +61,7 @@ const filterCounts = competitions ? {
       so an event appears only in the years it was actually played.
     </p>
 
-    <div class="dl--inline mt-6 border-y border-rule py-3">
+    <div class="dl--inline mt-6 border-y border-line py-3">
       <div class="dl-row">
         <dt class="dl-term">Showing</dt>
         <dd class="dl-value">
@@ -71,8 +71,8 @@ const filterCounts = competitions ? {
       <div class="dl-row"><dt class="dl-term">Coverage</dt><dd class="dl-value">{ARCHIVE_RANGE_LABEL}</dd></div>
     </div>
         {competitions && (
-          <div class="bg-paper border border-rule p-4 mb-6">
-            <h3 class="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+          <div class="bg-court border border-line p-4 mb-6">
+            <h3 class="text-lg font-semibold text-chalk mb-4 flex items-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"></path>
               </svg>
@@ -82,26 +82,26 @@ const filterCounts = competitions ? {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Type Filter -->
               <div>
-                <label class="block text-sm font-medium text-ink-2 mb-2">Tournament Type</label>
+                <label class="block text-sm font-medium text-chalk-2 mb-2">Tournament Type</label>
                 <div class="flex flex-wrap gap-2">
                   <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=all`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='all'
                          ? 'bg-clay text-clay border-clay'
-                         : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                         : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                      }`}>
                     All ({filterCounts?.all || 0})
                   </a>
                   <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=singles`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='singles'
                          ? 'bg-hard text-hard border-hard'
-                         : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                         : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                      }`}>
                     👤 Singles ({filterCounts?.singles || 0})
                   </a>
                   <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=doubles`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='doubles'
-                         ? 'bg-positive text-positive border-positive'
-                         : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                         ? 'bg-above text-above border-above'
+                         : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                      }`}>
                     👥 Doubles ({filterCounts?.doubles || 0})
                   </a>
@@ -110,19 +110,19 @@ const filterCounts = competitions ? {
 
               <!-- Level Filter -->
               <div>
-                <label class="block text-sm font-medium text-ink-2 mb-2">Tournament Level</label>
+                <label class="block text-sm font-medium text-chalk-2 mb-2">Tournament Level</label>
                 <div class="flex flex-wrap gap-2">
                   <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=all`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='all'
                          ? 'bg-clay text-clay border-clay'
-                         : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                         : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                      }`}>
                     All
                   </a>
                   <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=grand_slam`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='grand_slam'
                          ? 'bg-clay text-clay border-clay'
-                         : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                         : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                      }`}>
                     Grand Slam
                   </a>
@@ -130,22 +130,22 @@ const filterCounts = competitions ? {
                     <>
                       <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_1000`}
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_1000'
-                             ? 'bg-negative dark:bg-negative text-negative dark:text-negative border-negative'
-                             : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                             ? 'bg-below dark:bg-below text-below dark:text-below border-below'
+                             : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                          }`}>
                         Masters 1000
                       </a>
                       <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_500`}
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_500'
                              ? 'bg-hard text-hard border-hard'
-                             : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                             : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                          }`}>
                         ATP 500
                       </a>
                       <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_250`}
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_250'
-                             ? 'bg-positive text-positive border-positive'
-                             : 'bg-paper-2 text-ink-2 border-rule hover:bg-paper-3'
+                             ? 'bg-above text-above border-above'
+                             : 'bg-court-2 text-chalk-2 border-line hover:bg-court-3'
                          }`}>
                         ATP 250
                       </a>
@@ -157,9 +157,9 @@ const filterCounts = competitions ? {
 
             <!-- Active Filters Summary -->
             {(typeFilter !== 'all' || levelFilter !== 'all') && (
-              <div class="mt-4 p-3 bg-paper">
+              <div class="mt-4 p-3 bg-court">
                 <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2 text-sm text-ink-2">
+                  <div class="flex items-center gap-2 text-sm text-chalk-2">
                     <span>Active filters:</span>
                     <div class="flex items-center gap-2">
                       {typeFilter !== 'all' && (
@@ -168,7 +168,7 @@ const filterCounts = competitions ? {
                         </span>
                       )}
                       {levelFilter !== 'all' && (
-                        <span class="px-2 py-1 bg-positive text-positive text-xs">
+                        <span class="px-2 py-1 bg-above text-above text-xs">
                           Level: {levelFilter.replace('_', ' ')}
                         </span>
                       )}
@@ -187,31 +187,31 @@ const filterCounts = competitions ? {
         <!-- Statistics Summary -->
         {filteredCompetitions && (
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-paper p-4 border border-rule">
+            <div class="bg-court p-4 border border-line">
               <div class="text-2xl font-bold text-clay">
                 {filteredCompetitions.competitions.length}
               </div>
-              <div class="text-sm text-ink-2">
+              <div class="text-sm text-chalk-2">
                 {(typeFilter !== 'all' || levelFilter !== 'all') ? 'Filtered' : 'Total'} Competitions
               </div>
             </div>
-            <div class="bg-paper p-4 border border-rule">
-              <div class="text-2xl font-bold text-positive">
+            <div class="bg-court p-4 border border-line">
+              <div class="text-2xl font-bold text-above">
                 {filteredCompetitions.competitions.filter(c => c.type === 'singles').length}
               </div>
-              <div class="text-sm text-ink-2">Singles</div>
+              <div class="text-sm text-chalk-2">Singles</div>
             </div>
-            <div class="bg-paper p-4 border border-rule">
+            <div class="bg-court p-4 border border-line">
               <div class="text-2xl font-bold text-hard">
                 {filteredCompetitions.competitions.filter(c => c.type.includes('doubles')).length}
               </div>
-              <div class="text-sm text-ink-2">Doubles</div>
+              <div class="text-sm text-chalk-2">Doubles</div>
             </div>
-            <div class="bg-paper p-4 border border-rule">
+            <div class="bg-court p-4 border border-line">
               <div class="text-2xl font-bold text-carpet">
                 {filteredCompetitions.competitions.filter(c => c.level === 'grand_slam').length}
               </div>
-              <div class="text-sm text-ink-2">Grand Slams</div>
+              <div class="text-sm text-chalk-2">Grand Slams</div>
             </div>
           </div>
         )}
@@ -219,13 +219,13 @@ const filterCounts = competitions ? {
 
       <!-- Error State -->
       {error && (
-        <div class="border border-negative bg-negative p-4 dark:bg-negative">
+        <div class="border border-below bg-below p-4 dark:bg-below">
           <div class="flex">
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-negative dark:text-negative">
+              <h3 class="text-sm font-medium text-below dark:text-below">
                 Error loading competitions
               </h3>
-              <div class="mt-2 text-sm text-negative dark:text-negative">
+              <div class="mt-2 text-sm text-below dark:text-below">
                 {error}
               </div>
             </div>
@@ -237,24 +237,24 @@ const filterCounts = competitions ? {
       {!filteredCompetitions && !error && (
         <div class="text-center py-12">
           <div class="inline-block animate-spin h-8 w-8 border-b-2 border-clay"></div>
-          <p class="mt-2 text-ink-2">Loading competitions...</p>
+          <p class="mt-2 text-chalk-2">Loading competitions...</p>
         </div>
       )}
 
       <!-- No Results State -->
       {filteredCompetitions && filteredCompetitions.competitions.length === 0 && (
         <div class="text-center py-12">
-          <div class="text-ink-3 mb-4">
+          <div class="text-chalk-3 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.071-2.33"></path>
             </svg>
           </div>
-          <h3 class="text-lg font-medium text-ink mb-2">No competitions found</h3>
-          <p class="text-ink-2 mb-4">
+          <h3 class="text-lg font-medium text-chalk mb-2">No competitions found</h3>
+          <p class="text-chalk-2 mb-4">
             No {tourType} competitions match your current filters.
           </p>
           <a href={`/competitions?tour=${tourType}`}
-             class="inline-flex items-center px-4 py-2 bg-clay hover:bg-clay text-paper transition-colors">
+             class="inline-flex items-center px-4 py-2 bg-clay hover:bg-clay text-court transition-colors">
             Clear all filters
           </a>
         </div>
@@ -269,27 +269,27 @@ const filterCounts = competitions ? {
       )}
 
       <!-- Info Section -->
-      <div class="mt-8 bg-paper border border-rule p-6">
-        <h2 class="mb-4 text-xl font-semibold text-ink">About {tourType} Competitions</h2>
+      <div class="mt-8 bg-court border border-line p-6">
+        <h2 class="mb-4 text-xl font-semibold text-chalk">About {tourType} Competitions</h2>
         <div class="prose dark:prose-invert max-w-none">
           {tourType === 'ATP' ? (
-            <div class="space-y-3 text-ink-2">
+            <div class="space-y-3 text-chalk-2">
               <p>
                 The ATP (Association of Tennis Professionals) tour features the world's best men's tennis players
                 competing across different tournament categories throughout the year.
               </p>
               <div class="grid md:grid-cols-2 gap-4 mt-4">
                 <div>
-                  <h3 class="font-semibold text-ink mb-2">Tournament Levels:</h3>
+                  <h3 class="font-semibold text-chalk mb-2">Tournament Levels:</h3>
                   <ul class="space-y-1 text-sm">
                     <li><span class="font-medium text-clay">Grand Slams:</span> The most prestigious tournaments (Australian Open, French Open, Wimbledon, US Open)</li>
-                    <li><span class="font-medium text-negative dark:text-negative">ATP Masters 1000:</span> Nine mandatory tournaments for top players</li>
+                    <li><span class="font-medium text-below dark:text-below">ATP Masters 1000:</span> Nine mandatory tournaments for top players</li>
                     <li><span class="font-medium text-hard">ATP 500:</span> Mid-tier tournaments with significant ranking points</li>
-                    <li><span class="font-medium text-positive">ATP 250:</span> Entry-level ATP tournaments</li>
+                    <li><span class="font-medium text-above">ATP 250:</span> Entry-level ATP tournaments</li>
                   </ul>
                 </div>
                 <div>
-                  <h3 class="font-semibold text-ink mb-2">Special Events:</h3>
+                  <h3 class="font-semibold text-chalk mb-2">Special Events:</h3>
                   <ul class="space-y-1 text-sm">
                     <li><span class="font-medium text-carpet">ATP Finals:</span> Year-end championship for top 8 players</li>
                     <li><span class="font-medium text-hard">Next Gen Finals:</span> Championship for top players under 21</li>
@@ -298,23 +298,23 @@ const filterCounts = competitions ? {
               </div>
             </div>
           ) : (
-            <div class="space-y-3 text-ink-2">
+            <div class="space-y-3 text-chalk-2">
               <p>
                 The WTA (Women's Tennis Association) tour showcases the world's best women's tennis players
                 competing in various tournaments throughout the season.
               </p>
               <div class="grid md:grid-cols-2 gap-4 mt-4">
                 <div>
-                  <h3 class="font-semibold text-ink mb-2">Tournament Levels:</h3>
+                  <h3 class="font-semibold text-chalk mb-2">Tournament Levels:</h3>
                   <ul class="space-y-1 text-sm">
                     <li><span class="font-medium text-clay">Grand Slams:</span> The four major tournaments</li>
-                    <li><span class="font-medium text-negative dark:text-negative">WTA 1000:</span> Premier mandatory tournaments</li>
+                    <li><span class="font-medium text-below dark:text-below">WTA 1000:</span> Premier mandatory tournaments</li>
                     <li><span class="font-medium text-hard">WTA 500:</span> Important tour-level events</li>
-                    <li><span class="font-medium text-positive">WTA 250:</span> Regular tour tournaments</li>
+                    <li><span class="font-medium text-above">WTA 250:</span> Regular tour tournaments</li>
                   </ul>
                 </div>
                 <div>
-                  <h3 class="font-semibold text-ink mb-2">Special Events:</h3>
+                  <h3 class="font-semibold text-chalk mb-2">Special Events:</h3>
                   <ul class="space-y-1 text-sm">
                     <li><span class="font-medium text-carpet">WTA Finals:</span> Year-end championship</li>
                     <li><span class="font-medium text-hard">WTA 125:</span> Entry-level professional tournaments</li>
@@ -324,7 +324,7 @@ const filterCounts = competitions ? {
             </div>
           )}
         </div>
-        <p class="text-sm text-ink-3 mt-4">
+        <p class="text-sm text-chalk-3 mt-4">
           Tournament data from Jeff Sackmann's comprehensive ATP tennis database. Compiled from historical match records. No records after 2024.
         </p>
       </div>

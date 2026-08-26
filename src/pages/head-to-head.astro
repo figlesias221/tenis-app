@@ -25,7 +25,7 @@ import Layout from "@/layouts/Layout.astro";
       <!-- Player 1 Selection -->
       <div class="panel p-6">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 from-ink-3 to-ink-2 flex items-center justify-center text-paper text-xl font-bold">
+          <div class="w-12 h-12 from-chalk-3 to-chalk-2 flex items-center justify-center text-court text-xl font-bold">
             1
           </div>
           <h2 class="text-heading-3">Select First Player</h2>
@@ -34,7 +34,7 @@ import Layout from "@/layouts/Layout.astro";
         <div class="space-y-4">
           <!-- Tour Selection -->
           <div>
-            <label for="tour1" class="block text-sm font-medium text-ink-2 mb-2">
+            <label for="tour1" class="block text-sm font-medium text-chalk-2 mb-2">
               Tour
             </label>
             <select id="tour1" class="select-field">
@@ -45,7 +45,7 @@ import Layout from "@/layouts/Layout.astro";
 
           <!-- Player Selection -->
           <div>
-            <label for="player1" class="block text-sm font-medium text-ink-2 mb-2">
+            <label for="player1" class="block text-sm font-medium text-chalk-2 mb-2">
               Player
             </label>
             <select id="player1" class="select-field">
@@ -54,12 +54,12 @@ import Layout from "@/layouts/Layout.astro";
           </div>
 
           <!-- Selected Player Display -->
-          <div id="player1-display" class="hidden panel p-4 bg-paper/50 border-rule">
+          <div id="player1-display" class="hidden panel p-4 bg-court/50 border-line">
             <div class="flex items-center gap-3">
               <div id="player1-flag"></div>
               <div>
-                <div id="player1-name" class="font-semibold text-ink"></div>
-                <div id="player1-info" class="text-sm text-ink-2"></div>
+                <div id="player1-name" class="font-semibold text-chalk"></div>
+                <div id="player1-info" class="text-sm text-chalk-2"></div>
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@ import Layout from "@/layouts/Layout.astro";
       <!-- Player 2 Selection -->
       <div class="panel p-6">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 from-ink-3 to-ink-2 flex items-center justify-center text-paper text-xl font-bold">
+          <div class="w-12 h-12 from-chalk-3 to-chalk-2 flex items-center justify-center text-court text-xl font-bold">
             2
           </div>
           <h2 class="text-heading-3">Select Second Player</h2>
@@ -78,7 +78,7 @@ import Layout from "@/layouts/Layout.astro";
         <div class="space-y-4">
           <!-- Tour Selection -->
           <div>
-            <label for="tour2" class="block text-sm font-medium text-ink-2 mb-2">
+            <label for="tour2" class="block text-sm font-medium text-chalk-2 mb-2">
               Tour
             </label>
             <select id="tour2" class="select-field">
@@ -89,7 +89,7 @@ import Layout from "@/layouts/Layout.astro";
 
           <!-- Player Selection -->
           <div>
-            <label for="player2" class="block text-sm font-medium text-ink-2 mb-2">
+            <label for="player2" class="block text-sm font-medium text-chalk-2 mb-2">
               Player
             </label>
             <select id="player2" class="select-field">
@@ -98,12 +98,12 @@ import Layout from "@/layouts/Layout.astro";
           </div>
 
           <!-- Selected Player Display -->
-          <div id="player2-display" class="hidden panel p-4 bg-paper/50 border-rule">
+          <div id="player2-display" class="hidden panel p-4 bg-court/50 border-line">
             <div class="flex items-center gap-3">
               <div id="player2-flag"></div>
               <div>
-                <div id="player2-name" class="font-semibold text-ink"></div>
-                <div id="player2-info" class="text-sm text-ink-2"></div>
+                <div id="player2-name" class="font-semibold text-chalk"></div>
+                <div id="player2-info" class="text-sm text-chalk-2"></div>
               </div>
             </div>
           </div>
@@ -133,11 +133,11 @@ import Layout from "@/layouts/Layout.astro";
 
           <!-- VS and Stats -->
           <div class="text-center">
-            <div class="text-4xl font-bold text-ink-3 mb-2">VS</div>
-            <div id="overall-record" class="text-2xl font-bold text-ink">
+            <div class="text-4xl font-bold text-chalk-3 mb-2">VS</div>
+            <div id="overall-record" class="text-2xl font-bold text-chalk">
               <!-- Will be populated by JavaScript -->
             </div>
-            <div class="text-sm text-ink-2">Overall Record</div>
+            <div class="text-sm text-chalk-2">Overall Record</div>
           </div>
 
           <!-- Player 2 -->
@@ -152,16 +152,16 @@ import Layout from "@/layouts/Layout.astro";
         <h3 class="text-lg font-semibold mb-4">Match Record</h3>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
           <div>
-            <div id="player1-wins" class="text-3xl font-bold text-ink-2">0</div>
-            <div id="player1-wins-label" class="text-sm text-ink-2">Player 1</div>
+            <div id="player1-wins" class="text-3xl font-bold text-chalk-2">0</div>
+            <div id="player1-wins-label" class="text-sm text-chalk-2">Player 1</div>
           </div>
           <div>
-            <div id="total-matches" class="text-3xl font-bold text-ink">0</div>
-            <div class="text-sm text-ink-2">Total Matches</div>
+            <div id="total-matches" class="text-3xl font-bold text-chalk">0</div>
+            <div class="text-sm text-chalk-2">Total Matches</div>
           </div>
           <div>
-            <div id="player2-wins" class="text-3xl font-bold text-ink-2">0</div>
-            <div id="player2-wins-label" class="text-sm text-ink-2">Player 2</div>
+            <div id="player2-wins" class="text-3xl font-bold text-chalk-2">0</div>
+            <div id="player2-wins-label" class="text-sm text-chalk-2">Player 2</div>
           </div>
         </div>
       </div>
@@ -177,15 +177,15 @@ import Layout from "@/layouts/Layout.astro";
 
     <!-- Loading State -->
     <div id="loading-state" class="hidden text-center py-12">
-      <div class="inline-block h-8 w-8 animate-spin border-4 border-rule-strong border-r-transparent mb-4"></div>
+      <div class="inline-block h-8 w-8 animate-spin border-4 border-line-2 border-r-transparent mb-4"></div>
       <p class="text-body">Loading head-to-head data...</p>
     </div>
 
     <!-- Error State -->
-    <div id="error-state" class="hidden panel bg-negative dark:bg-negative/20 border-negative p-6 text-center">
+    <div id="error-state" class="hidden panel bg-below dark:bg-below/20 border-below p-6 text-center">
       <div class="text-4xl mb-4">⚠️</div>
-      <h3 class="text-lg font-semibold text-negative dark:text-negative mb-2">Error Loading Data</h3>
-      <p id="error-message" class="text-negative dark:text-negative mb-4"></p>
+      <h3 class="text-lg font-semibold text-below dark:text-below mb-2">Error Loading Data</h3>
+      <p id="error-message" class="text-below dark:text-below mb-4"></p>
       <button id="retry-btn" class="btn-outline">
         Try Again
       </button>
@@ -199,12 +199,12 @@ import Layout from "@/layouts/Layout.astro";
         <button class="featured-matchup panel p-4 text-left transition-"
                 data-player1="206173" data-player2="207989">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-ink-2">ATP Champions</span>
+            <span class="text-sm font-medium text-chalk-2">ATP Champions</span>
             <span class="text-xs bg-hard text-hard px-2 py-1">
               Current
             </span>
           </div>
-          <div class="text-lg font-bold text-ink">
+          <div class="text-lg font-bold text-chalk">
             Sinner vs Alcaraz
           </div>
         </button>
@@ -212,12 +212,12 @@ import Layout from "@/layouts/Layout.astro";
         <button class="featured-matchup panel p-4 text-left transition-"
                 data-player1="104925" data-player2="207989">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-ink-2">Legend vs Rising Star</span>
-            <span class="text-xs bg-positive text-positive px-2 py-1">
+            <span class="text-sm font-medium text-chalk-2">Legend vs Rising Star</span>
+            <span class="text-xs bg-above text-above px-2 py-1">
               Classic
             </span>
           </div>
-          <div class="text-lg font-bold text-ink">
+          <div class="text-lg font-bold text-chalk">
             Djokovic vs Alcaraz
           </div>
         </button>
@@ -225,12 +225,12 @@ import Layout from "@/layouts/Layout.astro";
         <button class="featured-matchup panel p-4 text-left transition-"
                 data-player1="100644" data-player2="126203">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-ink-2">Next Gen</span>
+            <span class="text-sm font-medium text-chalk-2">Next Gen</span>
             <span class="text-xs bg-carpet text-carpet px-2 py-1">
               Rising
             </span>
           </div>
-          <div class="text-lg font-bold text-ink">
+          <div class="text-lg font-bold text-chalk">
             Zverev vs Fritz
           </div>
         </button>
@@ -393,8 +393,8 @@ import Layout from "@/layouts/Layout.astro";
            alt="${selectedPlayer1.country || 'Unknown'}"
            class="w-8 h-6 mx-auto mb-2"
            onerror="this.style.display='none'">
-      <div class="text-xl font-bold text-ink">${selectedPlayer1.name}</div>
-      <div class="text-sm text-ink-2">#${selectedPlayer1.ranking || 'NR'}</div>
+      <div class="text-xl font-bold text-chalk">${selectedPlayer1.name}</div>
+      <div class="text-sm text-chalk-2">#${selectedPlayer1.ranking || 'NR'}</div>
     `;
 
     document.getElementById('comparison-player2')!.innerHTML = `
@@ -402,8 +402,8 @@ import Layout from "@/layouts/Layout.astro";
            alt="${selectedPlayer2.country || 'Unknown'}"
            class="w-8 h-6 mx-auto mb-2"
            onerror="this.style.display='none'">
-      <div class="text-xl font-bold text-ink">${selectedPlayer2.name}</div>
-      <div class="text-sm text-ink-2">#${selectedPlayer2.ranking || 'NR'}</div>
+      <div class="text-xl font-bold text-chalk">${selectedPlayer2.name}</div>
+      <div class="text-sm text-chalk-2">#${selectedPlayer2.ranking || 'NR'}</div>
     `;
 
     document.getElementById('overall-record')!.textContent = `${player1Wins} - ${player2Wins}`;
@@ -475,16 +475,16 @@ import Layout from "@/layouts/Layout.astro";
         }
 
         return `
-          <div class="border border-rule p-4 bg-paper/50">
+          <div class="border border-line p-4 bg-court/50">
             <div class="flex items-center justify-between mb-3">
               <div class="min-w-0 flex-1">
-                <div class="font-semibold text-ink text-sm">${tournament}</div>
-                <div class="text-xs text-ink-3">
+                <div class="font-semibold text-chalk text-sm">${tournament}</div>
+                <div class="text-xs text-chalk-3">
                   ${date}${round ? ` • ${round}` : ''}
                 </div>
               </div>
               ${isPlayer1Winner || isPlayer2Winner ?
-                `<div class="text-xs px-2 py-1 ${isPlayer1Winner ?'bg-paper-2 text-ink-2' : 'bg-paper-2 text-ink-2'}">
+                `<div class="text-xs px-2 py-1 ${isPlayer1Winner ?'bg-court-2 text-chalk-2' : 'bg-court-2 text-chalk-2'}">
                   ${isPlayer1Winner ? selectedPlayer1.name.split(',')[0] : selectedPlayer2.name.split(',')[0]} wins
                 </div>` : ''
               }
@@ -496,25 +496,25 @@ import Layout from "@/layouts/Layout.astro";
                      alt="${selectedPlayer1.country || 'Unknown'}"
                      class="w-5 h-4 object-cover flex-shrink-0"
                      onerror="this.style.display='none'">
-                <span class="${isPlayer1Winner ?'font-semibold text-ink-2' : 'text-ink-2'} text-sm">
+                <span class="${isPlayer1Winner ?'font-semibold text-chalk-2' : 'text-chalk-2'} text-sm">
                   ${selectedPlayer1.name.split(',')[0]}
                 </span>
               </div>
 
               <div class="px-4 text-center">
                 ${scoreDisplay ? `
-                  <div class="font-mono text-sm font-medium text-ink bg-paper-2 px-3 py-1">
+                  <div class="font-mono text-sm font-medium text-chalk bg-court-2 px-3 py-1">
                     ${scoreDisplay}
                   </div>
                 ` : `
-                  <div class="text-ink-3 text-xs">
+                  <div class="text-chalk-3 text-xs">
                     ${winner ? 'W/L' : 'No Score'}
                   </div>
                 `}
               </div>
 
               <div class="flex items-center gap-3 min-w-0 flex-1 justify-end">
-                <span class="${isPlayer2Winner ?'font-semibold text-ink-2' : 'text-ink-2'} text-sm">
+                <span class="${isPlayer2Winner ?'font-semibold text-chalk-2' : 'text-chalk-2'} text-sm">
                   ${selectedPlayer2.name.split(',')[0]}
                 </span>
                 <img src="https://flagcdn.com/w20/${(selectedPlayer2.country_code || 'xx').toLowerCase()}.png"
@@ -528,7 +528,7 @@ import Layout from "@/layouts/Layout.astro";
       }).join('');
     } else {
       matchesList.innerHTML = `
-        <div class="text-center py-8 text-ink-3">
+        <div class="text-center py-8 text-chalk-3">
           <div class="text-4xl mb-4">🎾</div>
           <p>No previous matches found between these players.</p>
         </div>

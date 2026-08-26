@@ -3,7 +3,8 @@ export const prerender = true;
 
 import Layout from "@/layouts/Layout.astro";
 import ClutchTable from "@/components/clutch/ClutchTable.astro";
-import ClutchScatter from "@/components/clutch/ClutchScatter.astro";
+import ResidualPlot from "@/components/clutch/ResidualPlot.astro";
+import Scoreboard from "@/components/clutch/Scoreboard.astro";
 import CountryFlag from "@/components/CountryFlag.astro";
 import { career, highlights, meta, availableSeasons } from "@/lib/clutch/data";
 import { surfaceClass } from "@/lib/clutch/format";
@@ -27,47 +28,49 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
   title="The Clutch Index — The Tennis Almanac"
   description="Who actually wins the moments that matter, 1991–2024. Break-point percentages measured against what each player's ordinary play predicts."
 >
-  <div class="page py-10">
-    <!-- Hero -->
+  <div class="page py-12">
+    <!-- Hero: the thesis, stated by the one object in tennis that states it -->
     <p class="text-kicker">The Clutch Index · {meta.seasons[0]}–{meta.seasons[1]}</p>
-    <h1 class="text-display mt-2 text-balance">Who wins the moments that matter</h1>
+    <h1 class="text-display mt-3 max-w-[13ch] text-balance">
+      Everyone measures <span class="text-ball">nerve</span> wrong
+    </h1>
 
-    <div class="measure mt-5">
+    <div class="measure mt-6">
       <p class="text-body-large">
-        Break points saved is the number every tennis broadcast reaches for when it
-        wants to talk about nerve. Across {fmt(career.length)} careers it tracks a
-        player's ordinary service quality with an R² of <strong class="text-ink"
-          >{meta.premise.serveR2.toFixed(2)}</strong
-        > and a slope of {meta.premise.serveSlope.toFixed(2)}. It is, in other words,
-        mostly a measure of how well someone serves.
+        Break points saved is the figure every broadcast reaches for when it wants
+        to talk about nerve. Across {fmt(career.length)} careers it tracks how well
+        a man serves on ordinary points at
+        <strong class="num text-chalk">R² {meta.premise.serveR2.toFixed(2)}</strong>,
+        slope {meta.premise.serveSlope.toFixed(2)}. It is mostly a serving statistic.
       </p>
       <p class="text-body mt-4">
-        This page removes that. For every season it predicts what each player
-        <em>should</em> have done under pressure given how he played on ordinary
-        points that year, and ranks him by the gap. Same treatment on return, in
-        tiebreaks, and in deciding sets. Every figure is measured against the men he
-        actually played, never across eras.
+        This page removes that part. For each season it predicts what a player
+        should have done under pressure given how he played the rest of the time,
+        and ranks him by the gap. Same treatment on return, in tiebreaks and in
+        deciding sets — each measured against the men he actually played.
       </p>
     </div>
 
-    <div class="dl--inline mt-6 border-y border-rule py-3">
-      <div class="dl-row"><dt class="dl-term">Seasons</dt><dd class="dl-value">{meta.seasons[0]}–{meta.seasons[1]}</dd></div>
-      <div class="dl-row"><dt class="dl-term">Matches</dt><dd class="dl-value">{fmt(meta.matchesUsed)}</dd></div>
-      <div class="dl-row"><dt class="dl-term">Players ranked</dt><dd class="dl-value">{fmt(meta.careerQualifiers)}</dd></div>
-      <div class="dl-row"><dt class="dl-term">Scale</dt><dd class="dl-value">50 = average, 10 = one SD</dd></div>
-    </div>
+    <Scoreboard />
+
+    <dl class="cells mt-11" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+      <div class="cell"><dt>Seasons</dt><dd>{meta.seasons[0]}–{meta.seasons[1]}</dd></div>
+      <div class="cell"><dt>Matches measured</dt><dd>{fmt(meta.matchesUsed)}</dd></div>
+      <div class="cell"><dt>Players ranked</dt><dd>{fmt(meta.careerQualifiers)}</dd></div>
+      <div class="cell"><dt>Scale</dt><dd>50 ± 10</dd></div>
+    </dl>
 
     <!-- The argument, drawn -->
     <section class="section">
       <div class="section-head">
         <p class="text-kicker">The problem with the usual number</p>
       </div>
-      <ClutchScatter
+      <ResidualPlot
         players={career}
         labelled={labelled}
         component="serve"
-        xLabel="Break points saved that ordinary serving predicts"
-        yLabel="Break points actually saved"
+        xLabel="Predicted by ordinary serving →"
+        yLabel="Actually saved"
       />
     </section>
 
@@ -76,29 +79,25 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
       <div class="section-head">
         <p class="text-kicker">What goes into the rating</p>
       </div>
-      <div class="grid gap-x-8 gap-y-4 md:grid-cols-2">
+      <dl class="cells" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">
         {
           COMPONENT_KEYS.map((k) => (
-            <div class="border-t border-rule pt-3">
-              <div class="flex items-baseline justify-between gap-3">
-                <h3 class="text-heading-4">{COMPONENT_LABELS[k]}</h3>
-                <span class="text-note num">
-                  weight {meta.weights[k] === 0 ? "0" : meta.weights[k].toFixed(3)}
-                </span>
-              </div>
-              <p class="text-note mt-1">{COMPONENT_BLURBS[k]}</p>
-              <p class="text-note mt-1">
-                Real signal: <strong class="text-ink-2">{(meta.signalShare[k] * 100).toFixed(1)}%</strong>
+            <div class="cell">
+              <dt>{COMPONENT_LABELS[k]}</dt>
+              <dd class={meta.weights[k] === 0 ? "nil" : ""}>{meta.weights[k].toFixed(3)}</dd>
+              <p class="text-note mt-2.5">{COMPONENT_BLURBS[k]}</p>
+              <p class="text-note mt-2">
+                Real signal {(meta.signalShare[k] * 100).toFixed(1)}%
                 {meta.signalShare[k] === 0 && " — indistinguishable from chance"}
               </p>
             </div>
           ))
         }
-      </div>
+      </dl>
       <p class="text-body-small measure mt-5">
         The weights are not chosen. Each component is weighted by how much of the
         spread between players cannot be explained by sampling noise. Deciding-set
-        record turns out to contain <strong class="text-ink">none</strong>: players
+        record turns out to contain <strong class="text-ball">none</strong>: players
         are bunched more tightly than chance alone would produce. The most-cited
         clutch statistic in tennis carries no measurable talent, so it earns a
         weight of zero on its own.
@@ -112,7 +111,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
         <p class="text-note">Click any player for the breakdown</p>
       </div>
 
-      <nav class="segbar mb-4" aria-label="Filter by era">
+      <nav class="segbar mb-3 border-b border-line" aria-label="Filter by era">
         {
           eras.map((era) => (
             <a href="#" data-era-filter={era} class:list={["seg", era === "all" && "seg-on"]}>
@@ -236,13 +235,13 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
       </div>
 
       <h3 class="text-heading-4 mt-6">Qualification</h3>
-      <div class="dl mt-2 max-w-md">
+      <div class="cells mt-3 max-w-xl" style="grid-template-columns:1fr">
         <div class="dl-row"><dt class="dl-term">Career</dt><dd class="dl-value">{meta.thresholds.careerMatches}+ matches, {meta.thresholds.careerBpFaced}+ break points faced, {meta.thresholds.careerSeasons}+ qualifying seasons</dd></div>
         <div class="dl-row"><dt class="dl-term">Season</dt><dd class="dl-value">{meta.thresholds.seasonMatches}+ matches, {meta.thresholds.seasonBpFaced}+ break points faced</dd></div>
       </div>
 
       <h3 class="text-heading-4 mt-6">What is excluded, and why</h3>
-      <div class="table-scroll mt-2 max-w-lg">
+      <div class="table-scroll mt-2 max-w-xl">
         <table class="table table--tight">
           <tbody>
             {
@@ -272,7 +271,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
       </p>
 
       <p class="text-note mt-6">
-        Match records compiled by <strong class="text-ink-2">Jeff Sackmann</strong>,
+        Match records compiled by <strong class="text-chalk-2">Jeff Sackmann</strong>,
         published as <em>tennis_atp</em> under CC BY-NC-SA 4.0. Computed
         {meta.generatedAt}.
       </p>
