@@ -86,24 +86,24 @@ const filterCounts = competitions ? {
                 <div class="flex flex-wrap gap-2">
                   <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=all`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='all'
-                         ? 'bg-clay text-clay border-clay'
+                         ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
                     All ({filterCounts?.all || 0})
                   </a>
                   <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=singles`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='singles'
-                         ? 'bg-hard text-hard border-hard'
+                         ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
-                    👤 Singles ({filterCounts?.singles || 0})
+                    Singles ({filterCounts?.singles || 0})
                   </a>
                   <a href={`/competitions?tour=${tourType}&level=${levelFilter}&type=doubles`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='doubles'
-                         ? 'bg-above text-above border-above'
+                         ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
-                    👥 Doubles ({filterCounts?.doubles || 0})
+                    Doubles ({filterCounts?.doubles || 0})
                   </a>
                 </div>
               </div>
@@ -114,14 +114,14 @@ const filterCounts = competitions ? {
                 <div class="flex flex-wrap gap-2">
                   <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=all`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='all'
-                         ? 'bg-clay text-clay border-clay'
+                         ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
                     All
                   </a>
                   <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=grand_slam`}
                      class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='grand_slam'
-                         ? 'bg-clay text-clay border-clay'
+                         ? 'bg-ink text-sheet border-ink'
                          : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                      }`}>
                     Grand Slam
@@ -137,14 +137,14 @@ const filterCounts = competitions ? {
                       </a>
                       <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_500`}
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_500'
-                             ? 'bg-hard text-hard border-hard'
+                             ? 'bg-ink text-sheet border-ink'
                              : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                          }`}>
                         ATP 500
                       </a>
                       <a href={`/competitions?tour=${tourType}&type=${typeFilter}&level=atp_250`}
                          class={`px-3 py-1.5 text-sm border transition-colors ${ levelFilter ==='atp_250'
-                             ? 'bg-above text-above border-above'
+                             ? 'bg-ink text-sheet border-ink'
                              : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
                          }`}>
                         ATP 250
@@ -163,7 +163,7 @@ const filterCounts = competitions ? {
                     <span>Active filters:</span>
                     <div class="flex items-center gap-2">
                       {typeFilter !== 'all' && (
-                        <span class="px-2 py-1 bg-hard text-hard text-xs">
+                        <span class="px-2 py-1 bg-ink/[0.07] text-ink text-xs">
                           Type: {typeFilter}
                         </span>
                       )}
@@ -236,7 +236,7 @@ const filterCounts = competitions ? {
       <!-- Loading State -->
       {!filteredCompetitions && !error && (
         <div class="text-center py-12">
-          <div class="inline-block animate-spin h-8 w-8 border-b-2 border-clay"></div>
+          <div class="inline-block animate-spin h-8 w-8 border-b-2 border-ink/25"></div>
           <p class="mt-2 text-ink-2">Loading competitions...</p>
         </div>
       )}

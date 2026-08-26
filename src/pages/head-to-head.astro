@@ -11,7 +11,7 @@ import Layout from "@/layouts/Layout.astro";
     <!-- Page Header -->
     <div class="text-center mb-12">
       <div class="inline-flex items-center gap-3 mb-4">
-        <span class="text-4xl" aria-hidden="true">⚔️</span>
+        <span class="text-4xl" aria-hidden="true"></span>
         <h1 class="text-heading-2">Head to Head</h1>
       </div>
       <p class="text-body-large max-w-2xl mx-auto">
@@ -37,10 +37,10 @@ import Layout from "@/layouts/Layout.astro";
             <label for="tour1" class="block text-sm font-medium text-ink-2 mb-2">
               Tour
             </label>
-            <select id="tour1" class="select-field">
+            <div class="cselect w-full" data-cselect><select id="tour1" class="select-field cselect-native">
               <option value="ATP">ATP (Men's)</option>
               <option value="WTA">WTA (Women's)</option>
-            </select>
+            </select></div>
           </div>
 
           <!-- Player Selection -->
@@ -48,9 +48,9 @@ import Layout from "@/layouts/Layout.astro";
             <label for="player1" class="block text-sm font-medium text-ink-2 mb-2">
               Player
             </label>
-            <select id="player1" class="select-field">
+            <div class="cselect w-full" data-cselect><select id="player1" class="select-field cselect-native">
               <option value="">Loading players...</option>
-            </select>
+            </select></div>
           </div>
 
           <!-- Selected Player Display -->
@@ -81,10 +81,10 @@ import Layout from "@/layouts/Layout.astro";
             <label for="tour2" class="block text-sm font-medium text-ink-2 mb-2">
               Tour
             </label>
-            <select id="tour2" class="select-field">
+            <div class="cselect w-full" data-cselect><select id="tour2" class="select-field cselect-native">
               <option value="ATP">ATP (Men's)</option>
               <option value="WTA">WTA (Women's)</option>
-            </select>
+            </select></div>
           </div>
 
           <!-- Player Selection -->
@@ -92,9 +92,9 @@ import Layout from "@/layouts/Layout.astro";
             <label for="player2" class="block text-sm font-medium text-ink-2 mb-2">
               Player
             </label>
-            <select id="player2" class="select-field">
+            <div class="cselect w-full" data-cselect><select id="player2" class="select-field cselect-native">
               <option value="">Loading players...</option>
-            </select>
+            </select></div>
           </div>
 
           <!-- Selected Player Display -->
@@ -183,7 +183,7 @@ import Layout from "@/layouts/Layout.astro";
 
     <!-- Error State -->
     <div id="error-state" class="hidden panel bg-below dark:bg-below/20 border-below p-6 text-center">
-      <div class="text-4xl mb-4">⚠️</div>
+      <div class="text-4xl mb-4"></div>
       <h3 class="text-lg font-semibold text-below dark:text-below mb-2">Error Loading Data</h3>
       <p id="error-message" class="text-below dark:text-below mb-4"></p>
       <button id="retry-btn" class="btn-outline">
@@ -200,7 +200,7 @@ import Layout from "@/layouts/Layout.astro";
                 data-player1="206173" data-player2="207989">
           <div class="flex items-center justify-between mb-2">
             <span class="text-sm font-medium text-ink-2">ATP Champions</span>
-            <span class="text-xs bg-hard text-hard px-2 py-1">
+            <span class="text-xs bg-ink/[0.07] text-ink px-2 py-1">
               Current
             </span>
           </div>
@@ -226,7 +226,7 @@ import Layout from "@/layouts/Layout.astro";
                 data-player1="100644" data-player2="126203">
           <div class="flex items-center justify-between mb-2">
             <span class="text-sm font-medium text-ink-2">Next Gen</span>
-            <span class="text-xs bg-carpet text-carpet px-2 py-1">
+            <span class="text-xs bg-ink/[0.07] text-ink px-2 py-1">
               Rising
             </span>
           </div>
@@ -529,7 +529,7 @@ import Layout from "@/layouts/Layout.astro";
     } else {
       matchesList.innerHTML = `
         <div class="text-center py-8 text-ink-3">
-          <div class="text-4xl mb-4">🎾</div>
+          <div class="text-4xl mb-4"></div>
           <p>No previous matches found between these players.</p>
         </div>
       `;

@@ -403,6 +403,87 @@
     color: rgb(var(--ink));
   }
 
+  /* --- The dropdown ----------------------------------------------------- */
+
+  .cselect { @apply relative inline-block; }
+
+  /* Once the enhancer confirms it can drive the control, the native select is
+     taken out of view but left in the accessibility tree and the form. */
+  .cselect-native.is-enhanced {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .cselect-button {
+    @apply flex w-full items-center justify-between gap-3 px-2.5 py-1.5;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgb(var(--ink));
+    background: rgb(var(--sheet));
+    border: 1.5px solid rgb(var(--ink));
+    text-align: left;
+    cursor: pointer;
+  }
+  .cselect-button:hover { background: rgb(var(--ink) / 0.05); }
+
+  /* A pencilled caret, drawn rather than shipped as an icon. */
+  .cselect-caret {
+    width: 0;
+    height: 0;
+    flex: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgb(var(--pencil));
+  }
+  .cselect-button[aria-expanded="true"] .cselect-caret {
+    border-top: 0;
+    border-bottom: 5px solid rgb(var(--pencil));
+  }
+
+  .cselect-list {
+    @apply absolute left-0 right-0 z-30 m-0 max-h-72 list-none overflow-y-auto p-0;
+    top: calc(100% - 1.5px);
+    min-width: 100%;
+    background: rgb(var(--sheet));
+    border: 1.5px solid rgb(var(--ink));
+    box-shadow: 4px 4px 0 rgb(var(--ink) / 0.14);
+    scrollbar-width: thin;
+  }
+
+  .cselect-option {
+    @apply cursor-pointer px-2.5 py-1.5;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgb(var(--ink-2));
+    border-bottom: 1px solid rgb(var(--grid));
+    white-space: nowrap;
+  }
+  .cselect-option:last-child { border-bottom: 0; }
+  .cselect-option.is-active { background: rgb(var(--ink) / 0.07); color: rgb(var(--ink)); }
+  .cselect-option[aria-selected="true"] {
+    color: rgb(var(--ink));
+    font-weight: 700;
+  }
+  /* The chosen row is ticked in pencil, the way a card is marked. */
+  .cselect-option[aria-selected="true"]::before {
+    content: "\2713";
+    color: rgb(var(--pencil));
+    margin-right: 0.5em;
+    font-weight: 700;
+  }
+  .cselect-option:not([aria-selected="true"])::before {
+    content: "";
+    display: inline-block;
+    width: 1.35em;
+  }
+
   .statbar { @apply relative block w-full; height: var(--bar-h, 0.45rem); background: rgb(var(--grid)); border: 1px solid rgb(var(--ink) / 0.2); }
   .statbar-fill { @apply absolute inset-y-0 left-0; background: rgb(var(--bar-tone, var(--ink-2))); }
 }

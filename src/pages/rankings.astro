@@ -1,6 +1,8 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import RankingsTable from "@/components/RankingsTable.astro";
+import Select from "@/components/Select.astro";
+import { formatDate } from "@/lib/utils/csv-parser";
 import { tennisApi } from "@/lib/api/tennisApi";
 import { RANKINGS_AS_OF_LABEL } from "@/lib/archive";
 
@@ -20,13 +22,18 @@ try {
   console.error("Rankings page error:", e);
 }
 
-const formatWeek = (iso: string) =>
-  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+/** The dataset stores ranking dates as YYYYMMDD, not ISO. */
+const formatWeek = (raw: string) => {
+  const iso = formatDate(raw);
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return raw;
+  return d.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
     timeZone: "UTC",
   });
+};
 
 const heading = selectedDate
   ? `ATP Rankings — week of ${formatWeek(selectedDate)}`
@@ -48,17 +55,19 @@ const heading = selectedDate
     {
       availableDates.length > 1 && (
         <form method="get" class="mt-6 flex flex-wrap items-end gap-3">
-          <label class="text-note">
-            <span class="text-kicker block mb-1">Ranking week</span>
-            <select name="date" class="select-field w-auto">
-              <option value="">Final week of 2024</option>
-              {availableDates.map((d) => (
-                <option value={d} selected={d === selectedDate}>
-                  {formatWeek(d)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            name="date"
+            label="Ranking week"
+            class="min-w-[15rem]"
+            options={[
+              { value: "", label: "Final week of 2024", selected: !selectedDate },
+              ...availableDates.map((d) => ({
+                value: d,
+                label: formatWeek(d),
+                selected: d === selectedDate,
+              })),
+            ]}
+          />
           <button type="submit" class="btn-outline">Show</button>
         </form>
       )

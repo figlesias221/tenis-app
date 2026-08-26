@@ -36,24 +36,7 @@ function getLevelDisplayName(level: string): string {
 }
 
 
-function getTypeIcon(type: string): string {
-  switch (type) {
-    case 'singles': return '👤';
-    case 'doubles': return '👥';
-    case 'mixed': return '👫';
-    case 'mixed_doubles': return '👫';
-    default: return '🎾';
-  }
-}
 
-function getGenderIcon(gender: string): string {
-  switch (gender) {
-    case 'men': return '♂️';
-    case 'women': return '♀️';
-    case 'mixed': return '⚥';
-    default: return '';
-  }
-}
 ---
 
 <div class="overflow-hidden bg-sheet">
@@ -84,7 +67,7 @@ function getGenderIcon(gender: string): string {
                 return (
                   <a
                     href={`/tournament/${competition.id}`}
-                    class="block w-full text-left border border-grid bg-sheet p-4 transition-all hover:bg-sheet-2 hover:border-clay hover: focus:outline-none focus:ring-2 focus:ring-clay focus:ring-opacity-50"
+                    class="block w-full text-left border border-grid bg-sheet p-4 transition-all hover:bg-sheet-2 hover:border-ink/25 hover: focus:outline-none focus:ring-2 focus:ring-clay focus:ring-opacity-50"
                   >
                     <div class="flex items-start justify-between">
                       <div class="flex-1 min-w-0">
@@ -108,24 +91,22 @@ function getGenderIcon(gender: string): string {
 
                         <div class="mt-2 flex items-center space-x-3 text-xs text-ink-3">
                           <span class="inline-flex items-center">
-                            {getTypeIcon(competition.type)}
-                            <span class="ml-1 capitalize">{competition.type.replace('_', ' ')}</span>
+                                                        <span class="capitalize">{competition.type.replace('_', ' ')}</span>
                           </span>
                           <span class="inline-flex items-center">
-                            {getGenderIcon(competition.gender)}
-                            <span class="ml-1 capitalize">{competition.gender}</span>
+                                                        <span class="capitalize">{competition.gender}</span>
                           </span>
                         </div>
                       </div>
                     </div>
 
                     <div class="mt-3 flex items-center justify-between">
-                      <span class={`inline-flex items-center px-2 py-1 text-xs font-medium ${ levelInfo.key ==='G' ? 'bg-clay text-clay' :
+                      <span class={`inline-flex items-center px-2 py-1 text-xs font-medium ${ levelInfo.key ==='G' ? 'bg-ink/[0.07] text-ink' :
                         levelInfo.key === 'M' ? 'bg-below text-below dark:bg-below dark:text-below' :
-                        levelInfo.key === 'F' ? 'bg-carpet text-carpet' :
-                        levelInfo.key === 'A' ? 'bg-hard text-hard' :
+                        levelInfo.key === 'F' ? 'bg-ink/[0.07] text-ink' :
+                        levelInfo.key === 'A' ? 'bg-ink/[0.07] text-ink' :
                         levelInfo.key === 'D' ? 'bg-above text-above' :
-                        levelInfo.key === 'O' ? 'bg-hard text-hard' :
+                        levelInfo.key === 'O' ? 'bg-ink/[0.07] text-ink' :
                         'bg-sheet-2 text-ink'
                       }`}>
                         {levelInfo.name}
@@ -170,7 +151,7 @@ function getGenderIcon(gender: string): string {
 
     <div class="p-6">
       <div id="modal-loading" class="hidden text-center py-8">
-        <div class="inline-block animate-spin h-8 w-8 border-b-2 border-clay"></div>
+        <div class="inline-block animate-spin h-8 w-8 border-b-2 border-ink/25"></div>
         <p class="mt-2 text-ink-2">Loading competition details...</p>
       </div>
 
@@ -440,12 +421,12 @@ function getGenderIcon(gender: string): string {
 
     function getLevelBadgeClass(level: string) {
       const classMap = {
-        'G': 'bg-clay text-clay',
+        'G': 'bg-ink/[0.07] text-ink',
         'M': 'bg-below text-below dark:bg-below dark:text-below',
-        'F': 'bg-carpet text-carpet',
-        'A': 'bg-hard text-hard',
+        'F': 'bg-ink/[0.07] text-ink',
+        'A': 'bg-ink/[0.07] text-ink',
         'D': 'bg-above text-above',
-        'O': 'bg-hard text-hard'
+        'O': 'bg-ink/[0.07] text-ink'
       };
       return (classMap as any)[level] || 'bg-sheet-2 text-ink';
     }

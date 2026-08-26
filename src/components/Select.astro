@@ -1,0 +1,38 @@
+---
+/**
+ * A dropdown in the card's own vocabulary: a boxed field with a pencilled
+ * caret, opening onto a ruled list.
+ *
+ * It renders a real <select> and upgrades it in the browser. Without
+ * JavaScript the native control is still there and still works, so the
+ * rankings and season pickers never become dead ends.
+ */
+export interface Option {
+  value: string;
+  label: string;
+  selected?: boolean;
+}
+
+interface Props {
+  name?: string;
+  id?: string;
+  label: string;
+  options: Option[];
+  /** Navigate to base + value on change instead of submitting a form. */
+  navigate?: boolean;
+  /** URL prefix for `navigate`, e.g. "/clutch/". */
+  base?: string;
+  class?: string;
+}
+
+const { name, id, label, options, navigate = false, base = "", class: klass = "" } = Astro.props;
+const selectId = id ?? name ?? `sel-${label.toLowerCase().replace(/\W+/g, "-")}`;
+---
+
+<div class:list={["cselect", klass]} data-cselect data-navigate={navigate ? "" : undefined} data-base={base || undefined}>
+  <label class="text-kicker mb-1.5 block" for={selectId}>{label}</label>
+  <select id={selectId} name={name} class="select-field cselect-native">
+    {options.map((o) => <option value={o.value} selected={o.selected}>{o.label}</option>)}
+  </select>
+</div>
+

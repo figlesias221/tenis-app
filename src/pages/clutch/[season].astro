@@ -3,6 +3,7 @@ export const prerender = true;
 
 import Layout from "@/layouts/Layout.astro";
 import CountryFlag from "@/components/CountryFlag.astro";
+import Select from "@/components/Select.astro";
 import { seasons, seasonRows, availableSeasons, meta } from "@/lib/clutch/data";
 import { shadeStyle, signedPoints } from "@/lib/clutch/format";
 import { COMPONENT_LABELS, COMPONENT_KEYS } from "@/lib/clutch/types";
@@ -47,12 +48,14 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
 
     <nav class="mt-6 flex items-center justify-between gap-4">
       {prev ? <a class="link text-sm" href={`/clutch/${prev}`}>‹ {prev}</a> : <span></span>}
-      <label class="text-note flex items-center gap-2">
-        Season
-        <select class="select-field w-auto" onchange="location.href='/clutch/'+this.value">
-          {all.map((y) => <option value={y} selected={y === year}>{y}</option>)}
-        </select>
-      </label>
+<Select
+        id="season-picker"
+        label="Season"
+        class="min-w-[9rem]"
+        navigate
+        base="/clutch/"
+        options={all.map((y) => ({ value: String(y), label: String(y), selected: y === year }))}
+      />
       {next ? <a class="link text-sm" href={`/clutch/${next}`}>{next} ›</a> : <span></span>}
     </nav>
 
