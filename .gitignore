@@ -97,3 +97,7 @@ Thumbs.db
 .wrangler/
 # logs
 *.log
+
+# stray screenshots
+wider.png
+*.screenshot.png
