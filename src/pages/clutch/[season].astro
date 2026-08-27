@@ -14,7 +14,10 @@ export function getStaticPaths() {
 }
 
 const year = Number(Astro.params.season);
-const rows = seasonRows(year);
+// Top 25 rather than every qualifier: a season leaderboard is for seeing who
+// stood out, not for auditing 120 players.
+const allRows = seasonRows(year);
+const rows = allRows.slice(0, 25);
 const all = availableSeasons();
 const idx = all.indexOf(year);
 const prev = idx > 0 ? all[idx - 1] : null;
@@ -61,7 +64,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
 
     <section class="section">
       <div class="section-head">
-        <p class="text-kicker">{year} leaderboard</p>
+        <p class="text-kicker">{year} · top {rows.length} of {allRows.length}</p>
         <p class="text-note"><a class="link" href="/clutch">All-time index ›</a></p>
       </div>
 
@@ -74,12 +77,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
               <th class="col-num col-hide-sm" scope="col">Matches</th>
               <th class="col-num col-hide-sm" scope="col">W–L</th>
               <th class="col-num" scope="col">Clutch</th>
-              {COMPONENT_KEYS.map((k) => (
-                <th class="col-num" scope="col">
-                  {COMPONENT_LABELS[k]}
-                  {meta.weights[k] === 0 && <span class="text-ink-3"> ·0</span>}
-                </th>
-              ))}
+
             </tr>
           </thead>
           <tbody>
@@ -98,13 +96,6 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
                   <td class="col-num shade font-semibold" style={shadeStyle(50 + (r.rating - 50) * 2, r.rating >= 50)}>
                     {r.rating.toFixed(1)}
                   </td>
-                  {COMPONENT_KEYS.map((k) => (
-                    <td class="col-num shade" style={meta.weights[k] === 0 ? "" : shadeStyle(r.c[k].p, r.c[k].z >= 0)}>
-                      <span class={meta.weights[k] === 0 ? "text-ink-3" : ""}>
-                        {r.c[k].z === 0 ? "—" : signedPoints(r.c[k].r - (r.c[k].r - r.c[k].z * 0.02))}
-                      </span>
-                    </td>
-                  ))}
                 </tr>
               ))
             }

@@ -42,7 +42,7 @@ let record: ReturnType<LocalDatasetProvider["getPlayerRecord"]> = { seasons: [],
 
 try {
   profile = await tennisApi.getCompetitorProfile(id);
-  record = provider.getPlayerRecord(id);
+  record = provider.getPlayerRecord(id, 10);
 } catch (e) {
   error = "not-found";
   console.error("Player profile error:", e);

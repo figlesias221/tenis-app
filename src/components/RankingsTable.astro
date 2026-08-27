@@ -21,7 +21,13 @@ const buildPageUrl = (page: number) => {
 const total = rankings.rankings.length;
 const totalPages = Math.max(1, Math.ceil(total / pageSize));
 const start = (currentPage - 1) * pageSize;
-const rows = rankings.rankings;
+// A ranking week holds ~2,200 players. Nobody reads that as one block, so the
+// page shows the top 100 and folds the rest away - still present, still
+// searchable in-page, just not a wall.
+const VISIBLE = 100;
+const all = rankings.rankings;
+const rows = all.slice(0, VISIBLE);
+const rest = all.slice(VISIBLE);
 
 // A short window of pages around the current one.
 const window = 5;
@@ -37,7 +43,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
 <div class="table-scroll">
   <table class="table table--tight table--sticky">
     <caption class="text-note">
-      {fmt(total)} ranked players · standings as at the {RANKINGS_AS_OF_LABEL}
+      Top {VISIBLE} of {fmt(total)} · standings as at the {RANKINGS_AS_OF_LABEL}
     </caption>
     <thead>
       <tr>
@@ -74,4 +80,28 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
     </tbody>
   </table>
 </div>
+
+{
+  rest.length > 0 && (
+    <details class="methodology mt-4">
+      <summary>Show the other {rest.length.toLocaleString("en-GB")} ranked players</summary>
+      <div class="table-scroll mt-3">
+        <table class="table table--tight">
+          <tbody>
+            {rest.map((entry) => (
+              <tr>
+                <td class="col-rank">{entry.rank}</td>
+                <td class="col-name">
+                  <a class="link" href={`/player/${entry.player.id}`}>{entry.player.name}</a>
+                </td>
+                <td class="col-meta col-hide-sm">{entry.player.nationality}</td>
+                <td class="col-num">{fmt(entry.points)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  )
+}
 

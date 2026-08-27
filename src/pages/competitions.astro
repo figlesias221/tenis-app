@@ -81,35 +81,9 @@ const filterCounts = competitions ? {
               Filters
             </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Type Filter -->
-              <div>
-                <label class="block text-sm font-medium text-ink-2 mb-2">Tournament Type</label>
-                <div class="flex flex-wrap gap-2">
-                  <a href="#" data-type-filter="all"
-                     class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='all'
-                         ? 'bg-ink text-sheet border-ink'
-                         : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
-                     }`}>
-                    All ({filterCounts?.all || 0})
-                  </a>
-                  <a href="#" data-type-filter="singles"
-                     class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='singles'
-                         ? 'bg-ink text-sheet border-ink'
-                         : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
-                     }`}>
-                    Singles ({filterCounts?.singles || 0})
-                  </a>
-                  <a href="#" data-type-filter="doubles"
-                     class={`px-3 py-1.5 text-sm border transition-colors ${ typeFilter ==='doubles'
-                         ? 'bg-ink text-sheet border-ink'
-                         : 'bg-sheet-2 text-ink-2 border-grid hover:bg-sheet-2'
-                     }`}>
-                    Doubles ({filterCounts?.doubles || 0})
-                  </a>
-                </div>
-              </div>
-
+            <div class="grid grid-cols-1 gap-6">
+              <!-- No type filter: the archive is ATP singles only, so the
+                   control offered no choice. -->
               <!-- Level Filter -->
               <div>
                 <label class="block text-sm font-medium text-ink-2 mb-2">Tournament Level</label>
@@ -186,36 +160,13 @@ const filterCounts = competitions ? {
           </div>
         )}
 
-        <!-- Statistics Summary -->
+        <!-- One line instead of four cards, three of which read zero and one
+             of which contradicted the grouped list below. -->
         {filteredCompetitions && (
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-sheet p-4 border border-grid">
-              <div class="text-2xl font-bold text-clay">
-                {filteredCompetitions.competitions.length}
-              </div>
-              <div class="text-sm text-ink-2">
-                {(typeFilter !== 'all' || levelFilter !== 'all') ? 'Filtered' : 'Total'} Competitions
-              </div>
-            </div>
-            <div class="bg-sheet p-4 border border-grid">
-              <div class="text-2xl font-bold text-above">
-                {filteredCompetitions.competitions.filter(c => c.type === 'singles').length}
-              </div>
-              <div class="text-sm text-ink-2">Singles</div>
-            </div>
-            <div class="bg-sheet p-4 border border-grid">
-              <div class="text-2xl font-bold text-hard">
-                {filteredCompetitions.competitions.filter(c => c.type.includes('doubles')).length}
-              </div>
-              <div class="text-sm text-ink-2">Doubles</div>
-            </div>
-            <div class="bg-sheet p-4 border border-grid">
-              <div class="text-2xl font-bold text-carpet">
-                {filteredCompetitions.competitions.filter(c => c.level === 'grand_slam').length}
-              </div>
-              <div class="text-sm text-ink-2">Grand Slams</div>
-            </div>
-          </div>
+          <p class="text-note mb-6">
+            {filteredCompetitions.competitions.length} tournaments across six levels,
+            compiled from every tour-level match in the archive.
+          </p>
         )}
       </div>
 
