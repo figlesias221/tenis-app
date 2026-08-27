@@ -39,7 +39,7 @@ try {
     };
   }
 } catch (e) {
-  error = e instanceof Error ? e.message : "Failed to load competitions";
+  error = "unavailable";
   console.error("Competitions page error:", e);
 }
 
@@ -51,7 +51,7 @@ const filterCounts = competitions ? {
 } : null;
 ---
 
-<Layout title={`${tourType} Competitions - Tennis Live`} description={`${tourType} Tennis Competitions and Tournaments`}>
+<Layout title="Tournaments — The Tennis Almanac" description="Every tour-level tournament in the archive, 1991-2024, by level.">
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
@@ -224,41 +224,13 @@ const filterCounts = competitions ? {
         <div class="border border-below bg-below p-4 dark:bg-below">
           <div class="flex">
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-below dark:text-below">
-                Error loading competitions
-              </h3>
-              <div class="mt-2 text-sm text-below dark:text-below">
-                {error}
-              </div>
+              <h3 class="text-heading-4">The tournament list is unavailable</h3>
+              <p class="note mt-1">
+                This page is built from the match archive. If it is empty, the
+                archive did not load when the site was built.
+              </p>
             </div>
           </div>
-        </div>
-      )}
-
-      <!-- Loading State -->
-      {!filteredCompetitions && !error && (
-        <div class="text-center py-12">
-          <div class="inline-block animate-spin h-8 w-8 border-b-2 border-ink/25"></div>
-          <p class="mt-2 text-ink-2">Loading competitions...</p>
-        </div>
-      )}
-
-      <!-- No Results State -->
-      {filteredCompetitions && filteredCompetitions.competitions.length === 0 && (
-        <div class="text-center py-12">
-          <div class="text-ink-3 mb-4">
-            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.071-2.33"></path>
-            </svg>
-          </div>
-          <h3 class="text-lg font-medium text-ink mb-2">No competitions found</h3>
-          <p class="text-ink-2 mb-4">
-            No {tourType} competitions match your current filters.
-          </p>
-          <a href="#" data-level-filter="all"
-             class="inline-flex items-center px-4 py-2 bg-clay hover:bg-clay text-sheet transition-colors">
-            Clear all filters
-          </a>
         </div>
       )}
 
@@ -266,13 +238,13 @@ const filterCounts = competitions ? {
       {filteredCompetitions && (
         <CompetitionsTable
           competitions={filteredCompetitions.competitions}
-          title={`${tourType} Competitions`}
+          title={`${tourType} Tournaments`}
         />
       )}
 
       <!-- Info Section -->
       <div class="mt-8 bg-sheet border border-grid p-6">
-        <h2 class="mb-4 text-xl font-semibold text-ink">About {tourType} Competitions</h2>
+        <h2 class="mb-4 text-xl font-semibold text-ink">About the tournament list</h2>
         <div class="prose dark:prose-invert max-w-none">
           {tourType === 'ATP' ? (
             <div class="space-y-3 text-ink-2">

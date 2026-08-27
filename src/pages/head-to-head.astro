@@ -110,7 +110,7 @@ const options = roster.map((p) => ({
       return;
     }
 
-    status.textContent = "Loading…";
+    status.textContent = `Looking up ${label(p1)} v ${label(p2)}…`;
     try {
       const { matches } = await load(a);
       const meetings = (matches as Match[])
@@ -122,7 +122,7 @@ const options = roster.map((p) => ({
 
       if (meetings.length === 0) {
         result.classList.add("hidden");
-        status.textContent = `${nameA} and ${nameB} never met in the archive.`;
+        status.textContent = `${nameA} and ${nameB} never met in a tour-level match between 1991 and 2024.`;
         return;
       }
 
@@ -155,7 +155,7 @@ const options = roster.map((p) => ({
       result.classList.remove("hidden");
     } catch {
       result.classList.add("hidden");
-      status.textContent = "That record could not be loaded.";
+      status.textContent = "Couldn't load that record. Check your connection and pick the players again.";
     }
   }
 

@@ -27,9 +27,9 @@ try {
   // Built directly rather than fetched from this site's own API: a page
   // cannot call its own origin once the site is static.
   tournamentData = await buildTournament(id);
-  if (!tournamentData) error = "That tournament is not in the archive.";
+  if (!tournamentData) error = "not-found";
 } catch (e) {
-  error = e instanceof Error ? e.message : "Failed to load tournament information";
+  error = "not-found";
 }
 
 const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(tournamentData) : null;
@@ -43,24 +43,19 @@ const tournament = tournamentData ? CompetitionFormatter.formatCompetitionInfo(t
   <div class="max-w-6xl mx-auto px-4 py-4">
       <!-- Back Navigation -->
       <div class="mb-4">
-        <a href="/competitions" class="btn-outline">‹ Back to Competitions</a>
+        <a href="/competitions" class="btn-outline">‹ All tournaments</a>
       </div>
 
       <!-- Error State -->
       {error && (
         <div class="panel bg-below dark:bg-below/20 border-below p-4 text-center">
           <div class="text-2xl mb-2"></div>
-          <h3 class="text-lg font-semibold text-below dark:text-below mb-2">Error Loading Tournament</h3>
-          <p class="text-below dark:text-below mb-3">{error}</p>
-          <button onclick="window.location.reload()" class="btn-outline">Try Again</button>
-        </div>
-      )}
-
-      <!-- Loading State -->
-      {!tournament && !error && (
-        <div class="panel p-8 text-center">
-          <div class="inline-block animate-spin h-8 w-8 border-b-2 border-rule"></div>
-          <p class="mt-2 text-ink-2">Loading tournament information...</p>
+          <h2 class="text-heading-3">This tournament isn't in the archive</h2>
+          <p class="note measure mx-auto mt-2">
+            Tournaments here are compiled from match records, so an event only
+            appears in the years it was actually played.
+          </p>
+          <a href="/competitions" class="btn-outline mt-4">Browse all tournaments</a>
         </div>
       )}
 

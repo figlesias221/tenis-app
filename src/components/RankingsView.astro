@@ -63,7 +63,10 @@ const heading = selected
       rankings && rankings.rankings.length > 0 ? (
         <RankingsTable rankings={rankings} />
       ) : (
-        <p class="note">No ranking data for this week.</p>
+        <p class="note measure">
+          No list was published this week. Ranking weeks run from January to
+          December 2024; pick another from the menu above.
+        </p>
       )
     }
   </section>

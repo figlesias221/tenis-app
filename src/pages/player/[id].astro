@@ -44,7 +44,7 @@ try {
   profile = await tennisApi.getCompetitorProfile(id);
   record = provider.getPlayerRecord(id);
 } catch (e) {
-  error = e instanceof Error ? e.message : "Failed to load player profile";
+  error = "not-found";
   console.error("Player profile error:", e);
 }
 
@@ -72,9 +72,12 @@ if (profile) {
     <!-- Error State -->
     <div class="min-h-screen flex items-center justify-center px-4">
       <div class="bg-below dark:bg-below/20 border border-below p-6 text-center max-w-md mx-auto">
-        <h3 class="text-lg font-semibold text-below dark:text-below mb-2">Error Loading Profile</h3>
-        <p class="text-below dark:text-below mb-4 text-sm">{error}</p>
-        <a href="/rankings" class="btn-outline text-sm">‹ Back to Rankings</a>
+        <h2 class="text-heading-3">This player isn't in the archive</h2>
+        <p class="note measure mx-auto mt-2">
+          The archive covers players who appear in a tour-level match between
+          1991 and 2024. Anyone outside that won't have a page here.
+        </p>
+        <a href="/rankings" class="btn-outline mt-4">Browse the rankings</a>
       </div>
     </div>
   ) : profile ? (
@@ -102,14 +105,5 @@ if (profile) {
         </section>
       </div>
     </div>
-  ) : (
-    <!-- Loading State -->
-    <div class="min-h-screen flex items-center justify-center">
-      <div class="text-center bg-sheet border border-grid p-8">
-        <div class="mb-4 inline-block h-8 w-8 animate-spin border-4 border-rule/30"></div>
-        <p class="text-ink-2 mb-1">Loading player profile...</p>
-        <p class="text-sm text-ink-3">Please wait while we fetch the latest data</p>
-      </div>
-    </div>
-  )}
+  ) : null}
 </Layout>
