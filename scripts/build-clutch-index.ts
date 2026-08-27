@@ -676,6 +676,51 @@ const highlights: ClutchHighlight[] = highlightPool
 // Emit
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Findings the page leads with.
+//
+// Computed here rather than on the page so the copy cannot drift from the data,
+// and so every figure a reader sees is traceable to the artifact.
+// ---------------------------------------------------------------------------
+
+const RANK_BUCKETS: Array<[number, number, string]> = [
+  [1, 5, "1-5"],
+  [6, 20, "6-20"],
+  [21, 50, "21-50"],
+  [51, 9999, "51+"],
+];
+
+const byRank = RANK_BUCKETS.map(([lo, hi, label]) => {
+  const group = players.filter((p) => p.bestRank !== null && p.bestRank >= lo && p.bestRank <= hi);
+  return {
+    label,
+    n: group.length,
+    meanRating: round(group.length ? mean(group.map((p) => p.rating)) : 0, 1),
+  };
+}).filter((b) => b.n > 0);
+
+// The objection every informed reader raises: is this just penalising good
+// players? Correlate how good a man was (the rate the model expected of him)
+// against his clutch rating. Near zero means no.
+const qualityFit = fitOls(
+  players.map((p) => p.c.serve.e),
+  players.map((p) => p.rating),
+);
+const qualityCorr =
+  Math.sign(qualityFit.b) * Math.sqrt(Math.max(0, qualityFit.r2));
+
+/** The single most extreme showing in any one component. */
+function extremeIn(key: ComponentKey, dir: 1 | -1) {
+  const pool = players.filter((p) => p.c[key].n > 0);
+  const best = pool.reduce((a, b) => (b.c[key].z * dir > a.c[key].z * dir ? b : a));
+  return { id: best.id, name: best.name, z: best.c[key].z, rank: best.rank };
+}
+
+// The widest gap between a man's serving and his returning under pressure.
+const widestSplit = players.reduce((a, b) =>
+  Math.abs(b.c.serve.z - b.c.return.z) > Math.abs(a.c.serve.z - a.c.return.z) ? b : a,
+);
+
 // The headline claim, measured over the career pool itself: how much of the
 // spread in raw break-point rates is explained by ordinary serve/return
 // quality. This is the number a reader would arrive at independently.
@@ -716,6 +761,21 @@ const meta: ClutchMeta = {
     perSd: 10,
     min: round(Math.min(...players.map((p) => p.rating)), 1),
     max: round(Math.max(...players.map((p) => p.rating)), 1),
+  },
+  findings: {
+    byRank,
+    qualityCorr: round(qualityCorr, 3),
+    bestTiebreak: extremeIn("tiebreak", 1),
+    bestServe: extremeIn("serve", 1),
+    bestReturn: extremeIn("return", 1),
+    widestSplit: {
+      id: widestSplit.id,
+      name: widestSplit.name,
+      rank: widestSplit.rank,
+      serve: widestSplit.c.serve.z,
+      return: widestSplit.c.return.z,
+      tiebreak: widestSplit.c.tiebreak.z,
+    },
   },
   premise: {
     serveR2: round(premiseServe.r2, 3),
@@ -761,6 +821,9 @@ const f2024 = seasonFits.find((f) => f.y === 2024)!;
 console.log(`\n2024 checkpoint: ${f2024.matches} matches used, ${f2024.qualifiers} qualifiers`);
 console.log(`  serve  fit b=${f2024.fit.serve.b} a=${f2024.fit.serve.a} sd=${f2024.fit.serve.sd}`);
 console.log(`  return fit b=${f2024.fit.return.b} a=${f2024.fit.return.a} sd=${f2024.fit.return.sd}`);
+
+console.log(`\n  findings: quality-vs-clutch r=${round(qualityCorr, 3)} (near zero = not penalising good players)`);
+for (const b of byRank) console.log(`    best rank ${b.label.padEnd(6)} n=${String(b.n).padStart(3)}  mean clutch ${b.meanRating}`);
 
 console.log(`\n${"-".repeat(72)}\nACCEPTANCE GATE - top 25 career\n${"-".repeat(72)}`);
 for (const p of players.slice(0, 25)) {

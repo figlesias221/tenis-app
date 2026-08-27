@@ -1,0 +1,64 @@
+---
+/**
+ * What the index actually found, stated before any of the machinery that
+ * produced it. Every figure comes from meta.json rather than the copy.
+ */
+import { meta, career } from "@/lib/clutch/data";
+
+const f = meta.findings;
+const elite = f.byRank[0];
+const rest = f.byRank[f.byRank.length - 1];
+const gap = (elite.meanRating - rest.meanRating).toFixed(1);
+const split = f.widestSplit;
+const fragile = career.slice(-3).map((p) => p.name.split(" ").slice(-1)[0]);
+---
+
+<section class="section">
+  <div class="section-head">
+    <p class="text-kicker">What it found</p>
+  </div>
+
+  <div class="cells" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+    <!-- 1 -->
+    <div class="cell">
+      <div class="k">Greatness is worth</div>
+      <div class="v">{gap} points</div>
+      <p class="text-body-small mt-3">
+        Players who reached the world's top five average
+        <strong class="text-ink num">{elite.meanRating}</strong>. Players who never
+        got past 50th average <strong class="text-ink num">{rest.meanRating}</strong>.
+        Being one of the best of the era buys almost nothing under pressure.
+      </p>
+    </div>
+
+    <!-- 2 -->
+    <div class="cell">
+      <div class="k">Deciding sets contain</div>
+      <div class="v nil">Nothing</div>
+      <p class="text-body-small mt-3">
+        The most-quoted clutch statistic in the sport measures
+        <strong class="text-ink">0.0%</strong> real signal. Players are bunched
+        more tightly than chance alone would produce, so it earns no weight in
+        the rating.
+      </p>
+    </div>
+
+    <!-- 3 -->
+    <div class="cell">
+      <div class="k">Most lopsided player</div>
+      <div class="v">{split.name.split(" ").slice(-1)[0]}</div>
+      <p class="text-body-small mt-3">
+        <a class="link" href={`/player/${split.id}`}>{split.name}</a> stands
+        <strong class="text-ink num">{split.tiebreak >= 0 ? "+" : ""}{split.tiebreak}</strong>
+        standard deviations above average in tiebreaks — the highest of any
+        player in any component — and
+        <strong class="text-ink num">{split.return}</strong> on return. No one
+        else in the archive splits that far between serving and returning.
+      </p>
+    </div>
+  </div>
+
+  <p class="text-note mt-3">
+    At the other end: {fragile.join(", ")} close the list of {career.length}.
+  </p>
+</section>

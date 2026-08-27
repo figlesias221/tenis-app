@@ -1,0 +1,86 @@
+---
+/**
+ * Where the recognisable names land.
+ *
+ * The honest framing is load-bearing here. "Federer 329th" read alone is a
+ * lie by implication: his actual gaps are about one percentage point, and he
+ * is ABOVE expectation on serve and in tiebreaks. So the observed and expected
+ * rates sit in the same table as the rank, and the caption states the size of
+ * the effect before a single name appears.
+ */
+import { career, meta } from "@/lib/clutch/data";
+
+const WANTED = [
+  "Rafael Nadal",
+  "Nick Kyrgios",
+  "Pete Sampras",
+  "Novak Djokovic",
+  "Andre Agassi",
+  "John Isner",
+  "Roger Federer",
+  "Andy Murray",
+];
+
+const rows = WANTED.map((name) => career.find((p) => p.name === name))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p))
+  .sort((a, b) => a.rank - b.rank);
+
+const pp = (v: number) => `${v >= 0 ? "+" : ""}${(v * 100).toFixed(1)}`;
+---
+
+<section class="section">
+  <div class="section-head">
+    <p class="text-kicker">Where the famous names land</p>
+    <p class="text-note">of {career.length} ranked</p>
+  </div>
+
+  <p class="text-body measure mb-4">
+    Read the columns, not just the rank. The gaps between what these players did
+    under pressure and what the rest of their game predicted are
+    <strong class="text-ink">one or two points in a hundred</strong> — this is a
+    measure of small margins, not of nerve failing. Federer, for one, came in
+    <em>above</em> expectation on serve and in tiebreaks.
+  </p>
+
+  <div class="table-scroll">
+    <table class="table table--tight">
+      <thead>
+        <tr>
+          <th class="col-rank" scope="col">#</th>
+          <th class="col-name" scope="col">Player</th>
+          <th class="col-num" scope="col">Clutch</th>
+          <th class="col-num" scope="col">Serve</th>
+          <th class="col-num" scope="col">Return</th>
+          <th class="col-num col-hide-sm" scope="col">Tiebreaks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((p) => (
+            <tr>
+              <td class="col-rank">{p.rank}</td>
+              <td class="col-name">
+                <a class="link" href={`/player/${p.id}`}>{p.name}</a>
+              </td>
+              <td class="col-num font-bold">{p.rating.toFixed(1)}</td>
+              {(["serve", "return", "tiebreak"] as const).map((k, i) => (
+                <td class:list={["col-num", i === 2 && "col-hide-sm"]}>
+                  <span class={p.c[k].r >= p.c[k].e ? "above" : "below"}>
+                    {pp(p.c[k].r - p.c[k].e)}
+                  </span>
+                </td>
+              ))}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-note mt-3">
+    Columns are percentage points above or below what each player's own ordinary
+    play predicted. Correlation between how good a player was and his clutch
+    rating: <strong class="text-ink num">r = {meta.findings.qualityCorr}</strong> —
+    near zero, so the index is not simply marking down the great.
+  </p>
+</section>

@@ -118,6 +118,14 @@ export interface ClutchHighlight {
   above: number;
 }
 
+/** The most extreme showing in a single component. */
+export interface ExtremeShowing {
+  id: string;
+  name: string;
+  z: number;
+  rank: number;
+}
+
 export interface ClutchMeta {
   generatedAt: string;
   source: { name: string; url: string; license: string; attribution: string };
@@ -144,6 +152,32 @@ export interface ClutchMeta {
   signalShare: Record<ComponentKey, number>;
   shrinkage: Record<ComponentKey, number>;
   ratingScale: { mid: number; perSd: number; min: number; max: number };
+  /**
+   * The results the page leads with, computed in the pipeline so the copy can
+   * never drift from the data.
+   */
+  findings: {
+    /** Mean clutch rating grouped by the best rank a player ever held. */
+    byRank: Array<{ label: string; n: number; meanRating: number }>;
+    /**
+     * Correlation between how good a player was and his clutch rating. Near
+     * zero is the point: the metric is not penalising quality.
+     */
+    qualityCorr: number;
+    bestTiebreak: ExtremeShowing;
+    bestServe: ExtremeShowing;
+    bestReturn: ExtremeShowing;
+    /** The widest gap between serving and returning under pressure. */
+    widestSplit: {
+      id: string;
+      name: string;
+      rank: number;
+      serve: number;
+      return: number;
+      tiebreak: number;
+    };
+  };
+
   /**
    * The headline correlation the page argues from: how much of the spread in
    * raw break-point rates is explained by ordinary serve and return quality.
