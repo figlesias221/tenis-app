@@ -5,6 +5,7 @@ import Layout from "@/layouts/Layout.astro";
 import ClutchTable from "@/components/clutch/ClutchTable.astro";
 import ResidualPlot from "@/components/clutch/ResidualPlot.astro";
 import GameGrid from "@/components/clutch/GameGrid.astro";
+import ShaderBackground from "@/components/ui/ShaderBackground.astro";
 import Findings from "@/components/clutch/Findings.astro";
 import FamousNames from "@/components/clutch/FamousNames.astro";
 import CountryFlag from "@/components/CountryFlag.astro";
@@ -30,12 +31,25 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
   title="The Clutch Index — The Tennis Almanac"
   description="Who actually wins the moments that matter, 1991–2024. Break-point percentages measured against what each player's ordinary play predicts."
 >
-  <div class="page py-12">
+  <div class="page pb-12 pt-0">
     <!-- Hero: the thesis, stated by the one object in tennis that states it -->
-    <p class="text-kicker">The Clutch Index · {meta.seasons[0]}–{meta.seasons[1]}</p>
-    <h1 class="text-display mt-3 max-w-[22ch] text-balance">
-      Nerve, marked point by point
-    </h1>
+    {/*
+      The shader is a navy-to-cyan field and the page is ink on a pale sheet, so
+      the type sits on a scrim in the sheet's own colour rather than on the
+      gradient itself. The canvas is decorative: aria-hidden, painted only once
+      in view, and held to a single frame under prefers-reduced-motion.
+    */}
+    <div class="relative -mx-5 overflow-hidden border-b border-grid sm:-mx-7 lg:-mx-9">
+      <ShaderBackground class="absolute inset-0 h-full w-full" />
+      <div class="relative px-5 py-12 sm:px-7 lg:px-9">
+        <div class="inline-block bg-sheet/90 px-5 py-4 backdrop-blur-[2px]">
+          <p class="text-kicker">The Clutch Index · {meta.seasons[0]}–{meta.seasons[1]}</p>
+          <h1 class="text-display mt-3 max-w-[22ch] text-balance">
+            Nerve, marked point by point
+          </h1>
+        </div>
+      </div>
+    </div>
 
     <div class="measure mt-6">
       <p class="text-body-large">

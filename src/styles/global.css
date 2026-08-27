@@ -9,6 +9,10 @@
    labels are struck in mono, and red pencil marks only the exceptions - the
    way a chair umpire annotates a card.
 
+   The card is cool rather than cream: the palette is drawn from the shader
+   field behind the hero, so the page and the gradient belong to one another
+   instead of sitting side by side.
+
    One webfont: Martian Mono, 23 KB, carrying display, labels and every figure.
    Running prose is set in the system sans, which costs nothing and is the
    right register for it.
@@ -31,18 +35,20 @@
   :root {
     color-scheme: light;
 
-    /* Card stock, and the sheet laid on it. */
-    --card: 230 226 213;
-    --sheet: 246 244 237;
-    --sheet-2: 239 236 226;
+    /* Card stock, and the sheet laid on it - cool, keyed to the shader. */
+    --card: 222 233 241;
+    --sheet: 240 248 253;
+    --sheet-2: 231 241 248;
 
     /* Printed rule. --grid is the faint ruling; --rule is a drawn line. */
-    --grid: 207 200 180;
-    --rule: 25 23 19;
+    --grid: 197 214 227;
+    --rule: 8 30 42;
 
-    --ink: 25 23 19;
-    --ink-2: 106 99 85;
-    --ink-3: 141 133 117;
+    --ink: 8 30 42;
+    --ink-2: 60 85 100;
+    /* Darkened from the obvious mid-grey: at #6E8796 this measured 3.51:1 on
+       the sheet and it carries real text (.text-note, cell labels). */
+    --ink-3: 91 115 130;
 
     /* The red pencil. The only accent on the page, and it marks exceptions
        only: negatives, and the break-point column. Positives stay in ink, the
