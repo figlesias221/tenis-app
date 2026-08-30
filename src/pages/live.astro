@@ -1,0 +1,256 @@
+---
+/**
+ * The one route on this site that runs at request time.
+ *
+ * It reads its board from KV and imports nothing from the archive: not
+ * tennisApi, not csv-parser, not the clutch JSON. That isolation is the point.
+ * csv-parser calls readFileSync, and Workers have no filesystem, which is what
+ * made this site static in the first place; the clutch JSON is 1.2 MB and
+ * would be pulled into _worker.js by the adapter. `npm run check:bundle`
+ * enforces the second half.
+ */
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import ResultsTable from "@/components/live/ResultsTable.astro";
+import ScheduleTable from "@/components/live/ScheduleTable.astro";
+import ScoreTable from "@/components/live/ScoreTable.astro";
+import { relativeAge } from "@/lib/live/format";
+import { getBoard } from "@/lib/live/snapshot";
+import type { Snapshot } from "@/lib/live/types";
+
+const now = new Date();
+const runtime = Astro.locals.runtime;
+const apiKey = runtime?.env?.LIVETENNIS_API_KEY;
+const cache = runtime?.env?.LIVE_CACHE;
+
+let board: Snapshot | null = null;
+let configError: string | null = null;
+
+if (!apiKey || !cache) {
+  // Named plainly rather than thrown: a missing binding is a deployment
+  // mistake, and a 500 would say less about it than this line does.
+  configError = !apiKey
+    ? "LIVETENNIS_API_KEY is not set on this deployment."
+    : "The LIVE_CACHE KV namespace is not bound on this deployment.";
+} else {
+  board = await getBoard(
+    cache,
+    apiKey,
+    (promise) => runtime.ctx.waitUntil(promise),
+    now,
+  );
+}
+
+const dayLabel = board
+  ? new Date(`${board.day}T00:00:00Z`).toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    })
+  : null;
+
+const liveCount = board?.live.length ?? 0;
+const upcomingCount = board?.upcoming.length ?? 0;
+// Resolved results and matches still waiting to be resolved share one list:
+// both are over, and the reader cares about that more than about which of them
+// the board has managed to read back yet.
+const results = board
+  ? [...board.finished, ...board.pending].sort((a, b) =>
+      (a.scheduledTime ?? "9999") < (b.scheduledTime ?? "9999") ? -1 : 1,
+    )
+  : [];
+const unresolved = board?.pending.length ?? 0;
+const everything = board
+  ? [...board.live, ...board.upcoming, ...results]
+  : [];
+const tournaments = new Set(everything.map((m) => m.tournament)).size;
+const hasQualifying = everything.some((m) => m.isQualifying);
+
+const degradedNote: Record<string, string> = {
+  budget:
+    "The day's API allowance is nearly spent, so the board is being held rather than refreshed. It will resume tomorrow.",
+  locked: "A refresh is in progress. This is the previous board.",
+  error: "The last refresh failed. This is the previous board.",
+};
+---
+
+<Layout
+  title="Today's ATP matches — The Tennis Almanac"
+  description="Live scores, the order of play and the day's finished matches on the ATP tour."
+>
+  <div class="page py-10">
+    <p class="text-kicker">Live board · ATP singles</p>
+    <h1 class="text-heading-1 mt-2 text-balance">Today on the ATP tour</h1>
+
+    <p class="text-body-large measure mt-4">
+      The only page here that is not drawn from the frozen archive. It reads a
+      live feed a few times an hour and everyone who visits sees the same copy.
+    </p>
+
+    {
+      configError && (
+        <p class="note note--error mt-6">{configError}</p>
+      )
+    }
+
+    {
+      board && (
+        <>
+          <dl class="cells mt-8" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+            <div class="cell">
+              <dt class="text-kicker">In play</dt>
+              <dd class="text-heading-3 num mt-1">{liveCount}</dd>
+            </div>
+            <div class="cell">
+              <dt class="text-kicker">Still to come</dt>
+              <dd class="text-heading-3 num mt-1">{upcomingCount}</dd>
+            </div>
+            <div class="cell">
+              <dt class="text-kicker">Finished</dt>
+              <dd class="text-heading-3 num mt-1">{results.length}</dd>
+            </div>
+            <div class="cell">
+              <dt class="text-kicker">Tournaments</dt>
+              <dd class="text-heading-3 num mt-1">{tournaments}</dd>
+            </div>
+            <div class="cell">
+              <dt class="text-kicker">Last refreshed</dt>
+              <dd class="text-body mt-1">{relativeAge(board.fetchedAt, now)}</dd>
+            </div>
+          </dl>
+
+          <p class="text-note mt-3 text-ink-3">
+            {dayLabel} (UTC) · {board.callsRemaining !== null
+              ? `${board.callsRemaining} of the day's 100 API calls left`
+              : "API allowance not reported"}
+          </p>
+
+          {board.degraded && (
+            <p class="note note--error mt-4">{degradedNote[board.degraded]}</p>
+          )}
+
+          {hasQualifying && (
+            <div class="segbar mt-6" role="group" aria-label="Filter by draw">
+              <button class="seg seg-on" type="button" data-draw-filter="all">All matches</button>
+              <button class="seg" type="button" data-draw-filter="main">Main draw</button>
+              <button class="seg" type="button" data-draw-filter="qualifying">Qualifying</button>
+            </div>
+          )}
+
+          <section class="section">
+            <div class="section-head">
+              <p class="text-kicker">In play now</p>
+            </div>
+            {liveCount > 0 ? (
+              <ScoreTable matches={board.live} />
+            ) : (
+              <p class="text-body measure">
+                No ATP singles match is in progress. The board refreshes about
+                once an hour while the tour is quiet.
+              </p>
+            )}
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <p class="text-kicker">Still to come today</p>
+            </div>
+            {upcomingCount > 0 ? (
+              <ScheduleTable matches={board.upcoming} />
+            ) : (
+              <p class="text-body measure">
+                Nothing further is scheduled for {dayLabel}. Matches appear here
+                once the feed publishes a start time.
+              </p>
+            )}
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <p class="text-kicker">Finished today</p>
+            </div>
+            {results.length > 0 ? (
+              <ResultsTable matches={results} />
+            ) : (
+              <p class="text-body measure">
+                Nothing has finished yet today.
+              </p>
+            )}
+            {unresolved > 0 && (
+              <p class="text-note measure mt-3 text-ink-3">
+                {unresolved === 1
+                  ? "One result is still being read back from the feed and shows the last score this board saw."
+                  : `${unresolved} results are still being read back from the feed and show the last score this board saw.`}
+                {" "}Results are resolved a few at a time to stay inside the day's
+                allowance, so a match that has just ended may take a refresh or
+                two to settle.
+              </p>
+            )}
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <p class="text-kicker">How this page works</p>
+            </div>
+            <div class="measure">
+              <p class="text-body">
+                Scores come from <a class="link" href="https://livetennisapi.com" rel="noopener" target="_blank">LiveTennisAPI</a>
+                on its free tier, which allows 100 requests a day. One request
+                returns every ATP singles match at once, and the result is
+                cached and shared, so the page costs the same whether one person
+                reads it or a thousand. It refreshes about every fifteen minutes
+                while matches are in play and hourly when they are not, and it
+                stops refreshing altogether before the day's allowance runs out.
+              </p>
+              <p class="text-body mt-4">
+                Nothing on this page joins the archive. Player names here are the
+                feed's own and are not linked to their pages in the
+                {" "}<a class="link" href="/clutch">Clutch Index</a> or the
+                {" "}<a class="link" href="/rankings">rankings</a>, which end in 2024.
+              </p>
+            </div>
+          </section>
+        </>
+      )
+    }
+  </div>
+</Layout>
+
+<script>
+  // Times are rendered in UTC because the page is cached and shared; each
+  // reader's browser puts them back into their own zone.
+  for (const el of document.querySelectorAll<HTMLTimeElement>("time[data-local-time]")) {
+    const iso = el.getAttribute("datetime");
+    if (!iso) continue;
+    const at = new Date(iso);
+    if (Number.isNaN(at.getTime())) continue;
+    // en-GB, not the browser's locale: the rest of the site is 24-hour, and a
+    // reader in a 12-hour locale would otherwise see one page disagree with
+    // every other. The zone stays local - that is the whole point of the swap.
+    el.textContent = at.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    el.title = `${at.toISOString().slice(11, 16)} UTC`;
+  }
+
+  // Qualifying draws can outnumber the main draw several times over on a slam
+  // week, so the filter is worth having. It is markup-only: no extra requests.
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-draw-filter]");
+  const groups = document.querySelectorAll<HTMLElement>("tbody[data-qualifying], tr[data-qualifying]");
+  for (const button of buttons) {
+    button.addEventListener("click", () => {
+      const mode = button.dataset.drawFilter;
+      for (const other of buttons) other.classList.toggle("seg-on", other === button);
+      for (const group of groups) {
+        const isQualifying = group.dataset.qualifying === "true";
+        const show =
+          mode === "all" || (mode === "qualifying" ? isQualifying : !isQualifying);
+        group.hidden = !show;
+      }
+    });
+  }
+</script>

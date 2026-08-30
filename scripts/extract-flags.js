@@ -12,12 +12,21 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Tennis countries we need (based on common tennis nations)
+// Every country the site can name.
+//
+// The archive's own list, plus every ISO-2 target of the IOC map in
+// src/lib/live/countries.ts - the live feed uses IOC codes, and a country the
+// board can name without a flag to name it with falls back to a bare text
+// code. Peru and Paraguay were both missing until the live board arrived.
 const tennisCountries = [
-  'AD', 'AE', 'AR', 'AT', 'AU', 'BA', 'BE', 'BG', 'BR', 'CA', 'CH', 'CL', 'CN', 'CO', 'CR', 'CZ',
-  'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IL', 'IN', 'IT', 'JP', 'KZ',
-  'LT', 'LU', 'LV', 'MC', 'MD', 'ME', 'MX', 'NL', 'NO', 'NZ', 'PL', 'PT', 'RO', 'RS', 'RU', 'SE',
-  'SI', 'SK', 'TH', 'TN', 'TR', 'UA', 'UN', 'US', 'UY', 'VE', 'ZA'
+  'AD', 'AE', 'AM', 'AR', 'AT', 'AU', 'AW', 'AZ', 'BA', 'BB', 'BE', 'BG', 'BH', 'BI', 'BJ', 'BM',
+  'BO', 'BR', 'BS', 'BW', 'BY', 'CA', 'CH', 'CI', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CY', 'CZ',
+  'DE', 'DK', 'DO', 'DZ', 'EC', 'EE', 'EG', 'ES', 'ET', 'FI', 'FR', 'GA', 'GB', 'GE', 'GH', 'GR',
+  'GT', 'HK', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IN', 'IQ', 'IR', 'IS', 'IT', 'JM', 'JO',
+  'JP', 'KE', 'KH', 'KR', 'KW', 'KZ', 'LB', 'LI', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME',
+  'MG', 'MK', 'MN', 'MT', 'MX', 'MY', 'NG', 'NL', 'NO', 'NZ', 'PA', 'PE', 'PH', 'PK', 'PL', 'PR',
+  'PT', 'PY', 'QA', 'RO', 'RS', 'RU', 'SA', 'SE', 'SG', 'SI', 'SK', 'SV', 'SY', 'TH', 'TN', 'TR',
+  'TT', 'TW', 'UA', 'UN', 'US', 'UY', 'UZ', 'VE', 'VN', 'XK', 'ZA', 'ZW'
 ];
 
 const sourceDir = join(__dirname, '../node_modules/country-flag-icons/3x2');

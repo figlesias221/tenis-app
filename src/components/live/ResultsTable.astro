@@ -1,0 +1,104 @@
+---
+/**
+ * The day's results, written the way a result is written: winner first, the
+ * score from the winner's side.
+ *
+ * Two kinds of row share this table. A resolved match was read back from the
+ * feed and names a winner. An observed one is a match this board watched drop
+ * off the live list before it could afford to resolve it - the score is the
+ * last one seen, and the row says so rather than implying a final.
+ */
+import CountryFlag from "@/components/CountryFlag.astro";
+import {
+  outcomeOrder,
+  roundLabel,
+  scoreLineFrom,
+  surfaceLabel,
+} from "@/lib/live/format";
+import type { LiveMatch } from "@/lib/live/types";
+
+interface Props {
+  matches: LiveMatch[];
+}
+
+const { matches } = Astro.props;
+
+const utcTime = (iso: string | null): string =>
+  iso
+    ? new Date(iso).toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "UTC",
+      })
+    : "—";
+---
+
+<div class="table-scroll">
+  <table class="table table--tight">
+    <thead>
+      <tr>
+        <th class="col-meta" scope="col">Time</th>
+        <th class="col-meta col-hide-sm" scope="col">Event</th>
+        <th class="col-name" scope="col">Result</th>
+        <th class="col-meta" scope="col">Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        matches.map((match) => {
+          const order = outcomeOrder(match);
+          // Without a named winner the feed's own order is all we have, and
+          // presenting it as "beat" would be an invention.
+          const score = scoreLineFrom(match.score, order?.from ?? 1);
+          const [first, second] = order
+            ? [order.winner, order.loser]
+            : match.players;
+          return (
+            <tr data-qualifying={match.isQualifying ? "true" : "false"}>
+              <td class="col-meta num">
+                {match.scheduledTime ? (
+                  <time datetime={match.scheduledTime} data-local-time>
+                    {utcTime(match.scheduledTime)}
+                  </time>
+                ) : (
+                  <span class="text-ink-3">{"—"}</span>
+                )}
+              </td>
+              <td class="col-meta col-hide-sm">
+                <span class="inline-flex items-baseline gap-1.5">
+                  {match.surface && <span class={`swatch swatch--${match.surface}`} />}
+                  {match.tournament}
+                </span>
+                <span class="text-note mt-0.5 block text-ink-3">
+                  {roundLabel(match)}
+                  {surfaceLabel(match) ? ` · ${surfaceLabel(match)}` : ""}
+                </span>
+              </td>
+              <td class="col-name">
+                <span class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <CountryFlag countryCode={first.countryIso2} size="small" />
+                  <span class={order ? "font-semibold text-ink" : undefined}>
+                    {first.name}
+                  </span>
+                  <span class="text-note text-ink-3">{order ? "beat" : "v"}</span>
+                  <CountryFlag countryCode={second.countryIso2} size="small" />
+                  <span class="text-ink-2">{second.name}</span>
+                </span>
+                {(match.eventStatus || match.observed) && (
+                  <span class="text-note mt-0.5 block text-pencil">
+                    {match.eventStatus
+                      ? match.eventStatus
+                      : "Last score seen — not confirmed final"}
+                  </span>
+                )}
+              </td>
+              <td class="col-meta num whitespace-nowrap">
+                {score ?? <span class="text-ink-3">{"—"}</span>}
+              </td>
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>

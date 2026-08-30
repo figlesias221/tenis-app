@@ -101,3 +101,6 @@ Thumbs.db
 # stray screenshots
 wider.png
 *.screenshot.png
+
+# Cloudflare local secrets
+.dev.vars

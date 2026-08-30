@@ -1,0 +1,82 @@
+---
+/**
+ * The order of play: one row per match that has not started.
+ *
+ * Times are rendered in UTC and rewritten to the reader's own zone by the
+ * script at the foot of /live - the page is served from a cache shared by
+ * every visitor, so it cannot be rendered in any one reader's timezone.
+ */
+import CountryFlag from "@/components/CountryFlag.astro";
+import { roundLabel, surfaceLabel } from "@/lib/live/format";
+import type { LiveMatch, LivePlayer } from "@/lib/live/types";
+
+interface Props {
+  matches: LiveMatch[];
+}
+
+const { matches } = Astro.props;
+
+const utcTime = (iso: string | null): string =>
+  iso
+    ? new Date(iso).toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "UTC",
+      })
+    : "—";
+
+const rank = (player: LivePlayer): string =>
+  player.ranking === null ? "" : ` (${player.ranking})`;
+---
+
+<div class="table-scroll">
+  <table class="table table--tight">
+    <thead>
+      <tr>
+        <th class="col-meta" scope="col">Time</th>
+        <th class="col-meta col-hide-sm" scope="col">Event</th>
+        <th class="col-name" scope="col">Match</th>
+        <th class="col-meta col-hide-sm" scope="col">Round</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        matches.map((match) => (
+          <tr data-qualifying={match.isQualifying ? "true" : "false"}>
+            <td class="col-meta num">
+              {match.scheduledTime ? (
+                <time datetime={match.scheduledTime} data-local-time>
+                  {utcTime(match.scheduledTime)}
+                </time>
+              ) : (
+                <span class="text-ink-3">{"—"}</span>
+              )}
+            </td>
+            <td class="col-meta col-hide-sm">
+              <span class="inline-flex items-baseline gap-1.5">
+                {match.surface && <span class={`swatch swatch--${match.surface}`} />}
+                {match.tournament}
+              </span>
+              {surfaceLabel(match) && (
+                <span class="text-note mt-0.5 block text-ink-3">{surfaceLabel(match)}</span>
+              )}
+            </td>
+            <td class="col-name">
+              {match.players.map((player, index) => (
+                <span class="inline-flex items-center gap-2">
+                  {index === 1 && <span class="text-ink-3 px-1.5">v</span>}
+                  <CountryFlag countryCode={player.countryIso2} size="small" />
+                  <span>
+                    {player.name}
+                    <span class="text-note num text-ink-3">{rank(player)}</span>
+                  </span>
+                </span>
+              ))}
+            </td>
+            <td class="col-meta col-hide-sm">{roundLabel(match)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

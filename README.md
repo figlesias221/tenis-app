@@ -1,187 +1,100 @@
-# Tennis Live
+# The Tennis Almanac
 
-A modern tennis website built with Astro that displays live ATP rankings and match results using the SportRadar Tennis API.
+A record of professional men's tennis, built with Astro and deployed to
+Cloudflare Pages. Almost all of it is a frozen archive: 34 seasons of ATP
+match records, rendered once at build time. One page is not.
 
-## Features
+## The two halves
 
-- 🏆 **Live ATP Rankings** - Top 100 ATP players with points and position changes
-- 🎾 **Live Matches** - Real-time scores from ATP and Challenger tournaments
-- 📱 **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- 🌙 **Dark Mode** - Automatic dark/light theme switching
-- ⚡ **Fast Performance** - Built with Astro for optimal loading speeds
+**The archive.** `data/` holds Jeff Sackmann's `tennis_atp` dataset — 108,375
+matches from 1991 to 2024, plus players and ranking weeks — vendored into the
+repository because the upstream repo was removed from GitHub. See
+[`data/SOURCE.md`](data/SOURCE.md) for provenance and licence.
+`src/lib/utils/csv-parser.ts` reads it with `readFileSync`, which is why every
+archive route is prerendered: Workers have no filesystem, and serving these
+pages on demand is what used to 500 in production.
 
-## Technology Stack
+**The live board.** `/live` shows today's ATP singles matches from
+[LiveTennisAPI](https://livetennisapi.com). It is the only route that runs at
+request time. Nothing in `src/lib/live/` imports the CSV reader or the clutch
+JSON, and `npm run check:bundle` fails the build if that changes.
 
-- **Framework**: Astro v5
-- **Styling**: Tailwind CSS v4
-- **API**: SportRadar Tennis API
-- **TypeScript**: Full type safety
-- **Architecture**: API-agnostic design pattern
-
-## Setup Instructions
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- SportRadar Tennis API key (trial version included)
-
-### Installation
-
-1. **Clone and install dependencies:**
-   ```bash
-   cd tenis-app
-   npm install
-   ```
-
-2. **Configure API key:**
-
-   The SportRadar API key is already configured in the `.env` file:
-   ```
-   SPORTRADAR_API_KEY=ghFUX4ygnpBf7wX2Ua6ZtTnfFWdEg0JWKQ4envGp
-   ```
-
-3. **Test API connection (optional):**
-   ```bash
-   node test-api.js
-   ```
-
-4. **Start development server:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser:**
-   ```
-   http://localhost:4321
-   ```
-
-### Build for Production
+## Running it
 
 ```bash
-npm run build
-npm run preview
+npm install
+npm run dev
 ```
 
-## Project Structure
+`/live` needs two things, and renders an explanatory notice without them:
+
+1. **An API key.** Put it in `.dev.vars` (gitignored):
+
+   ```
+   LIVETENNIS_API_KEY=your_key_here
+   ```
+
+   In production it is a Cloudflare secret, never a committed file.
+
+2. **A KV namespace**, which caches the board so every visitor shares one copy:
+
+   ```bash
+   npx wrangler kv namespace create LIVE_CACHE
+   npx wrangler kv namespace create LIVE_CACHE --preview
+   ```
+
+   Paste the two ids into `wrangler.toml`.
+
+## The API budget
+
+The free tier allows **100 requests a day**, shared across every visitor, so the
+board is designed around that number rather than around freshness:
+
+- One request returns every ATP singles match, because `tour` and `draw` are
+  filtered server-side. A refresh costs **two** — the live list and the
+  upcoming list.
+- The snapshot lives in KV. A thousand readers cost what one reader costs, and
+  a day with no visitors costs nothing: refreshes happen lazily, on a request
+  that finds the cache stale.
+- `/usage` is quota-exempt, so the governor asks the API how much budget is
+  left before spending any of it, and stops at a reserve of 20 calls. That
+  count is authoritative across production, previews and local development,
+  which all share one key.
+- Refresh interval: 15 minutes while matches are in play, 60 when they are not.
+  All four numbers are constants at the top of `src/lib/live/snapshot.ts`.
+
+**What the free tier does not give you:** completed matches. `status=completed`
+returns `403 upgrade_required`. The board therefore reports a result only for a
+match it watched drop off the live list, carrying the last score it saw, and
+labels those as observed rather than official.
+
+## Layout
 
 ```
-tenis-app/
-├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── Header.astro     # Navigation header
-│   │   ├── RankingsTable.astro  # ATP rankings table
-│   │   ├── MatchCard.astro      # Match information card
-│   │   └── MatchesList.astro    # List of matches
-│   ├── layouts/             # Page layouts
-│   │   └── Layout.astro     # Base layout
-│   ├── lib/                 # Business logic
-│   │   └── api/             # API abstraction layer
-│   │       ├── types.ts     # TypeScript interfaces
-│   │       ├── tennisApi.ts # Main API service
-│   │       └── providers/
-│   │           └── sportradar.ts # SportRadar implementation
-│   ├── pages/               # Route pages
-│   │   ├── index.astro      # Home page
-│   │   ├── rankings.astro   # ATP rankings page
-│   │   └── matches.astro    # Live matches page
-│   ├── styles/              # Global styles
-│   │   └── global.css       # Tailwind base styles
-│   └── site.config.ts       # Site configuration
-├── public/                  # Static assets
-└── package.json
+data/                     Vendored CSVs, ~52 MB, the frozen archive
+src/lib/api/              Archive access: LocalDatasetProvider over the CSVs
+src/lib/clutch/           The Clutch Index, from prebuilt JSON in src/data/
+src/lib/live/             The live board: client, governor, types, formatting
+src/pages/live.astro      The only route with `prerender = false`
+scripts/                  Build-time and guard scripts
+tests/                    node:test units, no network
 ```
 
-## API Integration
+## Scripts
 
-### SportRadar Tennis API
+| | |
+|---|---|
+| `npm run dev` | Astro dev server, with Cloudflare bindings proxied |
+| `npm run build` | `astro check` then `astro build` |
+| `npm run test:clutch` | `node:test` units for the score parser and the live board |
+| `npm run build:clutch` | Regenerates `src/data/clutch/*.json` from the archive |
+| `npm run check:bundle` | Fails if the clutch JSON leaks into `_worker.js` |
+| `npm run check:emoji` | Fails on any emoji codepoint |
+| `npm run lint` / `format` | Biome, Prettier |
 
-The application uses SportRadar's Tennis API v3 with the following endpoints:
+## Licence and attribution
 
-- **Rankings**: `/rankings.json` - ATP player rankings
-- **Live Matches**: `/schedules/live/summaries.json` - Currently live matches
-- **Daily Schedule**: `/schedules/{date}/summaries.json` - Today's match schedule
-
-### API Architecture
-
-The application uses an API-agnostic pattern that allows easy switching between different tennis data providers:
-
-```typescript
-// Main API service
-import { tennisApi } from '@/lib/api/tennisApi';
-
-// Get ATP rankings (top 100)
-const rankings = await tennisApi.getATPRankings(100);
-
-// Get live matches
-const liveMatches = await tennisApi.getLiveMatches();
-
-// Get today's matches
-const todayMatches = await tennisApi.getTodayMatches();
-```
-
-### Switching API Providers
-
-To use a different API provider, implement the `TennisApiProvider` interface:
-
-```typescript
-class NewProvider implements TennisApiProvider {
-  async getRankings(type: "ATP" | "WTA", limit?: number): Promise<Rankings> {
-    // Implementation
-  }
-
-  async getLiveMatches(): Promise<LiveMatches> {
-    // Implementation
-  }
-
-  async getTodayMatches(): Promise<LiveMatches> {
-    // Implementation
-  }
-}
-
-// Switch provider
-tennisApi.setProvider(new NewProvider());
-```
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run check` - Run Astro checks
-- `npm run format` - Format code with Prettier
-- `npm run lint` - Lint code with Biome
-
-## Error Handling
-
-The application includes comprehensive error handling:
-
-- **API Failures**: Clear error messages with retry options
-- **Network Issues**: Graceful degradation with user feedback
-- **Rate Limiting**: Proper error display for API limits
-- **Invalid Responses**: Type-safe error handling
-
-## Performance
-
-- **Server-Side Rendering**: Fast initial page loads
-- **Static Generation**: Optimized for performance
-- **Image Optimization**: Automatic image optimization
-- **Code Splitting**: Minimal JavaScript bundles
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make changes following the existing patterns
-4. Test your changes
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Support
-
-For issues with:
-- **SportRadar API**: Check the [SportRadar Developer Portal](https://developer.sportradar.com/tennis)
-- **Application bugs**: Create an issue in this repository
-- **Feature requests**: Create an issue with the "enhancement" label
+Match and ranking records are © Jeff Sackmann, published as `tennis_atp` under
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This
+archive is non-commercial and shares alike. Live scores are supplied by
+LiveTennisAPI under its own terms. Not affiliated with the ATP, WTA or ITF.

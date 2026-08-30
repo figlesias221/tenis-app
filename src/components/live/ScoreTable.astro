@@ -1,0 +1,196 @@
+---
+/**
+ * The in-play board.
+ *
+ * Each match is its own block: a full-width header naming the event, then one
+ * row per player. An earlier version hung the event off a rowspan beside the
+ * two player rows, and it was genuinely hard to read - nothing said which two
+ * rows belonged together, and a note in the event cell stretched it out of
+ * step with the pair beside it.
+ *
+ * The set columns carry games. Sets already decided are drawn plainly, won in
+ * ink and lost in grey; the set being played is boxed, because that is the one
+ * a reader is looking for.
+ */
+import CountryFlag from "@/components/CountryFlag.astro";
+import {
+  roundLabel,
+  setOutcomes,
+  setsWon,
+  stalenessNote,
+  surfaceLabel,
+} from "@/lib/live/format";
+import type { LiveMatch } from "@/lib/live/types";
+
+interface Props {
+  matches: LiveMatch[];
+}
+
+const { matches } = Astro.props;
+
+// Only as many set columns as some match has reached, so a board of
+// best-of-three matches is not padded out to five empty ones.
+const setCount = Math.max(
+  1,
+  ...matches.map((m) =>
+    Math.max(m.score?.games[0].length ?? 0, m.score?.games[1].length ?? 0),
+  ),
+);
+const setColumns = Array.from({ length: setCount }, (_, i) => i + 1);
+const columnCount = setColumns.length + 4;
+---
+
+<div class="table-scroll">
+  <table class="table table--tight board">
+    <thead>
+      <tr>
+        <th class="col-srv" scope="col"><span class="sr-only">Serving</span></th>
+        <th class="col-name" scope="col">Player</th>
+        <th class="col-sets" scope="col">Sets</th>
+        {setColumns.map((n) => (
+          <th class="col-num" scope="col">{n}</th>
+        ))}
+        <th class="col-num" scope="col">Pts</th>
+      </tr>
+    </thead>
+    {
+      matches.map((match) => {
+        const staleness = stalenessNote(match.score);
+        const surface = surfaceLabel(match);
+        return (
+          <tbody class="match" data-qualifying={match.isQualifying ? "true" : "false"}>
+            <tr class="match-head">
+              <td colspan={columnCount}>
+                <span class="inline-flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                  {match.surface && <span class={`swatch swatch--${match.surface}`} />}
+                  <span class="font-semibold text-ink">{match.tournament}</span>
+                  <span class="text-ink-3">{`· ${roundLabel(match)}`}</span>
+                  {surface && <span class="text-ink-3">{`· ${surface}`}</span>}
+                  {match.score?.isTiebreak && <span class="text-pencil">{"· Tiebreak"}</span>}
+                  {match.eventStatus && <span class="text-pencil">{`· ${match.eventStatus}`}</span>}
+                  {staleness && <span class="text-pencil">{`· ${staleness}`}</span>}
+                </span>
+              </td>
+            </tr>
+            {([1, 2] as const).map((slot) => {
+              const player = match.players[slot - 1];
+              const outcomes = setOutcomes(match.score, slot);
+              const serving = match.score?.server === slot;
+              return (
+                <tr class="match-line">
+                  <td class="col-srv">
+                    {serving && <span class="srv" aria-label="Serving">{"▸"}</span>}
+                  </td>
+                  <td class="col-name">
+                    <span class="inline-flex items-center gap-2">
+                      <CountryFlag countryCode={player.countryIso2} size="small" />
+                      <span>{player.name}</span>
+                      {player.ranking !== null && (
+                        <span class="text-note num text-ink-3">{player.ranking}</span>
+                      )}
+                    </span>
+                  </td>
+                  <td class="col-sets num">{setsWon(match.score, slot)}</td>
+                  {setColumns.map((n) => {
+                    const outcome = outcomes[n - 1];
+                    const games = match.score?.games[slot - 1]?.[n - 1];
+                    return (
+                      <td class="col-num num" data-set={outcome ?? "none"}>
+                        {games ?? ""}
+                      </td>
+                    );
+                  })}
+                  <td class="col-num num col-pts">
+                    {match.score?.points?.[slot - 1] ?? ""}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        );
+      })
+    }
+  </table>
+</div>
+
+<style>
+  /* Each match is a block. The rule above it is the structural one; the line
+     between its two players is faint, so the pair reads as a unit. */
+  .board tbody.match + tbody.match .match-head td {
+    border-top: 1.5px solid rgb(var(--rule));
+  }
+  .board .match-head td {
+    background: rgb(var(--sheet-2));
+    padding: 0.35rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    text-align: left;
+    border-bottom: 1px solid rgb(var(--grid));
+    border-right: 0;
+  }
+  .board .match-line td {
+    border-bottom: 0;
+    border-right: 0;
+  }
+  .board .match-line:first-of-type td {
+    border-bottom: 1px solid rgb(var(--grid) / 0.6);
+  }
+  /* Hovering one player's line, not the whole match, would be noise. */
+  .board tbody.match:hover .match-line td {
+    background: rgb(var(--ink) / 0.035);
+  }
+
+  .col-srv {
+    width: 1.6rem;
+    text-align: center !important;
+  }
+  .srv {
+    color: rgb(var(--pencil));
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+  .col-sets {
+    width: 2.6rem;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 0.9375rem;
+    color: rgb(var(--ink));
+    font-variant-numeric: tabular-nums lining-nums;
+    border-right: 1px solid rgb(var(--grid)) !important;
+  }
+  .board thead th.col-sets {
+    font-size: 0.5rem;
+    font-weight: 600;
+  }
+
+  /* A decided set is flat; the one in progress is boxed, because that is the
+     number a reader is actually hunting for. */
+  .board td[data-set="won"] {
+    color: rgb(var(--ink));
+    font-weight: 700;
+  }
+  .board td[data-set="lost"] {
+    color: rgb(var(--ink-3));
+  }
+  .board td[data-set="playing"] {
+    color: rgb(var(--ink));
+    font-weight: 700;
+    background: rgb(var(--hard) / 0.09);
+    box-shadow: inset 0 0 0 1px rgb(var(--hard) / 0.3);
+  }
+  .col-pts {
+    font-weight: 700;
+    color: rgb(var(--ink-2));
+    width: 2.8rem;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

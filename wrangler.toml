@@ -1,7 +1,10 @@
 name = "tennis-app"
 pages_build_output_dir = "dist"
 
-compatibility_date = "2024-01-01"
+# 2024-09-23 or later is required: before it, Workers did not resolve bare
+# "fs" / "child_process" to their node: equivalents, and the SSR bundle failed
+# to build. This is the earliest date that works rather than the newest.
+compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [env.production]
@@ -10,8 +13,13 @@ name = "tennis-app"
 [env.preview]
 name = "tennis-app-preview"
 
-# KV namespace for sessions (as mentioned in build output)
+# Shared cache for the live board. Every visitor reads the same snapshot, so
+# the LiveTennisAPI free tier's 100 calls a day are spent once, not once per
+# reader. Create with:
+#   npx wrangler kv namespace create LIVE_CACHE
+#   npx wrangler kv namespace create LIVE_CACHE --preview
+# and paste the ids below.
 [[kv_namespaces]]
-binding = "SESSION"
-id = "your-kv-namespace-id"
-preview_id = "your-preview-kv-namespace-id"
+binding = "LIVE_CACHE"
+id = "replace-with-the-id-wrangler-prints"
+preview_id = "replace-with-the-preview-id-wrangler-prints"

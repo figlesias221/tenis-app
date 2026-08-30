@@ -1,0 +1,3087 @@
+{
+ "data": [
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO3",
+   "id": 180049,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2004-03-25",
+     "country": "per",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 228,
+     "is_doubles_team": false,
+     "name": "Ignacio Buse",
+     "ranking": 36,
+     "ranking_movement": "same",
+     "ranking_points": 1310,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1996-06-09",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 522,
+     "is_doubles_team": false,
+     "name": "Benjamin Bonzi",
+     "ranking": 109,
+     "ranking_movement": "up",
+     "ranking_points": 572,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP Winston-Salem - Semi-finals",
+   "round_code": "SF",
+   "scheduled_time": "2026-08-28T20:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "Winston-Salem",
+   "tournament_id": "1214",
+   "updated_at": "2026-08-28T18:27:17.978133Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO3",
+   "id": 180078,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1992-01-21",
+     "country": "aus",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 64,
+     "is_doubles_team": false,
+     "name": "James Duckworth",
+     "ranking": 79,
+     "ranking_movement": "up",
+     "ranking_points": 763,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2002-07-12",
+     "country": "gbr",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 566,
+     "is_doubles_team": false,
+     "name": "Arthur Fery",
+     "ranking": 37,
+     "ranking_movement": "same",
+     "ranking_points": 1253,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP Winston-Salem - Semi-finals",
+   "round_code": "SF",
+   "scheduled_time": "2026-08-28T22:30:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "Winston-Salem",
+   "tournament_id": "1214",
+   "updated_at": "2026-08-28T18:27:17.998041Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179914,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1996-01-13",
+     "country": "pol",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 30,
+     "is_doubles_team": false,
+     "name": "Kamil Majchrzak",
+     "ranking": 72,
+     "ranking_movement": "down",
+     "ranking_points": 827,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2003-07-18",
+     "country": "srb",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 110,
+     "is_doubles_team": false,
+     "name": "Hamad Medjedovic",
+     "ranking": 78,
+     "ranking_movement": "down",
+     "ranking_points": 764,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.624716Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179935,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1996-04-12",
+     "country": "ita",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 25,
+     "is_doubles_team": false,
+     "name": "Matteo Berrettini",
+     "ranking": 43,
+     "ranking_movement": "down",
+     "ranking_points": 1115,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1985-03-28",
+     "country": "sui",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 527,
+     "is_doubles_team": false,
+     "name": "Stan Wawrinka",
+     "ranking": 127,
+     "ranking_movement": "up",
+     "ranking_points": 486,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.150123Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179896,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1998-11-16",
+     "country": "mon",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 26,
+     "is_doubles_team": false,
+     "name": "Valentin Vacherot",
+     "ranking": 23,
+     "ranking_movement": "down",
+     "ranking_points": 2168,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": 1,
+     "birthday": "1998-08-29",
+     "country": "usa",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 189,
+     "is_doubles_team": false,
+     "name": "Aleksandar Kovacevic",
+     "ranking": 89,
+     "ranking_movement": "up",
+     "ranking_points": 690,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.140039Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179930,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1996-06-10",
+     "country": "gbr",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 94,
+     "is_doubles_team": false,
+     "name": "Jan Choinski",
+     "ranking": 75,
+     "ranking_movement": "up",
+     "ranking_points": 773,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1995-10-04",
+     "country": "ned",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 207,
+     "is_doubles_team": false,
+     "name": "Botic Van De Zandschulp",
+     "ranking": 71,
+     "ranking_movement": "down",
+     "ranking_points": 834,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.021227Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179928,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2000-10-06",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 521,
+     "is_doubles_team": false,
+     "name": "Francisco Comesana",
+     "ranking": 123,
+     "ranking_movement": "up",
+     "ranking_points": 503,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2002-05-06",
+     "country": "ita",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 652,
+     "is_doubles_team": false,
+     "name": "Flavio Cobolli",
+     "ranking": 6,
+     "ranking_movement": "up",
+     "ranking_points": 3720,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.956776Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179892,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1997-04-20",
+     "country": "ger",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 6,
+     "is_doubles_team": false,
+     "name": "Alexander Zverev",
+     "ranking": 2,
+     "ranking_movement": "up",
+     "ranking_points": 7790,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1995-05-11",
+     "country": "ita",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 884,
+     "is_doubles_team": false,
+     "name": "Lorenzo Sonego",
+     "ranking": 91,
+     "ranking_movement": "down",
+     "ranking_points": 683,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.017272Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179895,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2004-04-28",
+     "country": "par",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 197,
+     "is_doubles_team": false,
+     "name": "Daniel Adolfo Vallejo",
+     "ranking": 61,
+     "ranking_movement": "up",
+     "ranking_points": 948,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1986-09-01",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 534,
+     "is_doubles_team": false,
+     "name": "Gael Monfils",
+     "ranking": 307,
+     "ranking_movement": "up",
+     "ranking_points": 180,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.111959Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179927,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "2003-09-30",
+     "country": "usa",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 5,
+     "is_doubles_team": false,
+     "name": "Martin Damm",
+     "ranking": 92,
+     "ranking_movement": "up",
+     "ranking_points": 675,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1998-01-20",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 9,
+     "is_doubles_team": false,
+     "name": "Frances Tiafoe",
+     "ranking": 23,
+     "ranking_movement": "down",
+     "ranking_points": 2130,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.920222Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179902,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1995-07-23",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 538,
+     "is_doubles_team": false,
+     "name": "Arthur Rinderknech",
+     "ranking": 29,
+     "ranking_movement": "down",
+     "ranking_points": 1683,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-07-30",
+     "country": "jpn",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 844,
+     "is_doubles_team": false,
+     "name": "Sho Shimabukuro",
+     "ranking": 87,
+     "ranking_movement": "up",
+     "ranking_points": 705,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.323923Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179917,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2006-09-17",
+     "country": "esp",
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 23,
+     "is_doubles_team": false,
+     "name": "Rafael Jodar",
+     "ranking": 13,
+     "ranking_movement": "down",
+     "ranking_points": 2671,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1996-04-10",
+     "country": "aus",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 1243,
+     "is_doubles_team": false,
+     "name": "Thanasi Kokkinakis",
+     "ranking": 412,
+     "ranking_movement": "down",
+     "ranking_points": 118,
+     "tour": null
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.699572Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179903,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "2002-10-09",
+     "country": "usa",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 11,
+     "is_doubles_team": false,
+     "name": "Ben Shelton",
+     "ranking": 9,
+     "ranking_movement": "down",
+     "ranking_points": 3480,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1996-07-02",
+     "country": "ned",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 512,
+     "is_doubles_team": false,
+     "name": "Tallon Griekspoor",
+     "ranking": 56,
+     "ranking_movement": "same",
+     "ranking_points": 975,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.360826Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179924,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2003-08-06",
+     "country": "por",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 115,
+     "is_doubles_team": false,
+     "name": "Jaime Faria",
+     "ranking": 70,
+     "ranking_movement": "up",
+     "ranking_points": 847,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2000-10-26",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 192,
+     "is_doubles_team": false,
+     "name": "Jenson Brooksby",
+     "ranking": 73,
+     "ranking_movement": "up",
+     "ranking_points": 800,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.844062Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179934,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1997-02-19",
+     "country": "por",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 503,
+     "is_doubles_team": false,
+     "name": "Nuno Borges",
+     "ranking": 41,
+     "ranking_movement": "up",
+     "ranking_points": 1135,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2005-12-02",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 511,
+     "is_doubles_team": false,
+     "name": "Learner Tien",
+     "ranking": 15,
+     "ranking_movement": "down",
+     "ranking_points": 2565,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.131156Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179897,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1999-06-17",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 472,
+     "is_doubles_team": false,
+     "name": "Camilo Ugo Carabelli",
+     "ranking": 76,
+     "ranking_movement": "same",
+     "ranking_points": 770,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1990-04-25",
+     "country": "ger",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 525,
+     "is_doubles_team": false,
+     "name": "Jan-Lennard Struff",
+     "ranking": 44,
+     "ranking_movement": "down",
+     "ranking_points": 1089,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.167919Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179912,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2004-09-26",
+     "country": "esp",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 214,
+     "is_doubles_team": false,
+     "name": "Daniel Merida Aguilar",
+     "ranking": 39,
+     "ranking_movement": "up",
+     "ranking_points": 1157,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1992-02-08",
+     "country": "hun",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 531,
+     "is_doubles_team": false,
+     "name": "Marton Fucsovics",
+     "ranking": 82,
+     "ranking_movement": "up",
+     "ranking_points": 750,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.587008Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179893,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1999-04-17",
+     "country": "aus",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 159,
+     "is_doubles_team": false,
+     "name": "Adam Walton",
+     "ranking": 93,
+     "ranking_movement": "up",
+     "ranking_points": 670,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1999-10-14",
+     "country": "chn",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 446,
+     "is_doubles_team": false,
+     "name": "Yibing Wu",
+     "ranking": 113,
+     "ranking_movement": "down",
+     "ranking_points": 551,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.053196Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179904,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1990-01-31",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 164,
+     "is_doubles_team": false,
+     "name": "Marco Trungelliti",
+     "ranking": 83,
+     "ranking_movement": "up",
+     "ranking_points": 731,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": 2,
+     "birthday": null,
+     "country": "chn",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "birthday"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 12874,
+     "is_doubles_team": false,
+     "name": "Juncheng Shang",
+     "ranking": 227,
+     "ranking_movement": "down",
+     "ranking_points": 245,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.382776Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179898,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2004-06-12",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 27,
+     "is_doubles_team": false,
+     "name": "Arthur Fils",
+     "ranking": 21,
+     "ranking_movement": "up",
+     "ranking_points": 2140,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": 1,
+     "birthday": "1998-08-12",
+     "country": "gre",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 28,
+     "is_doubles_team": false,
+     "name": "Stefanos Tsitsipas",
+     "ranking": 53,
+     "ranking_movement": "down",
+     "ranking_points": 1000,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.192137Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179932,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1996-05-21",
+     "country": null,
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "country"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 16,
+     "is_doubles_team": false,
+     "name": "Karen Khachanov",
+     "ranking": 49,
+     "ranking_movement": "down",
+     "ranking_points": 1050,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2002-01-23",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 109,
+     "is_doubles_team": false,
+     "name": "Roman Andres Burruchaga",
+     "ranking": 59,
+     "ranking_movement": "up",
+     "ranking_points": 960,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.059030Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179938,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1992-01-21",
+     "country": "aus",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 64,
+     "is_doubles_team": false,
+     "name": "James Duckworth",
+     "ranking": 79,
+     "ranking_movement": "up",
+     "ranking_points": 763,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": 2,
+     "birthday": "2001-02-22",
+     "country": "ita",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 502,
+     "is_doubles_team": false,
+     "name": "Matteo Arnaldi",
+     "ranking": 34,
+     "ranking_movement": "same",
+     "ranking_points": 1349,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.191722Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179905,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2003-05-05",
+     "country": "esp",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 13,
+     "is_doubles_team": false,
+     "name": "Carlos Alcaraz",
+     "ranking": 3,
+     "ranking_movement": "down",
+     "ranking_points": 7160,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-08-07",
+     "country": null,
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "country"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 95,
+     "is_doubles_team": false,
+     "name": "Roman Safiullin",
+     "ranking": 98,
+     "ranking_movement": "up",
+     "ranking_points": 634,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.417764Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179909,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2002-01-09",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 32,
+     "is_doubles_team": false,
+     "name": "Terence Atmane",
+     "ranking": 90,
+     "ranking_movement": "down",
+     "ranking_points": 687,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-05-05",
+     "country": "esp",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 813,
+     "is_doubles_team": false,
+     "name": "Jaume Munar",
+     "ranking": 55,
+     "ranking_movement": "down",
+     "ranking_points": 990,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.532072Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179925,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1999-07-18",
+     "country": "arg",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 24,
+     "is_doubles_team": false,
+     "name": "Tomas Martin Etcheverry",
+     "ranking": 31,
+     "ranking_movement": "same",
+     "ranking_points": 1440,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": null,
+     "country": "cze",
+     "data_completeness": {
+      "known": 2,
+      "missing": [
+       "backhand",
+       "birthday",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 6146,
+     "is_doubles_team": false,
+     "name": "V. Kopriva",
+     "ranking": 71,
+     "ranking_movement": "same",
+     "ranking_points": 886,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.871038Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179921,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2004-03-25",
+     "country": "per",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 228,
+     "is_doubles_team": false,
+     "name": "Ignacio Buse",
+     "ranking": 36,
+     "ranking_movement": "same",
+     "ranking_points": 1310,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1993-07-24",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 990,
+     "is_doubles_team": false,
+     "name": "Marcos Giron",
+     "ranking": 77,
+     "ranking_movement": "up",
+     "ranking_points": 765,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.776269Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179913,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1999-10-08",
+     "country": "hun",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 504,
+     "is_doubles_team": false,
+     "name": "Fabian Marozsan",
+     "ranking": 63,
+     "ranking_movement": "same",
+     "ranking_points": 930,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2004-01-27",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 1253,
+     "is_doubles_team": false,
+     "name": "Michael Zheng",
+     "ranking": 106,
+     "ranking_movement": "down",
+     "ranking_points": 590,
+     "tour": null
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.601246Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179906,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2000-11-29",
+     "country": "kaz",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 12,
+     "is_doubles_team": false,
+     "name": "Alexander Shevchenko",
+     "ranking": 97,
+     "ranking_movement": "down",
+     "ranking_points": 655,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2005-08-05",
+     "country": "cro",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 500,
+     "is_doubles_team": false,
+     "name": "Dino Prizmic",
+     "ranking": 101,
+     "ranking_movement": "up",
+     "ranking_points": 652,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.452724Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179900,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1999-04-19",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 33,
+     "is_doubles_team": false,
+     "name": "Corentin Moutet",
+     "ranking": 62,
+     "ranking_movement": "down",
+     "ranking_points": 935,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2001-02-12",
+     "country": "aus",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 842,
+     "is_doubles_team": false,
+     "name": "Dane Sweeny",
+     "ranking": 122,
+     "ranking_movement": "down",
+     "ranking_points": 506,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.259628Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179894,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2004-05-11",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 232,
+     "is_doubles_team": false,
+     "name": "Luca van Assche",
+     "ranking": 40,
+     "ranking_movement": "up",
+     "ranking_points": 1140,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1995-08-23",
+     "country": "gbr",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 535,
+     "is_doubles_team": false,
+     "name": "Cameron Norrie",
+     "ranking": 33,
+     "ranking_movement": "up",
+     "ranking_points": 1365,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.086951Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179929,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1988-09-28",
+     "country": "cro",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 8,
+     "is_doubles_team": false,
+     "name": "Marin Cilic",
+     "ranking": 81,
+     "ranking_movement": "down",
+     "ranking_points": 751,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-10-20",
+     "country": null,
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "country"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 539,
+     "is_doubles_team": false,
+     "name": "Andrey Rublev",
+     "ranking": 24,
+     "ranking_movement": "down",
+     "ranking_points": 2080,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.000924Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179907,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2001-02-27",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 208,
+     "is_doubles_team": false,
+     "name": "Mariano Navone",
+     "ranking": 48,
+     "ranking_movement": "down",
+     "ranking_points": 1065,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1987-05-22",
+     "country": "srb",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 1218,
+     "is_doubles_team": false,
+     "name": "Novak Djokovic",
+     "ranking": 5,
+     "ranking_movement": "same",
+     "ranking_points": 3770,
+     "tour": null
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.485071Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179937,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2000-08-08",
+     "country": "can",
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 31,
+     "is_doubles_team": false,
+     "name": "Felix Auger-Aliassime",
+     "ranking": 4,
+     "ranking_movement": "same",
+     "ranking_points": 4640,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2001-02-23",
+     "country": "aus",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 190,
+     "is_doubles_team": false,
+     "name": "Rinky Hijikata",
+     "ranking": 85,
+     "ranking_movement": "up",
+     "ranking_points": 709,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.180543Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179933,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1998-12-21",
+     "country": "usa",
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 623,
+     "is_doubles_team": false,
+     "name": "John Jeffrey Wolf",
+     "ranking": 248,
+     "ranking_movement": "down",
+     "ranking_points": 225,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-06-17",
+     "country": "kaz",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 654,
+     "is_doubles_team": false,
+     "name": "Alexander Bublik",
+     "ranking": 16,
+     "ranking_movement": "down",
+     "ranking_points": 2525,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.099290Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179901,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 1,
+     "birthday": "1998-09-12",
+     "country": "ger",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 104,
+     "is_doubles_team": false,
+     "name": "Daniel Altmaier",
+     "ranking": 57,
+     "ranking_movement": "up",
+     "ranking_points": 964,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2002-11-29",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 198,
+     "is_doubles_team": false,
+     "name": "Zachary Svajda",
+     "ranking": 80,
+     "ranking_movement": "up",
+     "ranking_points": 759,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.290378Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179922,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1997-10-28",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 18,
+     "is_doubles_team": false,
+     "name": "Taylor Fritz",
+     "ranking": 10,
+     "ranking_movement": "down",
+     "ranking_points": 3475,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2007-09-28",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 173,
+     "is_doubles_team": false,
+     "name": "Darwin Blanch",
+     "ranking": 241,
+     "ranking_movement": "up",
+     "ranking_points": 232,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.798868Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179916,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1999-08-31",
+     "country": "srb",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 536,
+     "is_doubles_team": false,
+     "name": "Miomir Kecmanovic",
+     "ranking": 64,
+     "ranking_movement": "up",
+     "ranking_points": 925,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1999-04-15",
+     "country": "can",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 651,
+     "is_doubles_team": false,
+     "name": "Denis Shapovalov",
+     "ranking": 47,
+     "ranking_movement": "up",
+     "ranking_points": 1065,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.670130Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179923,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2002-07-12",
+     "country": "gbr",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 566,
+     "is_doubles_team": false,
+     "name": "Arthur Fery",
+     "ranking": 37,
+     "ranking_movement": "same",
+     "ranking_points": 1253,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2002-03-03",
+     "country": "ita",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 664,
+     "is_doubles_team": false,
+     "name": "Lorenzo Musetti",
+     "ranking": 14,
+     "ranking_movement": "up",
+     "ranking_points": 2605,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.821911Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179908,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2001-08-03",
+     "country": "usa",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 7,
+     "is_doubles_team": false,
+     "name": "Brandon Nakashima",
+     "ranking": 17,
+     "ranking_movement": "up",
+     "ranking_points": 2485,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": null,
+     "country": "arg",
+     "data_completeness": {
+      "known": 2,
+      "missing": [
+       "backhand",
+       "birthday",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 32089,
+     "is_doubles_team": false,
+     "name": "S. Baez",
+     "ranking": 50,
+     "ranking_movement": "up",
+     "ranking_points": 1044,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.517814Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179910,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1996-06-09",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 522,
+     "is_doubles_team": false,
+     "name": "Benjamin Bonzi",
+     "ranking": 109,
+     "ranking_movement": "up",
+     "ranking_points": 572,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-12-01",
+     "country": "svk",
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 6147,
+     "is_doubles_team": false,
+     "name": "A. Molcan",
+     "ranking": 84,
+     "ranking_movement": "down",
+     "ranking_points": 710,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.549643Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179918,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1997-06-02",
+     "country": "chi",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 35,
+     "is_doubles_team": false,
+     "name": "Alejandro Tabilo",
+     "ranking": 28,
+     "ranking_movement": "up",
+     "ranking_points": 1688,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1991-11-13",
+     "country": "ger",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 230,
+     "is_doubles_team": false,
+     "name": "Yannick Hanfmann",
+     "ranking": 54,
+     "ranking_movement": "up",
+     "ranking_points": 991,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.735635Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179926,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1992-05-20",
+     "country": "bih",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 204,
+     "is_doubles_team": false,
+     "name": "Damir Dzumhur",
+     "ranking": 103,
+     "ranking_movement": "down",
+     "ranking_points": 612,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1997-02-11",
+     "country": "pol",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 532,
+     "is_doubles_team": false,
+     "name": "Hubert Hurkacz",
+     "ranking": 46,
+     "ranking_movement": "up",
+     "ranking_points": 1070,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.894917Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179920,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2002-01-13",
+     "country": "bel",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 20,
+     "is_doubles_team": false,
+     "name": "Raphael Collignon",
+     "ranking": 38,
+     "ranking_movement": "same",
+     "ranking_points": 1207,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2004-01-24",
+     "country": "usa",
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 6316,
+     "is_doubles_team": false,
+     "name": "Sebastian Gorzny",
+     "ranking": 782,
+     "ranking_movement": "down",
+     "ranking_points": 39,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.760969Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179936,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1999-06-03",
+     "country": "bel",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 528,
+     "is_doubles_team": false,
+     "name": "Zizou Bergs",
+     "ranking": 35,
+     "ranking_movement": "down",
+     "ranking_points": 1345,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": 2,
+     "birthday": null,
+     "country": "esp",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "birthday"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 12825,
+     "is_doubles_team": false,
+     "name": "Carlos Taberner",
+     "ranking": 400,
+     "ranking_movement": "up",
+     "ranking_points": 121,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.162727Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179911,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1998-08-13",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 1,
+     "is_doubles_team": false,
+     "name": "Francisco Cerundolo",
+     "ranking": 25,
+     "ranking_movement": "same",
+     "ranking_points": 1980,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": null,
+     "country": "aut",
+     "data_completeness": {
+      "known": 2,
+      "missing": [
+       "backhand",
+       "birthday",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 13409,
+     "is_doubles_team": false,
+     "name": "Filip Misolic",
+     "ranking": 530,
+     "ranking_movement": "up",
+     "ranking_points": 80,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.564247Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179899,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2001-04-10",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 2,
+     "is_doubles_team": false,
+     "name": "Thiago Agustin Tirante",
+     "ranking": 42,
+     "ranking_movement": "up",
+     "ranking_points": 1125,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1988-06-29",
+     "country": "fra",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 508,
+     "is_doubles_team": false,
+     "name": "Adrian Mannarino",
+     "ranking": 67,
+     "ranking_movement": "down",
+     "ranking_points": 895,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.215667Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179915,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "2001-11-08",
+     "country": "cze",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 22,
+     "is_doubles_team": false,
+     "name": "Jiri Lehecka",
+     "ranking": 19,
+     "ranking_movement": "down",
+     "ranking_points": 2420,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "1991-07-12",
+     "country": "esp",
+     "data_completeness": {
+      "known": 3,
+      "missing": [
+       "backhand",
+       "hand"
+      ],
+      "of": 5
+     },
+     "hand": null,
+     "id": 97,
+     "is_doubles_team": false,
+     "name": "Pablo Carreno-Busta",
+     "ranking": 66,
+     "ranking_movement": "up",
+     "ranking_points": 899,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.645180Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179919,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": 2,
+     "birthday": "1996-10-26",
+     "country": "fra",
+     "data_completeness": {
+      "known": 5,
+      "missing": [],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 29,
+     "is_doubles_team": false,
+     "name": "Quentin Halys",
+     "ranking": 52,
+     "ranking_movement": "up",
+     "ranking_points": 1030,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2000-12-15",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 494,
+     "is_doubles_team": false,
+     "name": "Facundo Diaz Acosta",
+     "ranking": 82,
+     "ranking_movement": "up",
+     "ranking_points": 732,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:18.747724Z"
+  },
+  {
+   "draw": "singles",
+   "event_status": null,
+   "event_status_updated_at": null,
+   "format": "BO5",
+   "id": 179931,
+   "indoor": false,
+   "is_doubles": false,
+   "is_qualifying": false,
+   "outcome": null,
+   "players": {
+    "p1": {
+     "backhand": null,
+     "birthday": "1998-12-22",
+     "country": "nor",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "R",
+     "id": 537,
+     "is_doubles_team": false,
+     "name": "Casper Ruud",
+     "ranking": 20,
+     "ranking_movement": "down",
+     "ranking_points": 2385,
+     "tour": "atp"
+    },
+    "p2": {
+     "backhand": null,
+     "birthday": "2001-11-15",
+     "country": "arg",
+     "data_completeness": {
+      "known": 4,
+      "missing": [
+       "backhand"
+      ],
+      "of": 5
+     },
+     "hand": "L",
+     "id": 1002,
+     "is_doubles_team": false,
+     "name": "Juan Manuel Cerundolo",
+     "ranking": 51,
+     "ranking_movement": "same",
+     "ranking_points": 1040,
+     "tour": "atp"
+    }
+   },
+   "round": "ATP US Open - 1/64-finals",
+   "round_code": "R128",
+   "scheduled_time": "2026-08-30T15:00:00Z",
+   "score": null,
+   "status": "upcoming",
+   "surface": "hard",
+   "tour": "atp",
+   "tournament": "US Open",
+   "tournament_id": "1217",
+   "updated_at": "2026-08-28T18:27:19.041864Z"
+  }
+ ],
+ "meta": {
+  "count": 49,
+  "has_more": false,
+  "limit": 100,
+  "offset": 0,
+  "total": 49
+ }
+}
