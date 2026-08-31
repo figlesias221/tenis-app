@@ -1,4 +1,7 @@
-name = "tennis-app"
+# Must match the Cloudflare Pages project exactly. The project is "tenis-app"
+# - one n, as the repository is - and a name that does not match means Pages
+# ignores this file, which silently takes the KV binding below with it.
+name = "tenis-app"
 pages_build_output_dir = "dist"
 
 # 2024-09-23 or later is required: before it, Workers did not resolve bare
@@ -7,19 +10,18 @@ pages_build_output_dir = "dist"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
-[env.production]
-name = "tennis-app"
-
-[env.preview]
-name = "tennis-app-preview"
-
 # Shared cache for the live board. Every visitor reads the same snapshot, so
 # the LiveTennisAPI free tier's 100 calls a day are spent once, not once per
-# reader. Create with:
-#   npx wrangler kv namespace create LIVE_CACHE
-#   npx wrangler kv namespace create LIVE_CACHE --preview
-# and paste the ids below.
+# reader.
+#
+# Top level is production; Pages recognises exactly one other environment,
+# preview, and it does not inherit bindings - hence the second block. The
+# LIVETENNIS_API_KEY that goes with these is a secret in both environments,
+# set with `npx wrangler pages secret put`, and is deliberately not here.
 [[kv_namespaces]]
 binding = "LIVE_CACHE"
-id = "replace-with-the-id-wrangler-prints"
-preview_id = "replace-with-the-preview-id-wrangler-prints"
+id = "3563750e958d48ada04041d25720b926"
+
+[[env.preview.kv_namespaces]]
+binding = "LIVE_CACHE"
+id = "8ee01f246c864647969dbd7aa3518bf0"
